@@ -231,3 +231,35 @@ Delete a slide from the master (soft-delete).
 
 - This is a soft-delete; the slide can potentially be restored
 - Subsequent slides are renumbered to fill the gap
+
+---
+
+## update_slide
+
+Update slide properties such as visibility, name, and description.
+
+### Arguments
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `master_id` | integer | **Yes** | The master containing the slide. |
+| `slide_name` | string | **Yes** | Name of the slide to update. |
+| `hidden` | boolean | No | Set to true to hide the slide, false to show it. If not provided, visibility is unchanged. |
+| `new_name` | string | No | New name for the slide. If not provided, name is unchanged. |
+| `description` | string | No | New description for the slide. If not provided, description is unchanged. |
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the operation succeeded |
+| `slide_id` | integer | Database ID of the slide |
+| `slide_name` | string | Name of the slide |
+| `hidden` | boolean | Current visibility state |
+| `description` | string | Current description (if set) |
+| `message` | string | Confirmation message |
+
+### Notes
+
+- At least one of `hidden`, `new_name`, or `description` should be provided
+- Use this to show/hide slides during deck assembly (e.g., unhide matched slides after import)

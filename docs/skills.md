@@ -318,5 +318,5 @@ Auto-generated context variables:
 
 ## Related Documentation
 
-- [MCP Tools Reference](tools.md) - All 32 MCP tools
+- [MCP Tools Reference](tools.md) - All 35 MCP tools
 - [Setup Guide](setup.md) - Installation and configuration

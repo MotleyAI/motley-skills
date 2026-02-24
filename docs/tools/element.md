@@ -239,3 +239,46 @@ render_chart(master_id=42, slide_name="Overview", block_name="revenue_chart")
 ```
 render_chart(master_id=42, slide_name="Detail", block_name="trend_chart", width=1200, height=800)
 ```
+
+---
+
+## copy_block_content
+
+Copy content from one block to another. Supports copying between slides within the same master, or between different masters. If the block types differ, the target block is automatically converted to match the source block type while preserving its layout properties (width, height, placeholder, description).
+
+### Arguments
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `source_master_id` | integer | **Yes** | The master containing the source block. |
+| `source_slide_name` | string | **Yes** | The slide containing the source block. |
+| `source_block_name` | string | **Yes** | The block to copy from. |
+| `target_master_id` | integer | **Yes** | The master containing the target block. |
+| `target_slide_name` | string | **Yes** | The slide containing the target block. |
+| `target_block_name` | string | **Yes** | The block to copy to. |
+| `copy_template` | boolean | No | Whether to copy the block's template. Default: true. |
+| `copy_queries` | boolean | No | Whether to copy nested queries for text/table blocks. Default: true. |
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the operation succeeded |
+| `source_master_id` | integer | Source master ID |
+| `source_slide_name` | string | Source slide name |
+| `source_block_name` | string | Source block name |
+| `target_master_id` | integer | Target master ID |
+| `target_slide_name` | string | Target slide name |
+| `target_block_name` | string | Target block name |
+| `type_converted` | boolean | Whether the target block type was converted to match the source |
+| `copied_content` | boolean | Whether content was copied |
+| `copied_template` | boolean | Whether template was copied |
+| `copied_queries` | boolean | Whether queries were copied |
+| `message` | string | Confirmation message |
+
+### Notes
+
+- If block types differ, the target is automatically converted to match the source type while preserving layout properties (width, height, placeholder, description)
+- Target block is marked as out-of-date after copy
+- Supports cross-master copying (source and target can be in different masters)
+- Use with `match_slides` to bulk-copy content between masters after layout library import

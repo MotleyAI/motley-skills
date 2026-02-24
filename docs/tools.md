@@ -1,6 +1,6 @@
 # MCP Tools Reference
 
-Comprehensive reference for all 32 tools available via the Motley MCP server.
+Comprehensive reference for all 35 tools available via the Motley MCP server.
 
 ## Overview
 
@@ -11,10 +11,10 @@ The MCP server provides tools for building data-driven presentations programmati
 | Category | Tools | Description |
 |----------|-------|-------------|
 | [Outline](tools/outline.md) | 8 | Deck planning and outline sessions |
-| [Layout](tools/layout.md) | 5 | Layout libraries and master creation |
+| [Layout](tools/layout.md) | 6 | Layout libraries and master creation |
 | [Datasource](tools/datasource.md) | 6 | Data source management and schema modification |
-| [Master](tools/master.md) | 8 | Master inspection, resolution, and slide management |
-| [Element](tools/element.md) | 5 | Content block updates (text, table, chart, query) |
+| [Master](tools/master.md) | 9 | Master inspection, resolution, and slide management |
+| [Element](tools/element.md) | 6 | Content block updates (text, table, chart, query) |
 
 ## Quick Reference
 
@@ -40,6 +40,7 @@ The MCP server provides tools for building data-driven presentations programmati
 | [`inspect_layout_library`](tools/layout.md#inspect_layout_library) | Get library structure details |
 | [`get_thumbnails`](tools/layout.md#get_thumbnails) | Get slide thumbnail URLs |
 | [`create_master`](tools/layout.md#create_master) | Create master from library |
+| [`import_layout_library`](tools/layout.md#import_layout_library) | Import Google Slides as layout library |
 
 ### Datasource Tools
 
@@ -64,6 +65,7 @@ The MCP server provides tools for building data-driven presentations programmati
 | [`copy_slide`](tools/master.md#copy_slide) | Duplicate a slide |
 | [`move_slide`](tools/master.md#move_slide) | Reposition a slide |
 | [`delete_slide`](tools/master.md#delete_slide) | Remove a slide |
+| [`update_slide`](tools/master.md#update_slide) | Update slide visibility, name, or description |
 
 ### Element Tools
 
@@ -74,6 +76,7 @@ The MCP server provides tools for building data-driven presentations programmati
 | [`update_chart_block`](tools/element.md#update_chart_block) | Generate chart from prompt |
 | [`update_query_block`](tools/element.md#update_query_block) | Create/update query in block |
 | [`render_chart`](tools/element.md#render_chart) | Render chart to base64 PNG image |
+| [`copy_block_content`](tools/element.md#copy_block_content) | Copy content between blocks (cross-slide/cross-master) |
 
 ## Typical Workflow
 

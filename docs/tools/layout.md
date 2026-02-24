@@ -145,3 +145,34 @@ Create a new master from a template library.
 - All slides in the new master are set to hidden by default
 - The master inherits the library's slide structure and content
 - Default sample parameters are initialized for the master
+
+---
+
+## import_layout_library
+
+Import a Google Slides presentation as a layout library. Copies the presentation to the user's Google Drive, names all slides and elements using LLM, and creates a layout library from it.
+
+### Arguments
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `presentation_url` | string | **Yes** | Google Slides URL or presentation ID to import. |
+| `name` | string | **Yes** | Name for the layout library. |
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the operation succeeded |
+| `layout_library_id` | integer | The new library's identifier (use with `create_master`) |
+| `deck_id` | integer | The underlying deck identifier |
+| `name` | string | The library name |
+| `slide_count` | integer | Number of slides imported |
+| `created_at` | string | ISO 8601 timestamp |
+
+### Notes
+
+- The presentation is copied to the user's Google Drive
+- All slides and elements are automatically named using LLM
+- This may take 30-60 seconds depending on presentation size
+- Use the returned `layout_library_id` with `create_master` to create an editable master

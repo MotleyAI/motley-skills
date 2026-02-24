@@ -142,7 +142,7 @@ sequenceDiagram
 
 - [Setup Guide](docs/setup.md) — Installation and configuration
 - [Skills Reference](docs/skills.md) — Domain knowledge for queries, charts, text, and tables
-- [MCP Tools Reference](docs/tools.md) — All 32 MCP tools with detailed argument documentation
+- [MCP Tools Reference](docs/tools.md) — All 35 MCP tools with detailed argument documentation
 
 ---
 
