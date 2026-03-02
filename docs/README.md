@@ -101,7 +101,7 @@ The Motley MCP server provides 35 tools organized into five categories:
 | `update_chart_block` | Update chart with LLM prompt |
 | `update_query_block` | Create/update numerical query |
 | `render_chart` | Render chart to base64 PNG image |
-| `copy_block_content` | Copy content between blocks (cross-slide/cross-master) |
+| `copy_block` | Copy content between blocks (cross-slide/cross-master) |
 
 See [tools.md](tools.md) for the complete tool reference with detailed documentation for each tool:
 - [Outline Tools](tools/outline.md) — Deck planning and outline sessions

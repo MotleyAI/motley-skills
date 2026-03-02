@@ -128,6 +128,7 @@ Create a new master from a template library.
 |-----------|------|----------|-------------|
 | `layout_library_id` | integer | **Yes** | The template library to clone into a new master. |
 | `name` | string | No | Name for the new master. Defaults to "{library title} Master" if not provided. |
+| `source_id` | integer | No | Source ID to derive default sample parameters from the source's default_filters. If not provided, fallback defaults are used. |
 
 ### Returns
 

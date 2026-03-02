@@ -136,9 +136,9 @@ update_slide(
 
 ### 4b. Copy Element Content
 
-Use `copy_block_content` to copy content from reference slide elements.
+Use `copy_block` to copy content from reference slide elements.
 
-**Tool**: `copy_block_content`
+**Tool**: `copy_block`
 
 **Parameters**:
 - `source_master_id` (required): Reference master ID
@@ -147,12 +147,11 @@ Use `copy_block_content` to copy content from reference slide elements.
 - `target_master_id` (required): New master ID
 - `target_slide_name` (required): Slide name in new master
 - `target_block_name` (required): Element name to copy to
-- `copy_template` (optional, default=true): Copy templates
-- `copy_queries` (optional, default=true): Copy nested queries
+- `parent_block_name` (optional): Required when source is a `numerical_query` block. Name of a text or table block in the target slide to attach the query to.
 
 **Example**:
 ```
-copy_block_content(
+copy_block(
     source_master_id=1,  # Reference
     source_slide_name="Intro",
     source_block_name="title",
@@ -164,6 +163,8 @@ copy_block_content(
 
 **Notes**:
 - If block types differ, the target is automatically converted to match the source type while preserving its layout properties (width, height, placeholder, description)
+- Templates are always copied; child queries are never copied
+- For query blocks, use `parent_block_name` to attach the copied query to a parent block
 - Target block is marked as out-of-date after copy
 
 ---
@@ -205,7 +206,7 @@ for match in matches_result["matches"]:
 
     # 4b: Copy each matched element
     for elem_match in match["element_matches"]:
-        copy_block_content(
+        copy_block(
             source_master_id=1,
             source_slide_name=target_slide,
             source_block_name=elem_match["target_element"],
@@ -246,6 +247,6 @@ resolve_master(master_id=new_master_id)
 
 1. **Always check matches first**: Review `match_slides` results before copying
 2. **Handle unmatched slides**: Decide what to do with slides that don't match
-3. **Copy templates**: Keep `copy_template=true` to preserve formatting rules
+3. **Templates are always copied**: Templates are automatically preserved during copy
 4. **Resolve after copying**: Call `resolve_master` to update content after copies
 5. **Batch operations**: Process all matched slides before resolving once

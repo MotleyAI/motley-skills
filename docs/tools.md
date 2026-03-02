@@ -76,7 +76,7 @@ The MCP server provides tools for building data-driven presentations programmati
 | [`update_chart_block`](tools/element.md#update_chart_block) | Generate chart from prompt |
 | [`update_query_block`](tools/element.md#update_query_block) | Create/update query in block |
 | [`render_chart`](tools/element.md#render_chart) | Render chart to base64 PNG image |
-| [`copy_block_content`](tools/element.md#copy_block_content) | Copy content between blocks (cross-slide/cross-master) |
+| [`copy_block`](tools/element.md#copy_block) | Copy content between blocks (cross-slide/cross-master) |
 
 ## Typical Workflow
 

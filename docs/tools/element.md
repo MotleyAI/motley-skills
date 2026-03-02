@@ -20,6 +20,7 @@ Update the template of a text block and resolve it to generate content.
 | `user_prompt` | string | **Yes** | The template content with `{variable}` placeholders. Valid CommonMark markdown. |
 | `call_llm` | boolean | No | When true, pass template to LLM for generation. Default: false (direct variable substitution). |
 | `allowed_outputs` | array[string] | No | Constrain LLM to these exact outputs. Only valid when `call_llm=true`. |
+| `behavior_if_query_fails` | string | No | What happens if a child query fails: `"drop_slide"` (skip slide gracefully) or `"fail_resolution"` (raise error). If not provided, unchanged. |
 
 ### Returns
 
@@ -60,6 +61,7 @@ Update the template of a table block and resolve it to generate content.
 | `user_prompt` | string | **Yes** | The template content for the table. Uses markdown table syntax or variable references. |
 | `call_llm` | boolean | No | When true, use LLM to generate table content. Default: false. |
 | `target_shape` | tuple | No | Table dimension constraints. See below for format. |
+| `behavior_if_query_fails` | string | No | What happens if a child query fails: `"drop_slide"` (skip slide gracefully) or `"fail_resolution"` (raise error). If not provided, unchanged. |
 
 ### target_shape Format
 
@@ -242,9 +244,9 @@ render_chart(master_id=42, slide_name="Detail", block_name="trend_chart", width=
 
 ---
 
-## copy_block_content
+## copy_block
 
-Copy content from one block to another. Supports copying between slides within the same master, or between different masters. If the block types differ, the target block is automatically converted to match the source block type while preserving its layout properties (width, height, placeholder, description).
+Copy content from one block to another. Supports copying between slides within the same master, or between different masters. If the block types differ, the target block is automatically converted to match the source block type while preserving its layout properties (width, height, placeholder, description). For numerical_query source blocks, the copied query is attached to a parent text or table block in the target slide.
 
 ### Arguments
 
@@ -255,9 +257,8 @@ Copy content from one block to another. Supports copying between slides within t
 | `source_block_name` | string | **Yes** | The block to copy from. |
 | `target_master_id` | integer | **Yes** | The master containing the target block. |
 | `target_slide_name` | string | **Yes** | The slide containing the target block. |
-| `target_block_name` | string | **Yes** | The block to copy to. |
-| `copy_template` | boolean | No | Whether to copy the block's template. Default: true. |
-| `copy_queries` | boolean | No | Whether to copy nested queries for text/table blocks. Default: true. |
+| `target_block_name` | string | **Yes** | The block to copy to (or query name when copying a query). |
+| `parent_block_name` | string | No | Required when source is a `numerical_query` block. Name of a text or table block in the target slide whose queries list the copied query will be attached to. |
 
 ### Returns
 
@@ -272,13 +273,14 @@ Copy content from one block to another. Supports copying between slides within t
 | `target_block_name` | string | Target block name |
 | `type_converted` | boolean | Whether the target block type was converted to match the source |
 | `copied_content` | boolean | Whether content was copied |
-| `copied_template` | boolean | Whether template was copied |
-| `copied_queries` | boolean | Whether queries were copied |
+| `parent_block_name` | string | The parent block name (when a query was attached) |
 | `message` | string | Confirmation message |
 
 ### Notes
 
 - If block types differ, the target is automatically converted to match the source type while preserving layout properties (width, height, placeholder, description)
+- Templates are always copied for non-query blocks; child queries are never copied
+- For `numerical_query` source blocks, `parent_block_name` is required and the query is deep-copied and attached to the parent block's queries list
 - Target block is marked as out-of-date after copy
 - Supports cross-master copying (source and target can be in different masters)
 - Use with `match_slides` to bulk-copy content between masters after layout library import
