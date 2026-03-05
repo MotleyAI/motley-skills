@@ -1,207 +1,159 @@
 # Skills Reference
 
-This document provides an overview of the skills included in the Motley bundle. Skills help Claude understand how to work with the Motley domain model for data-driven presentation generation.
+This document provides an overview of the skills included in the Motley bundle. Skills help Claude understand how to work with the Motley MCP tools for data-driven presentation generation.
 
 ## When to Use Each Skill
 
 | Task | Skill |
 |------|-------|
-| Build queries for charts or metrics | [create-query](#create-query) |
-| Create bar/line/pie/funnel charts | [create-edit-chart](#create-edit-chart) |
-| Generate text content with variables | [create-edit-text-block](#create-edit-text-block) |
-| Create data tables | [create-edit-table-block](#create-edit-table-block) |
-| Period-over-period calculations | [derived-dimensions](#derived-dimensions) |
-| Filter by computed values | [derived-dimensions](#derived-dimensions) |
+| Build a master from scratch | [master-builder](#master-builder) |
+| Create or modify a chart | [update-chart](#update-chart) |
+| Create or modify text content | [update-text-block](#update-text-block) |
+| Create or modify a table | [update-table-block](#update-table-block) |
+| Create data queries for text/tables | [update-query-block](#update-query-block) |
+| Explore available data | [explore-cube](#explore-cube) |
+| Import and sync layout libraries | [layout-library-sync](#layout-library-sync) |
 
 ---
 
 ## Core Skills
 
-### create-query
+### master-builder
 
-Build SemanticLayerQuery objects for data retrieval from the semantic layer.
+End-to-end workflow for creating a data-driven master in Motley.
 
-**When to use**: Building queries with measures, dimensions, filters, and time dimensions for use in charts, tables, or text blocks.
+**When to use**: Creating a master, building a deck, or making a presentation from scratch.
 
-**Key concepts:**
-- `SemanticLayerQuery` - Query container with measures, dimensions, filters
-- `QueryTimeDimension` - Time dimensions with granularity (DAY, WEEK, MONTH, QUARTER, YEAR)
-- Filter types: `BasicFilter` (static), `BasicFilterTemplate` (parameterized), `TimeFilterTemplate` (date ranges)
-- `NumericalQueryMode` - SINGLE_NUMBER for KPIs, TABLE for breakdowns
+**Phases:**
+1. Research & Plan — explore cubes and layouts, write slide-by-slide outline
+2. User Approval — present outline for feedback
+3. Create Master — initialize from layout library
+4. Understand the Master — inspect slides and elements
+5. Build Each Slide — configure content for each slide
+6. Final Review — verify everything looks correct
 
-**Use cases:**
-- Aggregate queries (totals, counts, averages)
-- Time series with date grouping
-- Top N queries with ordering
-- Parameterized filters from context variables
-
-**Dimension constraints for charts:**
-
-| Dimensions | Time Dimensions | Total | Measures Allowed |
-|------------|-----------------|-------|------------------|
-| 0 | 0 | 0 | Multiple |
-| 1 | 0 | 1 | Multiple |
-| 0 | 1 | 1 | Multiple |
-| 2 | 0 | 2 | Exactly 1 |
-| 1 | 1 | 2 | Exactly 1 |
-
-[Full documentation](../skills/create-query/SKILL.md)
+[Full documentation](../skills/master-builder/SKILL.md)
 
 ---
 
-### create-edit-chart
+### update-chart
 
-Create data visualizations including bar charts, line charts, pie charts, and funnels.
+Create or modify charts using `update_chart_block` with natural language prompts.
 
-**When to use**: Creating any chart or graph visualization that displays query data.
+**When to use**: Creating any chart or graph visualization (bar, line, pie, funnel).
 
 **Key concepts:**
-- `ChartTemplate` - Container for chart configuration with query and appearance
-- `ChartDetailsTemplate` - Appearance settings (series, axes, legend, colors)
-- `SeriesConfig` - Per-series type (BAR, LINE, PIE, FUNNEL), axis assignment, formatting
-- `compare_date_range_offsets` - Period-over-period comparison (e.g., `[-1]` for YoY)
-
-**Use cases:**
-- Bar/line charts for time series data
-- Dual-axis charts with different scales (revenue + margin)
-- Period-over-period comparisons (current vs previous)
-- Funnel charts for conversion analysis
-- Pie charts for part-to-whole breakdowns
+- Prompt-driven: describe the chart you want, LLM generates the full config
+- Chart types: BAR, LINE, PIE, FUNNEL
+- Charts resolve lazily — call `render_chart` to see results
+- Period comparisons, dual axis, stacked bars all supported via prompt
 
 **Chart types:**
 
 | Type | Best For |
 |------|----------|
-| `BAR` | Categorical comparisons, time series |
-| `LINE` | Trends over time, continuous data |
-| `PIE` | Part-to-whole, distribution |
-| `FUNNEL` | Conversion stages, sequential processes |
+| BAR | Categorical comparisons, time series |
+| LINE | Trends over time, continuous data |
+| PIE | Part-to-whole, distribution |
+| FUNNEL | Conversion stages, sequential processes |
 
-[Full documentation](../skills/create-edit-chart/SKILL.md)
+[Full documentation](../skills/update-chart/SKILL.md)
 
 ---
 
-### create-edit-text-block
+### update-text-block
 
-Generate text content with variable substitution and optional LLM enhancement.
+Create or modify text blocks using `update_text_block` with template syntax.
 
 **When to use**: Creating text content that includes data values, summaries, or LLM-generated insights.
 
 **Key concepts:**
-- `TextBlockTemplate` - Template with `{variable}` placeholders
-- `call_llm` - Toggle between direct substitution (false) and LLM generation (true)
-- `allowed_outputs` - Constrain LLM to specific responses for deterministic output
-- Expression syntax for arithmetic (`{a/b}`) and formatting (`{percent(x)}`)
-
-**Use cases:**
-- Static text with data substitution (KPI displays, titles)
-- LLM-generated summaries from query data
-- Constrained outputs for categorization (plan recommendations)
-- Cross-slide content references (`{SlideName::BlockName}`)
+- Template syntax with `{variable}` placeholders and formatting functions
+- Three modes: direct substitution, LLM generation, constrained output
+- Resolves immediately — result returned inline
+- Cross-slide references via `{Slide::Block}`
 
 **Mode selection:**
 
-| When | Query Mode |
-|------|------------|
-| `call_llm=False` | SINGLE_NUMBER - inline values |
-| `call_llm=True` | TABLE - data for LLM analysis |
+| Mode | Use Case |
+|------|----------|
+| `call_llm=false` | Fixed template with data substitution |
+| `call_llm=true` | LLM-generated content from data |
+| `call_llm=true` + `allowed_outputs` | Constrained categorization |
 
-[Full documentation](../skills/create-edit-text-block/SKILL.md)
+[Full documentation](../skills/update-text-block/SKILL.md)
 
 ---
 
-### create-edit-table-block
+### update-table-block
 
-Create formatted tables with flexible sizing and pivoting.
+Create or modify table blocks using `update_table_block` with size constraints.
 
-**When to use**: Creating data tables, comparison tables, or any tabular content in slides.
+**When to use**: Creating data tables, comparison tables, or any tabular content.
 
 **Key concepts:**
-- `TableBlockTemplate` - Extension of TextBlockTemplate for tables
-- `target_shape` - Specify table dimensions: exact `(3, 3)`, range `((1, 11), 2)`, or unconstrained `None`
-- Query output modes: TABLE for full datasets, SINGLE_NUMBER for individual cells
-- `pivot_dimension` - Transform dimension values into columns
-
-**Use cases:**
-- Data tables from query results
-- LLM-formatted tables with row constraints
-- Direct markdown templates with expressions
-- Pivoted time series (months as columns)
+- `target_shape` for size constraints: `[rows, cols]` with exact, range, or null values
+- Three patterns: raw query output, markdown template, LLM-generated
+- Resolves immediately — result returned inline
 
 **target_shape formats:**
 
 | Format | Description |
 |--------|-------------|
-| `None` | No constraint |
-| `(3, 3)` | Exactly 3 rows, 3 columns |
-| `(5, None)` | Exactly 5 rows, any columns |
-| `((1, 11), 2)` | 1-11 rows, exactly 2 columns |
+| `null` | No constraint |
+| `[5, 3]` | Exactly 5 rows, 3 columns |
+| `[[1, 10], null]` | 1-10 rows, any columns |
 
-[Full documentation](../skills/create-edit-table-block/SKILL.md)
+[Full documentation](../skills/update-table-block/SKILL.md)
 
 ---
 
-### derived-dimensions
+### update-query-block
 
-Create DerivedDimension and DerivedDimensionFilter for advanced time-series calculations or filtering/grouping by computed values.
+Create or modify numerical queries within text or table blocks.
 
-**When to use**: Period-over-period comparisons (week-over-week change), filtering by computed metrics (show entities where usage decreased), or grouping by computed buckets.
+**When to use**: When text or table blocks need data values. Queries are created first, then referenced as `{query_name}` in templates.
 
 **Key concepts:**
-- `DerivedDimension` - Dimension created from expression evaluation via sub-query
-- `DerivedDimensionFilter` - Filter based on computed values
-- Time-series functions: `change()`, `last()`, `change_latest()`
-- Sub-query evaluation with optional dimension inheritance
+- `single_number` mode for KPIs and inline values
+- `table` mode for multi-row data and cross-tabs
+- `pivot_dimension` and `transpose` for flexible table layouts
+- Must create queries BEFORE referencing in text/table templates
 
-**Available functions:**
+[Full documentation](../skills/update-query-block/SKILL.md)
 
-| Function | Description | Example |
-|----------|-------------|---------|
-| `change(cube.measure)` | Period-over-period change | `change(usage.count)` |
-| `last(cube.measure)` | Most recent value per dimension | `last(usage.count)` |
-| `last(change(...))` | Current period's change from previous | `last(change(usage.count))` |
+---
 
-**Use cases:**
-- Filter schools where usage decreased week-over-week
-- Group customers by engagement bucket
-- Calculate period-over-period metrics for filtering
+### explore-cube
 
-**Example - Filter by computed change:**
+Explore available cubes to understand what data is available.
 
-```python
-from storyline.semantic.derived_dimension import DerivedDimension, DerivedDimensionFilter
-from storyline.semantic.filter import FilterOperator
+**When to use**: Before building a master — discover cubes, inspect schemas, create custom cubes/measures.
 
-# Filter entities where usage increased
-DerivedDimensionFilter(
-    derived_dimension=DerivedDimension(
-        name="usage_change",
-        expression="last(change(lesson_completions.count))",
-    ),
-    operator=FilterOperator.GT,
-    value=0,
-)
-```
+**Key tools:**
+- `cubes_summary()` — list all cubes
+- `inspect_cube(cube_name=..., num_rows=3)` — see schema and sample data
+- `create_cube(...)` — create custom cube from SQL
+- `add_measures(...)` / `add_dimensions(...)` — extend existing cubes
 
-**Key differences from QueryExpression:**
+[Full documentation](../skills/explore-cube/SKILL.md)
 
-| Use Case | Solution |
-|----------|----------|
-| Compute ratio as column (post-query) | `QueryExpression` |
-| Row-by-row consecutive diff | `QueryExpression` with `diff()` |
-| Period-over-period change | `DerivedDimension` with `change()` |
-| Group by ratio bucket | `DerivedDimension` with `evaluation_dimensions` |
-| Filter where computed value > X | `DerivedDimensionFilter` |
+---
 
-**DerivedDimension fields:**
+### layout-library-sync
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | str | Name of the derived dimension |
-| `expression` | str | Expression to evaluate |
-| `evaluation_dimensions` | list | Explicit dimensions for sub-query |
-| `inherit_dimensions` | bool | Include parent query's dimensions (default: true) |
-| `inherit_filters` | bool | Inherit static filters from parent (default: true) |
+Import a Google Slides presentation as a layout library and sync content from a reference master.
+
+**When to use**: Importing new slide designs and migrating content from an existing master.
+
+**Workflow:**
+1. `import_layout_library` — import Google Slides presentation
+2. `create_master` — create editable master from library
+3. `match_slides` — find corresponding slides between masters
+4. `copy_block` — copy element content from reference
+5. `resolve_master` — populate content
+
+[Full documentation](../skills/layout-library-sync/SKILL.md)
 
 ---
 
@@ -209,28 +161,7 @@ DerivedDimensionFilter(
 
 These documents provide foundational knowledge used across skills:
 
-### query-fundamentals.md
-
-Core query concepts including:
-- Measures and dimensions
-- Time dimensions with granularity
-- Ordering and limiting results
-- Dimension count constraints
-
-[View](../skills/_shared/query-fundamentals.md)
-
-### filter-reference.md
-
-Complete filter documentation:
-- BasicFilter for static values
-- BasicFilterTemplate for runtime values
-- TimeFilterTemplate for date ranges
-- CompositeFilter for AND/OR logic
-- DerivedDimensionFilter for computed values
-
-[View](../skills/_shared/filter-reference.md)
-
-### content-block-fundamentals.md
+### variable-reference-syntax.md
 
 Expression syntax for templates:
 - Variable references `{name}`
@@ -238,27 +169,7 @@ Expression syntax for templates:
 - Formatting functions (percent, integer, number, currency)
 - Cross-slide references `{Slide::Block}`
 
-[View](../skills/_shared/content-block-fundamentals.md)
-
-### numerical-query-block.md
-
-NumericalQueryBlock configuration:
-- SINGLE_NUMBER vs TABLE modes
-- Column extraction
-- Pivot dimensions
-- Filter templates
-
-[View](../skills/_shared/numerical-query-block.md)
-
-### query-expressions.md
-
-QueryExpression for computed columns:
-- Arithmetic on query results
-- Available functions (floor, ceil, round, abs, diff)
-- Required dimensions/measures
-- Comparison with DerivedDimension
-
-[View](../skills/_shared/query-expressions.md)
+[View](../skills/_shared/variable-reference-syntax.md)
 
 ### resolution-context.md
 
@@ -269,6 +180,17 @@ Auto-generated context variables:
 - Using variables in filters and templates
 
 [View](../skills/_shared/resolution-context.md)
+
+### cube-guide.md
+
+Cube data modeling concepts:
+- Measures and dimensions
+- Time granularities
+- Dimension constraints for charts
+- Filter concepts
+- Custom cubes and measures
+
+[View](../skills/_shared/cube-guide.md)
 
 ---
 
@@ -298,25 +220,14 @@ Auto-generated context variables:
 
 | Type | Best For |
 |------|----------|
-| `BAR` | Categorical comparisons |
-| `LINE` | Trends over time |
-| `PIE` | Part-to-whole |
-| `FUNNEL` | Conversion stages |
-
-### Filter Operators
-
-| Operator | Description |
-|----------|-------------|
-| `EQUALS` | Exact match |
-| `IN` | Value in list |
-| `GT/GTE/LT/LTE` | Numeric comparisons |
-| `CONTAINS` | Substring match |
-| `SET/NOT_SET` | Null checks |
-| `IN_DATE_RANGE` | Date range |
+| BAR | Categorical comparisons |
+| LINE | Trends over time |
+| PIE | Part-to-whole |
+| FUNNEL | Conversion stages |
 
 ---
 
 ## Related Documentation
 
-- [MCP Tools Reference](tools.md) - All 35 MCP tools
+- [MCP Tools Reference](tools.md) - All MCP tools
 - [Setup Guide](setup.md) - Installation and configuration

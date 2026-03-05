@@ -26,20 +26,23 @@ The result: reports that are both AI-assisted *and* trustworthy.
 
 ### Skills
 
-Domain knowledge that helps Claude understand Motley's data model and write correct code:
+Domain knowledge that helps Claude understand Motley's MCP tools and build data-driven presentations:
 
 | Skill | What it does |
 |-------|--------------|
-| [`create-query`](docs/skills.md#create-query) | Build semantic layer queries with measures, dimensions, filters, and time intelligence |
-| [`create-edit-chart`](docs/skills.md#create-edit-chart) | Create bar, line, pie, and funnel charts with customizable styling |
-| [`create-edit-text-block`](docs/skills.md#create-edit-text-block) | Generate data-driven text with variable substitution and optional LLM enhancement |
-| [`create-edit-table-block`](docs/skills.md#create-edit-table-block) | Build formatted tables with pivoting and flexible layouts |
+| [`master-builder`](docs/skills.md#master-builder) | End-to-end workflow for creating a data-driven master |
+| [`update-chart`](docs/skills.md#update-chart) | Create bar, line, pie, and funnel charts via natural language prompts |
+| [`update-text-block`](docs/skills.md#update-text-block) | Generate data-driven text with variable substitution and optional LLM enhancement |
+| [`update-table-block`](docs/skills.md#update-table-block) | Build formatted tables with size constraints and flexible layouts |
+| [`update-query-block`](docs/skills.md#update-query-block) | Create data queries for text and table blocks |
+| [`explore-cube`](docs/skills.md#explore-cube) | Explore cubes, inspect schemas, create custom cubes/measures |
+| [`layout-library-sync`](docs/skills.md#layout-library-sync) | Import Google Slides and sync content from reference masters |
 
 ### MCP Server
 
 A complete set of tools for Claude to interact with Motley programmatically:
 
-- [**Datasource tools**](docs/tools/datasource.md) — explore and create data sources, add measures and dimensions
+- [**Cube tools**](docs/tools/cube.md) — explore and create cubes, add measures and dimensions
 - [**Outline tools**](docs/tools/outline.md) — plan deck structure with outline sessions
 - [**Layout tools**](docs/tools/layout.md) — browse templates, get thumbnails, create masters
 - [**Master tools**](docs/tools/master.md) — inspect structure, variables, copy/move/delete slides

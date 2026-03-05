@@ -39,7 +39,7 @@ The Motley MCP server provides 35 tools organized into five categories:
 |----------|-------|-------------|
 | **Outline** | 8 | Deck planning and outline sessions |
 | **Layout** | 6 | Layout libraries and template management |
-| **Datasource** | 6 | Data modeling and schema management |
+| **Cube** | 6 | Data modeling and schema management |
 | **Master** | 9 | Operations on master decks and slides |
 | **Element** | 6 | Content blocks (text, table, chart, query) |
 
@@ -67,15 +67,15 @@ The Motley MCP server provides 35 tools organized into five categories:
 | `create_master` | Create master from template |
 | `import_layout_library` | Import Google Slides as layout library |
 
-### Datasource Tools
+### Cube Tools
 
 | Tool | Description |
 |------|-------------|
-| `datasources_summary` | List all datasources with schemas |
-| `inspect_datasource` | Get datasource details with sample data |
-| `create_datasource` | Create datasource from SQL query |
-| `add_measures` | Add custom measures to datasource |
-| `add_dimensions` | Add custom dimensions to datasource |
+| `cubes_summary` | List all cubes with schemas |
+| `inspect_cube` | Get cube details with sample data |
+| `create_cube` | Create cube from SQL query |
+| `add_measures` | Add custom measures to cube |
+| `add_dimensions` | Add custom dimensions to cube |
 | `delete_measures_dimensions` | Remove measures/dimensions |
 
 ### Master Tools
@@ -106,7 +106,7 @@ The Motley MCP server provides 35 tools organized into five categories:
 See [tools.md](tools.md) for the complete tool reference with detailed documentation for each tool:
 - [Outline Tools](tools/outline.md) — Deck planning and outline sessions
 - [Layout Tools](tools/layout.md) — Layout libraries and master creation
-- [Datasource Tools](tools/datasource.md) — Data source management and schema modification
+- [Cube Tools](tools/cube.md) — Cube management and schema modification
 - [Master Tools](tools/master.md) — Master inspection, resolution, and slide management
 - [Element Tools](tools/element.md) — Content block updates (text, table, chart, query)
 
@@ -116,11 +116,13 @@ This bundle includes skill documentation to help Claude understand the Motley do
 
 | Skill | Purpose |
 |-------|---------|
-| [create-query](../skills/create-query/SKILL.md) | Build semantic layer queries |
-| [create-edit-chart](../skills/create-edit-chart/SKILL.md) | Chart templates and visualization |
-| [create-edit-text-block](../skills/create-edit-text-block/SKILL.md) | Text content with expressions |
-| [create-edit-table-block](../skills/create-edit-table-block/SKILL.md) | Table formatting and pivoting |
-| [derived-dimensions](skills.md#derived-dimensions) | Advanced time-series calculations |
+| [master-builder](../skills/master-builder/SKILL.md) | End-to-end master creation workflow |
+| [update-chart](../skills/update-chart/SKILL.md) | Chart creation via natural language prompts |
+| [update-text-block](../skills/update-text-block/SKILL.md) | Text content with variable substitution |
+| [update-table-block](../skills/update-table-block/SKILL.md) | Table formatting and constraints |
+| [update-query-block](../skills/update-query-block/SKILL.md) | Query blocks for data retrieval |
+| [explore-cube](../skills/explore-cube/SKILL.md) | Cube exploration and custom data modeling |
+| [layout-library-sync](../skills/layout-library-sync/SKILL.md) | Layout library import and sync |
 
 See [skills.md](skills.md) for the complete skills reference.
 

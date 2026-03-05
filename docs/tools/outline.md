@@ -51,7 +51,7 @@ Each card in the `cards` array contains:
 - `title` - Card title
 - `content` - Card content/description
 - `position` - 0-indexed position in the outline
-- `cube_names` - Associated datasource names
+- `cube_names` - Associated cube names
 
 ---
 
@@ -125,7 +125,7 @@ Add a new slide card to a deck outline session.
 
 ## edit_outline_card
 
-Edit a slide card's title, content, and/or datasource associations.
+Edit a slide card's title, content, and/or cube associations.
 
 ### Arguments
 
@@ -135,7 +135,7 @@ Edit a slide card's title, content, and/or datasource associations.
 | `card_id` | integer | **Yes** | The specific card to edit. |
 | `title` | string | No | New title. Must be unique within the session if changed. |
 | `content` | string | No | New content/description for the card. |
-| `cube_names` | array[string] | No | Updated datasource associations. Replaces existing associations. |
+| `cube_names` | array[string] | No | Updated cube associations. Replaces existing associations. |
 
 ### Returns
 

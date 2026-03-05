@@ -1,6 +1,8 @@
 ---
 name: layout-library-sync
-description: Import a Google Slides presentation as a layout library, create a master from it, and sync element content from a reference master by matching similar slides.
+description: >
+  Import a Google Slides presentation as a layout library, create a master
+  from it, and sync element content from a reference master.
 ---
 
 # Layout Library Import and Sync Workflow
@@ -14,6 +16,7 @@ The workflow consists of these steps:
 2. **Create** a master from the layout library
 3. **Match** slides between the new master and a reference master
 4. **For each matched slide**: unhide it and copy element content from the reference
+5. **Resolve** to populate content
 
 ---
 
@@ -88,7 +91,7 @@ Use `match_slides` to find corresponding slides between your new master and a re
 ```
 match_slides(
     source_master_id=<new_master_id>,
-    target_master_id=1  # Reference master
+    target_master_id=1
 )
 ```
 
@@ -114,18 +117,6 @@ For each match, perform these operations:
 
 ### 4a. Unhide the Slide
 
-Use `update_slide` to make the slide visible.
-
-**Tool**: `update_slide`
-
-**Parameters**:
-- `master_id` (required): The new master ID
-- `slide_name` (required): Name of the slide to update
-- `hidden` (optional): Set to `false` to show the slide
-- `new_name` (optional): Rename the slide
-- `description` (optional): Update slide description
-
-**Example**:
 ```
 update_slide(
     master_id=<new_master_id>,
@@ -136,23 +127,11 @@ update_slide(
 
 ### 4b. Copy Element Content
 
-Use `copy_block` to copy content from reference slide elements.
+For each matched element pair:
 
-**Tool**: `copy_block`
-
-**Parameters**:
-- `source_master_id` (required): Reference master ID
-- `source_slide_name` (required): Slide name in reference
-- `source_block_name` (required): Element name to copy from
-- `target_master_id` (required): New master ID
-- `target_slide_name` (required): Slide name in new master
-- `target_block_name` (required): Element name to copy to
-- `parent_block_name` (optional): Required when source is a `numerical_query` block. Name of a text or table block in the target slide to attach the query to.
-
-**Example**:
 ```
 copy_block(
-    source_master_id=1,  # Reference
+    source_master_id=1,
     source_slide_name="Intro",
     source_block_name="title",
     target_master_id=<new_master_id>,
@@ -169,55 +148,45 @@ copy_block(
 
 ---
 
-## Complete Workflow Example
+## Complete Workflow
 
-```python
-# Step 1: Import the presentation
-result = import_layout_library(
-    presentation_url="https://docs.google.com/presentation/d/1G5UFoE9U_DMtuMqeG_WQ1oWF-I4NR5AK3koAZw1ye58/edit",
-    name="New Template"
-)
-library_id = result["layout_library_id"]
+1. **Import** the presentation:
+   ```
+   import_layout_library(presentation_url="https://docs.google.com/...", name="New Template")
+   ```
+   → Record `layout_library_id`
 
-# Step 2: Create master
-master_result = create_master(
-    layout_library_id=library_id,
-    name="New Template Master"
-)
-new_master_id = master_result["master_id"]
+2. **Create** master:
+   ```
+   create_master(layout_library_id=<library_id>, name="New Template Master")
+   ```
+   → Record `master_id`
 
-# Step 3: Match slides with reference master (deck_id=1)
-matches_result = match_slides(
-    source_master_id=new_master_id,
-    target_master_id=1  # Reference master ID
-)
+3. **Match** slides with reference:
+   ```
+   match_slides(source_master_id=<new_master_id>, target_master_id=<reference_master_id>)
+   ```
+   → Get list of matches
 
-# Step 4: Process each match
-for match in matches_result["matches"]:
-    source_slide = match["source_slide_name"]
-    target_slide = match["target_slide_name"]
+4. **For each match**: unhide the slide and copy each matched element:
+   ```
+   update_slide(master_id=<new_master_id>, slide_name=<source_slide_name>, hidden=false)
 
-    # 4a: Unhide the slide
-    update_slide(
-        master_id=new_master_id,
-        slide_name=source_slide,
-        hidden=false
-    )
+   copy_block(
+       source_master_id=<reference_master_id>,
+       source_slide_name=<target_slide_name>,
+       source_block_name=<target_element>,
+       target_master_id=<new_master_id>,
+       target_slide_name=<source_slide_name>,
+       target_block_name=<source_element>
+   )
+   ```
+   Repeat `copy_block` for each element match in the slide.
 
-    # 4b: Copy each matched element
-    for elem_match in match["element_matches"]:
-        copy_block(
-            source_master_id=1,
-            source_slide_name=target_slide,
-            source_block_name=elem_match["target_element"],
-            target_master_id=new_master_id,
-            target_slide_name=source_slide,
-            target_block_name=elem_match["source_element"]
-        )
-
-# Step 5: Resolve to populate content
-resolve_master(master_id=new_master_id)
-```
+5. **Resolve** to populate content:
+   ```
+   resolve_master(master_id=<new_master_id>)
+   ```
 
 ---
 
@@ -248,5 +217,5 @@ resolve_master(master_id=new_master_id)
 1. **Always check matches first**: Review `match_slides` results before copying
 2. **Handle unmatched slides**: Decide what to do with slides that don't match
 3. **Templates are always copied**: Templates are automatically preserved during copy
-4. **Resolve after copying**: Call `resolve_master` to update content after copies
+4. **Resolve after copying**: Call `resolve_master` to update content after all copies
 5. **Batch operations**: Process all matched slides before resolving once

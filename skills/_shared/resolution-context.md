@@ -1,8 +1,20 @@
-# Resolution Context - Auto-Generated Variables
+# Resolution Context — Auto-Generated Variables
 
-During slide deck resolution, `TemplateFilterValues.to_context()` automatically generates context variables from the base filter values provided by the user.
+When a master is resolved, context variables are automatically generated from the base parameters (sample_parameters) configured on the master.
+
+## Base Variables (User-Provided)
+
+These are set on the master via `sample_parameters` (configured when creating a master with `source_id`, or edited later):
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `end_date` | date | End date for time-based filters |
+| `start_date` | date | Start date for time-based filters |
+| `client_name` | string | Customer/client name for filtering |
 
 ## Auto-Generated Variables
+
+These are automatically derived from base variables during resolution:
 
 | Variable | Source | Format | Example |
 |----------|--------|--------|---------|
@@ -13,87 +25,39 @@ During slide deck resolution, `TemplateFilterValues.to_context()` automatically 
 | `now_month` | Formatted from `now_date` | `%B %Y` | "January 2025" |
 | `customer_name` | Copy of `client_name` | string | "Acme Corp" |
 
-## Base Variables (User-Provided)
+## Using in Templates
 
-| Variable | Type | Description |
-|----------|------|-------------|
-| `end_date` | date | End date for time-based filters |
-| `start_date` | date | Start date for time-based filters |
-| `client_name` | str/int | Customer/client name for filtering |
+Reference any context variable in `user_prompt` for `update_text_block` or `update_table_block`:
 
-## Resolution Flow
-
-1. User provides context dict with base variables (`end_date`, `start_date`, `client_name`)
-2. `ResolutionContext.from_dict()` or `TemplateFilterValues.from_context_dict()` parses into typed model
-3. `TemplateFilterValues.to_context()` generates auto-derived variables:
-   - `end_month` - formatted end date
-   - `start_month` - formatted start date
-   - `quarter` - derived quarter string
-   - `now_date` / `now_month` - current date values
-   - `customer_name` - alias for client_name
-4. `slide_deck.prepare_resolution_context()` merges:
-   - Auto-generated variables from `TemplateFilterValues.to_context()`
-   - Query results (resolved NumericalQueryBlocks)
-   - Per-slide reference contexts
-5. Templates access all variables via `{variable_name}` syntax
-
-## Usage Example
-
-```python
-# User provides base context
-context = {
-    "end_date": datetime.date(2025, 12, 8),
-    "client_name": "A Client",
-    "start_date": datetime.date(2025, 9, 8),
-}
-context = ResolutionContext.from_dict(context)
-
-# During resolution, templates can reference:
-# - {end_date} -> "2025-12-08"
-# - {end_month} -> "December 2025"  (auto-generated)
-# - {quarter} -> "Q4 2025"  (auto-generated)
-# - {client_name} -> "A Client"
-# - {customer_name} -> "A Client"  (auto-generated alias)
 ```
-
-## Using in Filters
-
-Context variables are referenced using `NormalizedReference`:
-
-```python
-from storyline.domain.resolve.normalized_reference import NormalizedReference
-
-# Reference for filter templates
-end_date_ref = NormalizedReference.from_raw(
-    source_slide=None,  # None for global variables
-    original_name="end_date",
-)
-
-# Use in TimeFilterTemplate
-TimeFilterTemplate(
-    member=time_dimension,
-    time_interval=TimeIntervalWithGranularity(
-        granularity=TimeGranularity.MONTH,
-        count=12,
-    ),
-    end_date_variable=end_date_ref,
-)
-```
-
-## Using in Expressions
-
-In `TextBlockTemplate.user_prompt` and `TableBlockTemplate.user_prompt`:
-
-```python
-user_prompt = """
 Report Period: {start_month} to {end_month}
 Quarter: {quarter}
 Customer: {customer_name}
-"""
 ```
 
-## Source Code References
+These variables are available alongside query block results — no query block is needed for context variables.
 
-- `storyline/domain/template_filter_values.py` - TemplateFilterValues class with `to_context()` method
-- `storyline/domain/resolve/resolution_context.py` - ResolutionContext class
-- `storyline/slides/slide_deck.py` - `prepare_resolution_context()` method
+## Checking Available Variables
+
+Use the `get_master_variables` MCP tool to see all available variables for a master:
+
+```
+get_master_variables(master_id=..., show_context_vars=true)
+```
+
+This returns:
+- Context variables (from `sample_parameters` and auto-generated ones)
+- Query block results (from `update_query_block` calls)
+- Cross-slide references available via `{Slide::Block}` syntax
+
+## How Context Flows to Queries
+
+When you write prompts for `update_query_block` or `update_chart_block`, the LLM that generates the query automatically has access to:
+- The master's `sample_parameters` (to generate appropriate time filters and customer filters)
+- The cube schema (to pick the right measures/dimensions)
+
+You don't need to manually specify filters for `end_date`, `start_date`, or `client_name` — the query LLM handles this. Just mention the intent in your prompt (e.g., "for the current reporting period" or "for the selected customer").
+
+## Related Documentation
+
+- For expression syntax using variables: see [variable-reference-syntax.md](variable-reference-syntax.md)
