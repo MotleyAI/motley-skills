@@ -12,7 +12,7 @@ The MCP server provides tools for building data-driven presentations programmati
 |----------|-------|-------------|
 | [Outline](tools/outline.md) | 8 | Deck planning and outline sessions |
 | [Layout](tools/layout.md) | 6 | Layout libraries and master creation |
-| [Datasource](tools/datasource.md) | 6 | Data source management and schema modification |
+| [Cube](tools/cube.md) | 6 | Cube management and schema modification |
 | [Master](tools/master.md) | 9 | Master inspection, resolution, and slide management |
 | [Element](tools/element.md) | 6 | Content block updates (text, table, chart, query) |
 
@@ -42,16 +42,16 @@ The MCP server provides tools for building data-driven presentations programmati
 | [`create_master`](tools/layout.md#create_master) | Create master from library |
 | [`import_layout_library`](tools/layout.md#import_layout_library) | Import Google Slides as layout library |
 
-### Datasource Tools
+### Cube Tools
 
 | Tool | Description |
 |------|-------------|
-| [`datasources_summary`](tools/datasource.md#datasources_summary) | List all cubes with schemas |
-| [`inspect_datasource`](tools/datasource.md#inspect_datasource) | Get cube details with sample data |
-| [`create_datasource`](tools/datasource.md#create_datasource) | Create cube from SQL query |
-| [`add_measures`](tools/datasource.md#add_measures) | Add custom measures to cube |
-| [`add_dimensions`](tools/datasource.md#add_dimensions) | Add custom dimensions to cube |
-| [`delete_measures_dimensions`](tools/datasource.md#delete_measures_dimensions) | Remove measures/dimensions |
+| [`cubes_summary`](tools/cube.md#cubes_summary) | List all cubes with schemas |
+| [`inspect_cube`](tools/cube.md#inspect_cube) | Get cube details with sample data |
+| [`create_cube`](tools/cube.md#create_cube) | Create cube from SQL query |
+| [`add_measures`](tools/cube.md#add_measures) | Add custom measures to cube |
+| [`add_dimensions`](tools/cube.md#add_dimensions) | Add custom dimensions to cube |
+| [`delete_measures_dimensions`](tools/cube.md#delete_measures_dimensions) | Remove measures/dimensions |
 
 ### Master Tools
 
@@ -85,7 +85,7 @@ The MCP server provides tools for building data-driven presentations programmati
 ```
 list_layout_libraries()      → Find template libraries
 list_masters()               → Find existing masters
-datasources_summary()        → List available data sources
+cubes_summary()              → List available cubes
 ```
 
 ### 2. Create and Configure a Master
@@ -104,7 +104,7 @@ get_master_summary(master_id=42)
 inspect_slide(master_id=42, slide_name="Revenue")
   → Full slide content and variables
 
-inspect_datasource(datasource_name="sales_data")
+inspect_cube(cube_name="sales_data")
   → Schema and sample data
 ```
 

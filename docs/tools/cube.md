@@ -1,14 +1,14 @@
-# Datasource Tools
+# Cube Tools
 
-Tools for working with data sources (cubes) - listing, inspecting, and modifying their schemas.
+Tools for working with cubes - listing, inspecting, and modifying their schemas.
 
 [Back to Tools Overview](../tools.md)
 
 ---
 
-## datasources_summary
+## cubes_summary
 
-List all available data sources with their dimensions, measures, and derived dimensions.
+List all available cubes with their dimensions, measures, and derived dimensions.
 
 ### Arguments
 
@@ -18,11 +18,11 @@ List all available data sources with their dimensions, measures, and derived dim
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `datasources` | array | List of cube summaries |
-| `count` | integer | Total number of datasources |
+| `cubes` | array | List of cube summaries |
+| `count` | integer | Total number of cubes |
 
-Each datasource in the array contains:
-- `name` - Cube name (use this with other datasource tools)
+Each cube in the array contains:
+- `name` - Cube name (use this with other cube tools)
 - `description` - Human-readable description
 - `dimensions` - Array of dimension definitions
 - `measures` - Array of measure definitions
@@ -30,20 +30,20 @@ Each datasource in the array contains:
 
 ### Notes
 
-- Does **not** include sample data - use `inspect_datasource` for that
-- Use this tool to discover available datasources and their schemas
+- Does **not** include sample data - use `inspect_cube` for that
+- Use this tool to discover available cubes and their schemas
 
 ---
 
-## inspect_datasource
+## inspect_cube
 
-Get detailed information about a specific data source including sample data.
+Get detailed information about a specific cube including sample data.
 
 ### Arguments
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `datasource_name` | string | **Yes** | Exact name of the cube to inspect. |
+| `cube_name` | string | **Yes** | Exact name of the cube to inspect. |
 | `num_rows` | integer | No | Number of sample rows to include. Default: 3. |
 | `show_sql` | boolean | No | Include the SQL query/table definition. Default: false. |
 
@@ -63,15 +63,15 @@ Get detailed information about a specific data source including sample data.
 
 ---
 
-## create_datasource
+## create_cube
 
-Create a new datasource (cube) from a SQL SELECT query.
+Create a new cube from a SQL SELECT query.
 
 ### Arguments
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `datasource_name` | string | **Yes** | Existing cube whose database connection is used for introspection. This becomes the `data_source` on the new cube. |
+| `source_cube_name` | string | **Yes** | Existing cube whose database connection is used for introspection. This becomes the `data_source` on the new cube. |
 | `cube_name` | string | **Yes** | Name for the new cube being created. |
 | `sql` | string | **Yes** | A valid SQL SELECT query. Column types are introspected from the database. |
 | `column_descriptions` | array[object] | No | Per-column descriptions. Each entry has `name` (column name) and `description` (human-readable text). Not every column needs a description. |
@@ -82,7 +82,7 @@ Create a new datasource (cube) from a SQL SELECT query.
 |-------|------|-------------|
 | `success` | boolean | Whether the operation succeeded |
 | `cube_name` | string | Name of the created cube |
-| `datasource_name` | string | The data source used for connection |
+| `source_cube_name` | string | The cube used for database connection |
 | `dimensions` | array | Auto-generated dimensions from the query |
 | `measures` | array | Auto-generated measures from the query |
 
@@ -90,19 +90,19 @@ Create a new datasource (cube) from a SQL SELECT query.
 
 - Column types are automatically introspected from the database
 - Dimensions and measures are inferred based on column types
-- The `datasource_name` parameter specifies which existing cube's database connection to use
+- The `source_cube_name` parameter specifies which existing cube's database connection to use
 
 ---
 
 ## add_measures
 
-Add one or more custom measures to an existing datasource (cube).
+Add one or more custom measures to an existing cube.
 
 ### Arguments
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `datasource_name` | string | **Yes** | The cube to add measures to. |
+| `cube_name` | string | **Yes** | The cube to add measures to. |
 | `measures` | array[MeasureSpec] | **Yes** | List of measure specifications to add. |
 
 Each **MeasureSpec** contains:
@@ -121,7 +121,7 @@ Each **MeasureSpec** contains:
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Whether the operation succeeded |
-| `datasource_name` | string | The cube that was modified |
+| `cube_name` | string | The cube that was modified |
 | `added_measures` | array | List of added measures with `name`, `type`, `sql` |
 | `count` | integer | Number of measures added |
 | `message` | string | Summary message |
@@ -143,13 +143,13 @@ Each **MeasureSpec** contains:
 
 ## add_dimensions
 
-Add one or more custom dimensions to an existing datasource (cube).
+Add one or more custom dimensions to an existing cube.
 
 ### Arguments
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `datasource_name` | string | **Yes** | The cube to add dimensions to. |
+| `cube_name` | string | **Yes** | The cube to add dimensions to. |
 | `dimensions` | array[DimensionSpec] | **Yes** | List of dimension specifications to add. |
 
 Each **DimensionSpec** contains:
@@ -166,7 +166,7 @@ Each **DimensionSpec** contains:
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Whether the operation succeeded |
-| `datasource_name` | string | The cube that was modified |
+| `cube_name` | string | The cube that was modified |
 | `added_dimensions` | array | List of added dimensions with `name`, `type`, `sql` |
 | `count` | integer | Number of dimensions added |
 | `message` | string | Summary message |
@@ -191,7 +191,7 @@ Delete one or more measures, dimensions, or derived dimensions by name from a cu
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `datasource_name` | string | **Yes** | The cube to modify. |
+| `cube_name` | string | **Yes** | The cube to modify. |
 | `names` | array[string] | **Yes** | Names of measures, dimensions, or derived dimensions to delete. The tool searches all three categories. |
 
 ### Returns
@@ -199,7 +199,7 @@ Delete one or more measures, dimensions, or derived dimensions by name from a cu
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Whether the operation succeeded |
-| `datasource_name` | string | The cube that was modified |
+| `cube_name` | string | The cube that was modified |
 | `deleted` | array | List of deleted items with `name` and `kind` (measure, dimension, or derived_dimension) |
 | `count` | integer | Number of items deleted |
 | `message` | string | Summary message |
