@@ -2,10 +2,7 @@
   "mcpServers": {
     "motley": {
       "type": "http",
-      "url": "${MOTLEY_MCP_URL}",
-      "headers": {
-        "Authorization": "Bearer ${MOTLEY_API_KEY}"
-      }
+      "url": "${MOTLEY_MCP_URL:-https://app.motley.ai/api/v1/mcp}"
     }
   }
 }
