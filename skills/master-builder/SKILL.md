@@ -45,7 +45,7 @@ inspect_cube(cube_name="revenue", num_rows=3)
 inspect_cube(cube_name="customers", num_rows=3)
 ```
 
-See the `explore-cube` skill for details.
+If the existing cubes don't have the data you need, you can create custom cubes from SQL (`create_cube`), add computed measures to existing cubes (`add_measures`), or add computed dimensions (`add_dimensions`). See the `explore-cube` skill for details.
 
 ### 1b. Explore Layout Library
 
