@@ -23,9 +23,11 @@ You do NOT construct queries manually — just describe what you want in plain E
 
 ```
 update_query_block(
-    master_id: int,           # The master ID
-    slide_name: str,          # The slide containing the parent block
-    parent_block: str,        # Name of the text or table block containing this query
+    location: {                # Location of the query's parent block
+        doc_id: int,           # The deck ID
+        slide_name: str,       # The slide containing the parent block
+        parent_block: str      # Name of the text or table block containing this query
+    },
     query_name: str,          # Name for this query (used as {query_name} in parent's user_prompt)
     prompt: str,              # Natural language description of the desired query
     cube_name: str?,          # Optional: constrain to this cube only
@@ -80,9 +82,7 @@ The query LLM automatically has access to the master's `sample_parameters` (cust
 1. Create queries with `update_query_block`:
    ```
    update_query_block(
-       master_id=42,
-       slide_name="Overview",
-       parent_block="metrics_text",
+       location={doc_id: 42, slide_name: "Overview", parent_block: "metrics_text"},
        query_name="total_revenue",
        prompt="Total revenue for the reporting period",
        cube_name="revenue"
@@ -92,9 +92,7 @@ The query LLM automatically has access to the master's `sample_parameters` (cust
 2. Then set the parent template referencing the query:
    ```
    update_text_block(
-       master_id=42,
-       slide_name="Overview",
-       block_name="metrics_text",
+       location={doc_id: 42, slide_name: "Overview", block_name: "metrics_text"},
        user_prompt="Revenue reached {currency(total_revenue)} this quarter, up {percent(revenue_growth)} from last quarter."
    )
    ```
@@ -109,9 +107,7 @@ Pivots a dimension's values into column headers. Useful for creating cross-tab t
 
 ```
 update_query_block(
-    master_id=42,
-    slide_name="Breakdown",
-    parent_block="data_table",
+    location={doc_id: 42, slide_name: "Breakdown", parent_block: "data_table"},
     query_name="revenue_by_region_month",
     prompt="Revenue by region and month for the last 6 months",
     mode="table",
@@ -151,9 +147,7 @@ update_query_block(
 
 ```
 update_query_block(
-    master_id=42,
-    slide_name="Executive Summary",
-    parent_block="kpi_text",
+    location={doc_id: 42, slide_name: "Executive Summary", parent_block: "kpi_text"},
     query_name="active_users",
     prompt="Count of active users in the current period",
     cube_name="users"
@@ -164,9 +158,7 @@ update_query_block(
 
 ```
 update_query_block(
-    master_id=42,
-    slide_name="Executive Summary",
-    parent_block="kpi_text",
+    location={doc_id: 42, slide_name: "Executive Summary", parent_block: "kpi_text"},
     query_name="prev_active_users",
     prompt="Count of active users in the previous period (same length as reporting period, immediately before start_date)",
     cube_name="users"
@@ -179,9 +171,7 @@ Then in the parent: `Active users: {active_users} ({percent((active_users - prev
 
 ```
 update_query_block(
-    master_id=42,
-    slide_name="Trends",
-    parent_block="trend_table",
+    location={doc_id: 42, slide_name: "Trends", parent_block: "trend_table"},
     query_name="monthly_data",
     prompt="Monthly revenue and order count for the last 12 months, sorted chronologically",
     mode="table",
@@ -193,9 +183,7 @@ update_query_block(
 
 ```
 update_query_block(
-    master_id=42,
-    slide_name="Comparison",
-    parent_block="comparison_table",
+    location={doc_id: 42, slide_name: "Comparison", parent_block: "comparison_table"},
     query_name="region_quarterly",
     prompt="Revenue by region and quarter for the last 4 quarters",
     mode="table",

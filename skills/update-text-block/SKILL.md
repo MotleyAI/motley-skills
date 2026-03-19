@@ -19,9 +19,11 @@ Create or modify text blocks using the `update_text_block` MCP tool. Text blocks
 
 ```
 update_text_block(
-    master_id: int,                    # The master ID
-    slide_name: str,                   # The slide containing the block
-    block_name: str,                   # The name of the text block
+    location: {                        # Location of the block
+        doc_id: int,                   # The deck ID
+        slide_name: str,               # The slide containing the block
+        block_name: str                # The name of the text block
+    },
     user_prompt: str,                  # Template string with {variables}
     call_llm: bool = false,            # Whether to use LLM for content generation
     allowed_outputs: list[str]? = null, # Constrain LLM to these exact outputs (call_llm must be true)
@@ -46,7 +48,7 @@ For full syntax details, see [variable-reference-syntax.md](../_shared/variable-
 - **Same-slide query**: Use bare name → `{total_revenue}`
 - **Cross-slide content**: Use `{Slide::Block}` → `{Sales::revenue_chart}`
 - **Context variables**: Use bare name → `{customer_name}`, `{end_month}`
-- **Always verify**: Use `get_master_variables(master_id=..., show_context_vars=true)` to check available variables
+- **Always verify**: Use `get_doc_variables(doc_id=..., show_context_vars=true)` to check available variables
 
 ## Content Rules
 
@@ -64,9 +66,7 @@ Variables are replaced with their resolved values. No LLM is involved.
 
 ```
 update_text_block(
-    master_id=42,
-    slide_name="Overview",
-    block_name="kpi_text",
+    location={doc_id: 42, slide_name: "Overview", block_name: "kpi_text"},
     user_prompt="Revenue: {currency(total_revenue)}\nCustomers: {integer(active_customers)}\nGrowth: {percent(revenue_growth)}"
 )
 ```
@@ -79,9 +79,7 @@ The LLM receives the resolved template (with variables already substituted) and 
 
 ```
 update_text_block(
-    master_id=42,
-    slide_name="Summary",
-    block_name="analysis_text",
+    location={doc_id: 42, slide_name: "Summary", block_name: "analysis_text"},
     user_prompt="Based on the following data, write a 2-sentence executive summary:\n\nRevenue: {currency(total_revenue)}\nGrowth: {percent(revenue_growth)}\nTop region: {top_region}\n\nChart data:\n{Revenue::revenue_chart}",
     call_llm=true
 )
@@ -95,9 +93,7 @@ The LLM must choose one of the specified outputs. Useful for conditional/dynamic
 
 ```
 update_text_block(
-    master_id=42,
-    slide_name="Status",
-    block_name="trend_indicator",
+    location={doc_id: 42, slide_name: "Status", block_name: "trend_indicator"},
     user_prompt="Based on the growth rate of {percent(revenue_growth)}, classify the trend.",
     call_llm=true,
     allowed_outputs=["Strong Growth", "Moderate Growth", "Stable", "Declining"]
@@ -119,14 +115,14 @@ Create query blocks first, then set the text template:
 1. Create the data queries:
    ```
    update_query_block(
-       master_id=42, slide_name="Overview", parent_block="summary_text",
+       location={doc_id: 42, slide_name: "Overview", parent_block: "summary_text"},
        query_name="total_revenue",
        prompt="Total revenue for the reporting period",
        cube_name="revenue"
    )
 
    update_query_block(
-       master_id=42, slide_name="Overview", parent_block="summary_text",
+       location={doc_id: 42, slide_name: "Overview", parent_block: "summary_text"},
        query_name="customer_count",
        prompt="Number of active customers",
        cube_name="customers"
@@ -136,9 +132,7 @@ Create query blocks first, then set the text template:
 2. Then set the template:
    ```
    update_text_block(
-       master_id=42,
-       slide_name="Overview",
-       block_name="summary_text",
+       location={doc_id: 42, slide_name: "Overview", block_name: "summary_text"},
        user_prompt="In {end_month}, {customer_name} generated {currency(total_revenue)} in revenue across {integer(customer_count)} active customers."
    )
    ```
@@ -149,9 +143,7 @@ Create query blocks first, then set the text template:
 
 ```
 update_text_block(
-    master_id=42,
-    slide_name="KPIs",
-    block_name="revenue_kpi",
+    location={doc_id: 42, slide_name: "KPIs", block_name: "revenue_kpi"},
     user_prompt="{currency(total_revenue)}"
 )
 ```
@@ -160,9 +152,7 @@ update_text_block(
 
 ```
 update_text_block(
-    master_id=42,
-    slide_name="Performance",
-    block_name="metrics_text",
+    location={doc_id: 42, slide_name: "Performance", block_name: "metrics_text"},
     user_prompt="**{customer_name} — {end_month}**\n\n- Revenue: {currency(total_revenue)} ({percent(revenue_growth)} vs prior period)\n- Active users: {integer(active_users)}\n- Avg session duration: {number(avg_duration, decimals=1)} minutes"
 )
 ```
@@ -171,9 +161,7 @@ update_text_block(
 
 ```
 update_text_block(
-    master_id=42,
-    slide_name="Insights",
-    block_name="chart_analysis",
+    location={doc_id: 42, slide_name: "Insights", block_name: "chart_analysis"},
     user_prompt="Analyze the revenue trend data below and provide 3 key insights as bullet points. Be concise — each bullet should be one sentence.\n\n{Revenue::revenue_chart}",
     call_llm=true
 )
@@ -183,9 +171,7 @@ update_text_block(
 
 ```
 update_text_block(
-    master_id=42,
-    slide_name="Status",
-    block_name="health_label",
+    location={doc_id: 42, slide_name: "Status", block_name: "health_label"},
     user_prompt="The customer's health score is {health_score} out of 100. Classify their status.",
     call_llm=true,
     allowed_outputs=["Healthy", "At Risk", "Critical"]

@@ -82,16 +82,16 @@ Use `match_slides` to find corresponding slides between your new master and a re
 **Tool**: `match_slides`
 
 **Parameters**:
-- `source_master_id` (required): The new master from step 2
-- `target_master_id` (required): The reference master with existing content
+- `source_doc_id` (required): The new master's deck ID from step 2
+- `target_doc_id` (required): The reference master's deck ID with existing content
 - `slide_name` (optional): Match only a specific slide
 - `include_thumbnails` (optional): Use thumbnail comparison (slower)
 
 **Example**:
 ```
 match_slides(
-    source_master_id=<new_master_id>,
-    target_master_id=1
+    source_doc_id=<new_master_deck_id>,
+    target_doc_id=<reference_deck_id>
 )
 ```
 
@@ -119,7 +119,7 @@ For each match, perform these operations:
 
 ```
 update_slide(
-    master_id=<new_master_id>,
+    doc_id=<new_master_deck_id>,
     slide_name="Intro",
     hidden=false
 )
@@ -131,12 +131,8 @@ For each matched element pair:
 
 ```
 copy_block(
-    source_master_id=1,
-    source_slide_name="Intro",
-    source_block_name="title",
-    target_master_id=<new_master_id>,
-    target_slide_name="Intro",
-    target_block_name="title"
+    source={doc_id: <reference_deck_id>, slide_name: "Intro", block_name: "title"},
+    target={doc_id: <new_master_deck_id>, slide_name: "Intro", block_name: "title"}
 )
 ```
 
@@ -160,32 +156,28 @@ copy_block(
    ```
    create_master(layout_library_id=<library_id>, name="New Template Master")
    ```
-   → Record `master_id`
+   → Record `master_id` and `deck_id`
 
 3. **Match** slides with reference:
    ```
-   match_slides(source_master_id=<new_master_id>, target_master_id=<reference_master_id>)
+   match_slides(source_doc_id=<new_deck_id>, target_doc_id=<reference_deck_id>)
    ```
    → Get list of matches
 
 4. **For each match**: unhide the slide and copy each matched element:
    ```
-   update_slide(master_id=<new_master_id>, slide_name=<source_slide_name>, hidden=false)
+   update_slide(doc_id=<new_deck_id>, slide_name=<source_slide_name>, hidden=false)
 
    copy_block(
-       source_master_id=<reference_master_id>,
-       source_slide_name=<target_slide_name>,
-       source_block_name=<target_element>,
-       target_master_id=<new_master_id>,
-       target_slide_name=<source_slide_name>,
-       target_block_name=<source_element>
+       source={doc_id: <reference_deck_id>, slide_name: <target_slide_name>, block_name: <target_element>},
+       target={doc_id: <new_deck_id>, slide_name: <source_slide_name>, block_name: <source_element>}
    )
    ```
    Repeat `copy_block` for each element match in the slide.
 
 5. **Resolve** to populate content:
    ```
-   resolve_master(master_id=<new_master_id>)
+   resolve_master(doc_id=<new_deck_id>)
    ```
 
 ---
@@ -195,7 +187,7 @@ copy_block(
 - `list_layout_libraries`: List all available layout libraries
 - `list_masters`: List all masters
 - `inspect_layout_library`: See structure of a layout library
-- `get_master_summary`: See structure of a master
+- `get_doc_summary`: See structure of a master
 - `inspect_slide`: Get detailed slide content
 - `resolve_master`: Trigger resolution of outdated blocks
 
@@ -206,7 +198,7 @@ copy_block(
 | Error | Cause | Solution |
 |-------|-------|----------|
 | "Layout library not found" | Invalid ID or no access | Verify library ID exists |
-| "Slide not found" | Slide name doesn't exist | Use `get_master_summary` to list slides |
+| "Slide not found" | Slide name doesn't exist | Use `get_doc_summary` to list slides |
 | "Block types incompatible" | Deprecated — type conversion is now automatic | Target block is converted to match source type |
 | "Master not found" | Invalid master ID | Use `list_masters` to find valid IDs |
 

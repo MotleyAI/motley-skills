@@ -64,7 +64,7 @@ inspect_layout_library(layout_library_id=<id>)
 Visually inspect layouts using thumbnails:
 
 ```
-get_thumbnails(master_props_id=<layout_library_id>, layout_names=["Cover", "KPI Dashboard", "Chart Slide", ...])
+get_thumbnails(doc_id=<layout_library_deck_id>, layout_names=["Cover", "KPI Dashboard", "Chart Slide", ...])
 ```
 
 For each layout, document:
@@ -115,7 +115,7 @@ create_master(
 Get the full structure of the master:
 
 ```
-get_master_summary(master_id=<id>)
+get_doc_summary(doc_id=<id>)
 ```
 
 This returns all slides with their block names and types. For each slide, note:
@@ -126,7 +126,7 @@ This returns all slides with their block names and types. For each slide, note:
 Optionally get thumbnails to see the visual appearance:
 
 ```
-get_thumbnails(master_props_id=<master_id>, layout_names=["Layout1", "Layout2", ...])
+get_thumbnails(doc_id=<master_deck_id>, layout_names=["Layout1", "Layout2", ...])
 ```
 
 ---
@@ -148,7 +148,7 @@ Among the hidden slides in the master, find the one whose element structure best
 
 ```
 copy_slide(
-    master_id=<id>,
+    doc_id=<id>,
     slide_name="<hidden_layout_name>",
     new_slide_name="<descriptive_slide_name>",
     position=<N>,
@@ -170,9 +170,7 @@ For each block in the slide, use the appropriate tool:
 
 ```
 update_chart_block(
-    master_id=<id>,
-    slide_name="<slide>",
-    block_name="<chart_block>",
+    location={doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"},
     prompt="<detailed chart description>",
     cube_name="<cube>"
 )
@@ -182,9 +180,7 @@ Then verify:
 
 ```
 render_chart(
-    master_id=<id>,
-    slide_name="<slide>",
-    block_name="<chart_block>"
+    location={doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"}
 )
 ```
 
@@ -196,9 +192,7 @@ First create query blocks for the data:
 
 ```
 update_query_block(
-    master_id=<id>,
-    slide_name="<slide>",
-    parent_block="<text_block>",
+    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<text_block>"},
     query_name="<name>",
     prompt="<what data to fetch>",
     cube_name="<cube>"
@@ -209,9 +203,7 @@ Then set the template:
 
 ```
 update_text_block(
-    master_id=<id>,
-    slide_name="<slide>",
-    block_name="<text_block>",
+    location={doc_id: <id>, slide_name: "<slide>", block_name: "<text_block>"},
     user_prompt="<template with {variables}>",
     call_llm=<true/false>
 )
@@ -225,9 +217,7 @@ Same pattern as text — create query blocks first, then set the template:
 
 ```
 update_query_block(
-    master_id=<id>,
-    slide_name="<slide>",
-    parent_block="<table_block>",
+    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<table_block>"},
     query_name="<name>",
     prompt="<what data to fetch>",
     mode="table",
@@ -235,9 +225,7 @@ update_query_block(
 )
 
 update_table_block(
-    master_id=<id>,
-    slide_name="<slide>",
-    block_name="<table_block>",
+    location={doc_id: <id>, slide_name: "<slide>", block_name: "<table_block>"},
     user_prompt="{<query_name>}",
     target_shape=[<rows>, <cols>]
 )
@@ -258,7 +246,7 @@ See the `update-table-block` skill.
 ### Resolve All Blocks
 
 ```
-resolve_master(master_id=<id>)
+resolve_master(doc_id=<id>)
 ```
 
 This resolves any remaining out-of-date blocks (mainly charts that haven't been individually rendered).
@@ -268,7 +256,7 @@ This resolves any remaining out-of-date blocks (mainly charts that haven't been 
 Get thumbnails of all visible slides:
 
 ```
-get_thumbnails(master_props_id=<master_id>, layout_names=["Slide1", "Slide2", ...])
+get_thumbnails(doc_id=<master_deck_id>, layout_names=["Slide1", "Slide2", ...])
 ```
 
 Check:

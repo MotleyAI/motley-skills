@@ -21,11 +21,13 @@ You do NOT construct chart objects, queries, or series configs. Instead:
 
 ```
 update_chart_block(
-    master_id: int,       # The master ID
-    slide_name: str,      # The slide containing the chart block
-    block_name: str,      # The name of the chart block
-    prompt: str,          # Natural language description of the desired chart
-    cube_name: str?       # Optional: constrain to this cube only
+    location: {                # Location of the chart block
+        doc_id: int,           # The deck ID
+        slide_name: str,       # The slide containing the chart block
+        block_name: str        # The name of the chart block
+    },
+    prompt: str,               # Natural language description of the desired chart
+    cube_name: str?            # Optional: constrain to this cube only
 )
 ```
 
@@ -68,9 +70,7 @@ The chart LLM automatically applies customer and time filters from the master's 
 ### Time Series — Monthly Revenue
 ```
 update_chart_block(
-    master_id=42,
-    slide_name="Revenue Trends",
-    block_name="revenue_chart",
+    location={doc_id: 42, slide_name: "Revenue Trends", block_name: "revenue_chart"},
     prompt="Line chart showing monthly total revenue for the last 12 months",
     cube_name="revenue"
 )
@@ -79,9 +79,7 @@ update_chart_block(
 ### Categorical — Top Regions
 ```
 update_chart_block(
-    master_id=42,
-    slide_name="Regional Performance",
-    block_name="region_chart",
+    location={doc_id: 42, slide_name: "Regional Performance", block_name: "region_chart"},
     prompt="Horizontal bar chart of total revenue by region, top 10, sorted descending",
     cube_name="sales"
 )
@@ -90,9 +88,7 @@ update_chart_block(
 ### Period Comparison — Year over Year
 ```
 update_chart_block(
-    master_id=42,
-    slide_name="YoY Comparison",
-    block_name="yoy_chart",
+    location={doc_id: 42, slide_name: "YoY Comparison", block_name: "yoy_chart"},
     prompt="Bar chart of monthly revenue for the last 12 months, compared to the same period last year",
     cube_name="revenue"
 )
@@ -101,9 +97,7 @@ update_chart_block(
 ### Dual Axis — Revenue vs Count
 ```
 update_chart_block(
-    master_id=42,
-    slide_name="Overview",
-    block_name="dual_chart",
+    location={doc_id: 42, slide_name: "Overview", block_name: "dual_chart"},
     prompt="Monthly chart with revenue as bars on the left axis and order count as a line on the right axis, last 12 months",
     cube_name="orders"
 )
@@ -112,9 +106,7 @@ update_chart_block(
 ### Pie — Distribution
 ```
 update_chart_block(
-    master_id=42,
-    slide_name="Breakdown",
-    block_name="pie_chart",
+    location={doc_id: 42, slide_name: "Breakdown", block_name: "pie_chart"},
     prompt="Pie chart showing revenue distribution by product category, top 5 categories with the rest grouped as Other",
     cube_name="products"
 )
@@ -123,9 +115,7 @@ update_chart_block(
 ### Funnel — Conversion
 ```
 update_chart_block(
-    master_id=42,
-    slide_name="Sales Funnel",
-    block_name="funnel_chart",
+    location={doc_id: 42, slide_name: "Sales Funnel", block_name: "funnel_chart"},
     prompt="Funnel chart showing the count at each stage: Lead, Qualified, Proposal, Negotiation, Closed Won",
     cube_name="deals"
 )
@@ -134,9 +124,7 @@ update_chart_block(
 ### Stacked Bar — Composition Over Time
 ```
 update_chart_block(
-    master_id=42,
-    slide_name="Mix Analysis",
-    block_name="stacked_chart",
+    location={doc_id: 42, slide_name: "Mix Analysis", block_name: "stacked_chart"},
     prompt="Stacked bar chart of monthly revenue broken down by product category for the last 6 months",
     cube_name="revenue"
 )
@@ -145,9 +133,7 @@ update_chart_block(
 ### Two Measures — Side by Side
 ```
 update_chart_block(
-    master_id=42,
-    slide_name="Efficiency",
-    block_name="comparison_chart",
+    location={doc_id: 42, slide_name: "Efficiency", block_name: "comparison_chart"},
     prompt="Grouped bar chart comparing total revenue and total cost by quarter for the last 4 quarters",
     cube_name="financials"
 )
@@ -158,8 +144,8 @@ update_chart_block(
 Charts are **NOT resolved immediately** after `update_chart_block`. The chart config is saved, but no data is fetched or rendered yet.
 
 To see the chart:
-- **Individual chart**: Call `render_chart(master_id=..., slide_name=..., block_name=...)` — this triggers resolution and returns a PNG image
-- **Batch resolution**: Call `resolve_master(master_id=...)` — resolves all outdated blocks in the master
+- **Individual chart**: Call `render_chart(location={doc_id: ..., slide_name: ..., block_name: ...})` — this triggers resolution and returns a PNG image
+- **Batch resolution**: Call `resolve_master(doc_id=...)` — resolves all outdated blocks in the master
 
 ## Verifying Charts
 
@@ -167,9 +153,7 @@ To see the chart:
 
 ```
 render_chart(
-    master_id=42,
-    slide_name="Revenue Trends",
-    block_name="revenue_chart",
+    location={doc_id: 42, slide_name: "Revenue Trends", block_name: "revenue_chart"},
     width=800,
     height=600
 )

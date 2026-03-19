@@ -19,9 +19,11 @@ Create or modify table blocks using the `update_table_block` MCP tool. Table blo
 
 ```
 update_table_block(
-    master_id: int,                    # The master ID
-    slide_name: str,                   # The slide containing the block
-    block_name: str,                   # The name of the table block
+    location: {                        # Location of the block
+        doc_id: int,                   # The deck ID
+        slide_name: str,               # The slide containing the block
+        block_name: str                # The name of the table block
+    },
     user_prompt: str,                  # Template string with {variables}
     call_llm: bool = false,            # Whether to use LLM for table generation
     target_shape: [rows, cols]? = null, # Size constraints for the table
@@ -58,7 +60,7 @@ Pass a `table` mode query result directly as the table. No LLM needed.
 ```
 # First, create a table-mode query:
 update_query_block(
-    master_id=42, slide_name="Data", parent_block="data_table",
+    location={doc_id: 42, slide_name: "Data", parent_block: "data_table"},
     query_name="monthly_data",
     prompt="Monthly revenue and order count for last 12 months",
     mode="table",
@@ -67,9 +69,7 @@ update_query_block(
 
 # Then set the table template to just reference the query:
 update_table_block(
-    master_id=42,
-    slide_name="Data",
-    block_name="data_table",
+    location={doc_id: 42, slide_name: "Data", block_name: "data_table"},
     user_prompt="{monthly_data}",
     target_shape=[[1, 12], 3]
 )
@@ -81,9 +81,7 @@ Build a table template with inline variable substitution.
 
 ```
 update_table_block(
-    master_id=42,
-    slide_name="KPIs",
-    block_name="kpi_table",
+    location={doc_id: 42, slide_name: "KPIs", block_name: "kpi_table"},
     user_prompt="| Metric | Value |\n|--------|-------|\n| Revenue | {currency(total_revenue)} |\n| Customers | {integer(active_customers)} |\n| Growth | {percent(revenue_growth)} |",
     target_shape=[3, 2]
 )
@@ -95,9 +93,7 @@ Let the LLM build the table from query data.
 
 ```
 update_table_block(
-    master_id=42,
-    slide_name="Analysis",
-    block_name="summary_table",
+    location={doc_id: 42, slide_name: "Analysis", block_name: "summary_table"},
     user_prompt="Create a summary table from this data:\n\n{detailed_data}\n\nShow the top 5 items by revenue with columns: Name, Revenue, Growth %, Status",
     call_llm=true,
     target_shape=[5, 4]
@@ -123,7 +119,7 @@ Create query blocks first, then set the table template:
 1. Create data queries:
    ```
    update_query_block(
-       master_id=42, slide_name="Performance", parent_block="perf_table",
+       location={doc_id: 42, slide_name: "Performance", parent_block: "perf_table"},
        query_name="region_data",
        prompt="Revenue and customer count by region, top 5 regions by revenue",
        mode="table",
@@ -134,9 +130,7 @@ Create query blocks first, then set the table template:
 2. Set the table template:
    ```
    update_table_block(
-       master_id=42,
-       slide_name="Performance",
-       block_name="perf_table",
+       location={doc_id: 42, slide_name: "Performance", block_name: "perf_table"},
        user_prompt="{region_data}",
        target_shape=[5, 3]
    )
@@ -148,9 +142,7 @@ Create query blocks first, then set the table template:
 
 ```
 update_table_block(
-    master_id=42,
-    slide_name="Revenue",
-    block_name="revenue_table",
+    location={doc_id: 42, slide_name: "Revenue", block_name: "revenue_table"},
     user_prompt="{quarterly_revenue}",
     target_shape=[4, 3]
 )
@@ -160,9 +152,7 @@ update_table_block(
 
 ```
 update_table_block(
-    master_id=42,
-    slide_name="Scorecard",
-    block_name="scorecard_table",
+    location={doc_id: 42, slide_name: "Scorecard", block_name: "scorecard_table"},
     user_prompt="| KPI | Target | Actual | Status |\n|-----|--------|--------|--------|\n| Revenue | {currency(target_revenue)} | {currency(actual_revenue)} | {revenue_status} |\n| Users | {integer(target_users)} | {integer(actual_users)} | {users_status} |\n| NPS | {target_nps} | {actual_nps} | {nps_status} |",
     target_shape=[3, 4]
 )
@@ -172,9 +162,7 @@ update_table_block(
 
 ```
 update_table_block(
-    master_id=42,
-    slide_name="Executive View",
-    block_name="exec_table",
+    location={doc_id: 42, slide_name: "Executive View", block_name: "exec_table"},
     user_prompt="Based on the following monthly performance data, create a table summarizing each quarter with columns: Quarter, Revenue, Trend, Key Highlight.\n\n{monthly_data}\n\nKeep highlights to one short sentence each.",
     call_llm=true,
     target_shape=[4, 4]
@@ -186,7 +174,7 @@ update_table_block(
 ```
 # Create a pivoted query first:
 update_query_block(
-    master_id=42, slide_name="Matrix", parent_block="matrix_table",
+    location={doc_id: 42, slide_name: "Matrix", parent_block: "matrix_table"},
     query_name="product_region_matrix",
     prompt="Revenue by product and region",
     mode="table",
@@ -196,9 +184,7 @@ update_query_block(
 
 # Display it:
 update_table_block(
-    master_id=42,
-    slide_name="Matrix",
-    block_name="matrix_table",
+    location={doc_id: 42, slide_name: "Matrix", block_name: "matrix_table"},
     user_prompt="{product_region_matrix}",
     target_shape=[null, null]
 )
