@@ -198,7 +198,7 @@ Check the output carefully. Does it look as expected? If not, go back and update
 
 ### Render for the user
 
-Show the user the rendered document using the frontend-slides skill. Ask for approval.
+Show the user the rendered document as markdown. Ask for approval.
 
 If the user is happy with the document, proceed to the next phase.
 
@@ -207,6 +207,8 @@ If not, understand the user's feedback and go back and update the blocks.
 ---
 
 ## Phase 4: Output
+
+Use the frontend-slides skill to generate slides from the markdown you just created.
 
 On user request, export the report to the user's preferred format.
 
