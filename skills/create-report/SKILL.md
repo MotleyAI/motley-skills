@@ -198,7 +198,7 @@ Check the output carefully. Does it look as expected? If not, go back and update
 
 ### Render for the user
 
-Show the user the rendered document. Ask for approval.
+Show the user the rendered document using the frontend-slides skill. Ask for approval.
 
 If the user is happy with the document, proceed to the next phase.
 
@@ -216,4 +216,5 @@ If you need the data for the charts instead of images (say, for creating an HTML
 export_markdown(doc_id=<id>, mode="table")
 ```
 
-This will embed the data for the charts as markdown tables, with chart metadata next to them.
+This will embed the data for the charts as markdown tables, with chart metadata next to them. 
+Again, use the frontend-slides skill to generate slides as needed.
