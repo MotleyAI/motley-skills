@@ -199,10 +199,14 @@ When converting PowerPoint files:
 ## Phase 5: Delivery
 
 1. **Clean up** — Delete `.claude-design/slide-previews/` if it exists
-2. **Open** — Use `open [filename].html` to launch in browser
-3. **Summarize** — Tell the user:
-   - File location, style name, slide count
-   - Navigation: Arrow keys, Space, scroll/swipe, click nav dots
+2. **Generate PDF** — Always produce a PDF alongside the HTML:
+   - Read the generated HTML file contents
+   - Call the `html_to_pdf` MCP tool with the HTML content and a suggested filename (same name as the HTML file but with `.pdf` extension)
+   - Decode the base64 `pdf_base64` field from the response and write the raw bytes to `<name>.pdf` alongside the HTML file
+3. **Open** — Open both `[filename].html` and `[filename].pdf` for the user
+4. **Summarize** — Tell the user:
+   - File locations (both HTML and PDF), style name, slide count, and PDF page count
+   - Navigation (for the HTML version): Arrow keys, Space, scroll/swipe, click nav dots
    - How to customize: `:root` CSS variables for colors, font link for typography, `.reveal` class for animations
    - If inline editing was enabled: Hover top-left corner or press E to enter edit mode, click any text to edit, Ctrl+S to save
 
