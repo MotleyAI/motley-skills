@@ -91,47 +91,36 @@ The `target_shape` parameter constrains table dimensions as `(rows, columns)`. E
 
 ## update_chart_block
 
-Regenerate a chart block using an LLM-based prompt.
+Create or update a chart block from a structured query and chart configuration. Validates the query against Cube.js and renders the chart. When location is omitted, creates a transient chart.
 
 ### Arguments
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `master_id` | integer | **Yes** | The master containing the slide. |
-| `slide_name` | string | **Yes** | The slide containing the chart. |
-| `block_name` | string | **Yes** | The chart block to regenerate. |
-| `prompt` | string | **Yes** | Natural language description of the desired chart. |
-| `cube_name` | string | No | Limit query generation to this specific cube. If omitted, all cubes are available. |
+| `location` | object | No | `{doc_id, slide_name, block_name}` — location of the chart block. If omitted, creates a transient chart without saving. |
+| `query` | object | **Yes** | MinimalSemanticLayerQueryForLLM as JSON. Contains `measures`, `dimensions`, `time_dimension` (singular object, not a list), `filters`, `limit`, `order`. |
+| `chart_details` | object | **Yes** | ChartDetailsTemplate as JSON. Contains series configuration, axis settings, title, color_scheme, etc. |
+| `sample_values` | object | No | Override filter values (e.g. `start_date`, `end_date`, `client_name`). |
+| `max_return_rows` | integer | No | Maximum data rows in the response preview (default: 20). |
+| `add_default_filters` | boolean | No | Whether to apply default cube filters (default: true). |
+
+**Note:** `cube_name` is automatically derived from the query measures/dimensions — do not pass it explicitly.
 
 ### Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Whether the operation succeeded |
-| `master_id` | integer | The master |
+| `doc_id` | integer | The deck ID (null for transient) |
 | `slide_name` | string | The slide |
 | `block_name` | string | The chart block |
-| `message` | string | Confirmation message |
+| `preview_rows` | array | Preview of the query result data |
 
 ### Notes
 
-- Uses Claude Opus 4.5 for high-quality chart generation
-- The chart's existing description is preserved on the new block
-- The generated chart is marked as out-of-date and needs resolution
-
-### Example Prompts
-
-```
-Show monthly revenue trend for the last 12 months as a line chart
-```
-
-```
-Create a bar chart comparing sales by region, sorted by value descending
-```
-
-```
-Pie chart of customer distribution by subscription tier
-```
+- Validates the query against Cube.js before rendering
+- The `time_dimension` field is a **singular object** (not a list) with `dimension`, `granularity`, and optional time filter fields
+- The chart is marked as out-of-date and needs resolution via `render_chart`
 
 ---
 
