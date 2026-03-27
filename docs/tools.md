@@ -1,46 +1,21 @@
 # MCP Tools Reference
 
-Comprehensive reference for all 35 tools available via the Motley MCP server.
+Comprehensive reference for all 20 tools available via the Motley MCP server.
 
 ## Overview
 
-The MCP server provides tools for building data-driven presentations programmatically. Tools are organized into five categories based on the resources they operate on.
+The MCP server provides tools for building data-driven reports programmatically. Tools are organized into four categories based on the resources they operate on.
 
 ## Tool Categories
 
 | Category | Tools | Description |
 |----------|-------|-------------|
-| [Outline](tools/outline.md) | 8 | Deck planning and outline sessions |
-| [Layout](tools/layout.md) | 6 | Layout libraries and master creation |
 | [Cube](tools/cube.md) | 6 | Cube management and schema modification |
-| [Master](tools/master.md) | 9 | Master inspection, resolution, and slide management |
-| [Element](tools/element.md) | 6 | Content block updates (text, table, chart, query) |
+| [Element](tools/element.md) | 5 | Content block updates (text, table, chart, query) |
+| Document | 8 | Document operations, inspection, and variables |
+| Export | 1 | PDF export |
 
 ## Quick Reference
-
-### Outline Tools
-
-| Tool | Description |
-|------|-------------|
-| [`create_outline`](tools/outline.md#create_outline) | Create a new deck outline session |
-| [`get_outline`](tools/outline.md#get_outline) | Get complete outline with all cards |
-| [`clear_outline`](tools/outline.md#clear_outline) | Remove all cards, keep session |
-| [`delete_outline`](tools/outline.md#delete_outline) | Delete session and all cards |
-| [`add_outline_card`](tools/outline.md#add_outline_card) | Add a card to an outline |
-| [`edit_outline_card`](tools/outline.md#edit_outline_card) | Edit card title/content/cubes |
-| [`move_outline_card`](tools/outline.md#move_outline_card) | Reposition a card |
-| [`delete_outline_card`](tools/outline.md#delete_outline_card) | Remove a card |
-
-### Layout Tools
-
-| Tool | Description |
-|------|-------------|
-| [`list_layout_libraries`](tools/layout.md#list_layout_libraries) | List available layout libraries |
-| [`list_masters`](tools/layout.md#list_masters) | List all master decks |
-| [`inspect_layout_library`](tools/layout.md#inspect_layout_library) | Get library structure details |
-| [`get_thumbnails`](tools/layout.md#get_thumbnails) | Get slide thumbnail URLs |
-| [`create_master`](tools/layout.md#create_master) | Create master from library |
-| [`import_layout_library`](tools/layout.md#import_layout_library) | Import Google Slides as layout library |
 
 ### Cube Tools
 
@@ -53,101 +28,102 @@ The MCP server provides tools for building data-driven presentations programmati
 | [`add_dimensions`](tools/cube.md#add_dimensions) | Add custom dimensions to cube |
 | [`delete_measures_dimensions`](tools/cube.md#delete_measures_dimensions) | Remove measures/dimensions |
 
-### Master Tools
-
-| Tool | Description |
-|------|-------------|
-| [`get_master_summary`](tools/master.md#get_master_summary) | Get master outline with slides |
-| [`inspect_slide`](tools/master.md#inspect_slide) | Get full slide content |
-| [`inspect_block`](tools/master.md#inspect_block) | Get block configuration |
-| [`get_master_variables`](tools/master.md#get_master_variables) | List available variables |
-| [`resolve_master`](tools/master.md#resolve_master) | Resolve all outdated blocks |
-| [`copy_slide`](tools/master.md#copy_slide) | Duplicate a slide |
-| [`move_slide`](tools/master.md#move_slide) | Reposition a slide |
-| [`delete_slide`](tools/master.md#delete_slide) | Remove a slide |
-| [`update_slide`](tools/master.md#update_slide) | Update slide visibility, name, or description |
-
 ### Element Tools
 
 | Tool | Description |
 |------|-------------|
 | [`update_text_block`](tools/element.md#update_text_block) | Set text template and resolve |
 | [`update_table_block`](tools/element.md#update_table_block) | Set table template and resolve |
-| [`update_chart_block`](tools/element.md#update_chart_block) | Generate chart from prompt |
-| [`update_query_block`](tools/element.md#update_query_block) | Create/update query in block |
+| [`update_chart_block`](tools/element.md#update_chart_block) | Update chart with structured query and chart details |
+| [`update_query_block`](tools/element.md#update_query_block) | Create/update query with structured query |
 | [`render_chart`](tools/element.md#render_chart) | Render chart to base64 PNG image |
-| [`copy_block`](tools/element.md#copy_block) | Copy content between blocks (cross-slide/cross-master) |
+
+### Document Tools
+
+| Tool | Description |
+|------|-------------|
+| `create_document` | Create a new document with a data source |
+| `export_markdown` | Export document as markdown (image or table mode) |
+| `get_doc_summary` | Get document outline with slides and blocks |
+| `get_doc_variables` | Get all variables and context for a document |
+| `set_doc_variables` | Set document context variables (merges with existing) |
+| `inspect_slide` | Get full slide content |
+| `inspect_block` | Get specific block configuration and content |
+| `move_block` | Move a block to a new position within the document |
+
+### Export Tools
+
+| Tool | Description |
+|------|-------------|
+| `html_to_pdf` | Convert self-contained HTML to PDF |
 
 ## Typical Workflow
 
-### 1. Discover Available Resources
+### 1. Discover Available Data
 
 ```
-list_layout_libraries()      → Find template libraries
-list_masters()               → Find existing masters
 cubes_summary()              → List available cubes
+inspect_cube(cube_name="sales_data", num_rows=3)
+                             → Schema and sample data
 ```
 
-### 2. Create and Configure a Master
+### 2. Create a Document
 
 ```
-create_master(layout_library_id=1)
-  → Returns master_id
+create_document(name="Q1 Report", source_id=1)
+  → Returns doc_id
 
-get_master_summary(master_id=42)
+get_doc_summary(doc_id=42)
   → See slides and blocks
+
+get_doc_variables(doc_id=42)
+  → Check context variables
+
+set_doc_variables(doc_id=42, variables={"client_name": "Acme"})
+  → Update context
 ```
 
-### 3. Inspect and Understand Structure
-
-```
-inspect_slide(master_id=42, slide_name="Revenue")
-  → Full slide content and variables
-
-inspect_cube(cube_name="sales_data")
-  → Schema and sample data
-```
-
-### 4. Configure Content
+### 3. Create Content Blocks
 
 ```
 update_query_block(
-    master_id=42,
-    slide_name="Revenue",
-    parent_block="metrics",
+    location={doc_id: 42, slide_name: "Revenue", parent_block: "metrics"},
     query_name="total_revenue",
-    prompt="Total revenue for selected period"
+    query={measures: [{name: "total_revenue", cube_name: "sales"}]}
 )
 
 update_text_block(
-    master_id=42,
-    slide_name="Revenue",
-    block_name="summary",
-    user_prompt="Revenue: {total_revenue}"
+    location={doc_id: 42, slide_name: "Revenue", block_name: "metrics"},
+    user_prompt="Revenue: {currency(total_revenue)}"
 )
 ```
 
-### 5. Resolve and Review
+### 4. Add Charts
 
 ```
-resolve_master(master_id=42)
-  → Execute queries and generate content
-
-inspect_block(master_id=42, slide_name="Revenue", block_name="summary")
-  → Verify generated content
-```
-
-### 6. Customize Slides
-
-```
-copy_slide(
-    master_id=42,
-    slide_name="Revenue",
-    new_slide_name="Q1_Revenue",
-    description="Q1 2024 revenue analysis"
+update_chart_block(
+    location={doc_id: 42, slide_name: "Revenue", block_name: "chart"},
+    query={...},
+    chart_details={...}
 )
 
-move_slide(master_id=42, slide_name="Q1_Revenue", position=2)
+render_chart(
+    location={doc_id: 42, slide_name: "Revenue", block_name: "chart"}
+)
+  → Verify rendered image
+```
+
+### 5. Export
+
+```
+export_markdown(doc_id=42)
+  → Markdown with chart images
+
+export_markdown(doc_id=42, mode="table")
+  → Markdown with chart data as tables
+
+html_to_pdf(html_content="<html>...</html>")
+  → PDF output
 ```
 
 ## Error Handling
@@ -157,8 +133,8 @@ All tools return structured responses. On failure:
 - `success: false` is returned (where applicable)
 - `error` field contains the error message
 - Common errors:
-  - "Master not found or access denied"
-  - "Slide 'X' not found in master Y"
+  - "Document not found or access denied"
+  - "Slide 'X' not found in document Y"
   - "Block 'X' not found in slide 'Y'"
   - "Resolution failed: ..."
 

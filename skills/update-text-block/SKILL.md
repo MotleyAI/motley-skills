@@ -20,7 +20,7 @@ Create or modify text blocks using the `update_text_block` MCP tool. Text blocks
 ```
 update_text_block(
     location: {                        # Location of the block
-        doc_id: int,                   # The deck ID
+        doc_id: int,                   # The document ID
         slide_name: str,               # The slide containing the block
         block_name: str                # The name of the text block
     },

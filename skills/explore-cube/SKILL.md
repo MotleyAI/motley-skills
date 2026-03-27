@@ -1,13 +1,13 @@
 ---
 name: explore-cube
 description: >
-  Explore available cubes before building masters. Covers listing cubes,
+  Explore available cubes before building documents. Covers listing cubes,
   inspecting schemas, and creating custom cubes/measures.
 ---
 
 # Explore Cube
 
-Explore available cubes to understand what data is available before building masters. This is typically the first step in any master-building workflow.
+Explore available cubes to understand what data is available before building documents. This is typically the first step in any report creation workflow.
 
 ## Listing Cubes
 
@@ -40,7 +40,7 @@ Returns:
 - Sample data rows (to understand value formats and data quality)
 - Optionally: the underlying SQL definition (`show_sql=true`)
 
-**Tip**: Always inspect cubes relevant to your master before writing chart/query prompts. Knowing exact measure and dimension names leads to better results.
+**Tip**: Always inspect cubes relevant to your document before writing chart/query prompts. Knowing exact measure and dimension names leads to better results.
 
 ## Understanding Schemas
 
@@ -141,11 +141,11 @@ delete_measures_dimensions(
 )
 ```
 
-## Tips for Master Building
+## Tips for Report Building
 
 1. **Start with `cubes_summary`** — get the big picture of available data
 2. **Inspect relevant cubes** — `inspect_cube` with `num_rows=3` to see real data
-3. **Note exact names** — use precise measure/dimension names from the schema in your chart and query prompts
+3. **Note exact names** — use precise measure/dimension names from the schema in your chart and query configurations
 4. **Check for time dimensions** — if you need time series charts, confirm the cube has a time dimension and what it's called
 5. **Create cubes when needed** — if the data model doesn't fit, create a custom cube from SQL rather than fighting with the existing schema
 6. **Add measures for derived metrics** — if you need ratios, percentages, or conditional counts, add them as custom measures

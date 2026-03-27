@@ -12,32 +12,50 @@ Create or update numerical queries inside text or table blocks. Queries execute 
 
 ## How It Works
 
-1. You call `update_query_block` with a natural language `prompt` describing the data you want
-2. An LLM internally generates the full query (measures, dimensions, filters) from your prompt
+1. You call `update_query_block` with a structured `query` describing the data you want
+2. The query is validated and executed against the semantic layer
 3. The query result becomes available as `{query_name}` in the parent text/table block's `user_prompt`
 4. When the parent block is resolved (via `update_text_block` or `update_table_block`), the query value is substituted in
-
-You do NOT construct queries manually — just describe what you want in plain English.
 
 ## Tool Signature
 
 ```
 update_query_block(
     location: {                # Location of the query's parent block
-        doc_id: int,           # The deck ID
+        doc_id: int,           # The document ID
         slide_name: str,       # The slide containing the parent block
         parent_block: str      # Name of the text or table block containing this query
     },
-    query_name: str,          # Name for this query (used as {query_name} in parent's user_prompt)
-    prompt: str,              # Natural language description of the desired query
-    cube_name: str?,          # Optional: constrain to this cube only
-    mode: str?,               # "single_number" (default) or "table"
-    pivot_dimension: str?,    # Dimension to pivot into columns (table mode only)
-    transpose: bool?          # Swap rows/columns (table mode only)
+    query_name: str,           # Name for this query (used as {query_name} in parent's user_prompt)
+    query: {                   # Semantic layer query (MinimalSemanticLayerQueryForLLM)
+        measures: [            # List of measures to aggregate
+            {name: str, cube_name: str?}
+        ],
+        dimensions: [          # List of dimensions to group by
+            {name: str, cube_name: str?}
+        ]?,
+        time_dimension: {      # Single time dimension (NOT a list)
+            dimension: {name: str, cube_name: str?},
+            granularity: str?  # "day", "week", "month", "quarter", "year"
+        }?,
+        filters: [...]?,       # Filters array
+        limit: int?,           # Max rows to return
+        order: [               # Ordering
+            {column: {name: str, cube_name: str?}, order: "ASC"|"DESC"}
+        ]?
+    },
+    mode: str? = "single_number",  # "single_number" or "table"
+    pivot_dimension: str?,     # Dimension to pivot into columns (table mode only)
+    transpose: bool?,          # Swap rows/columns (table mode only)
+    sample_values: {str: str}?,    # Override filter values (e.g. start_date, end_date)
+    max_return_rows: int? = 20,    # Max rows in response preview
+    add_default_filters: bool? = true  # Apply default time/tenant filters
 )
 ```
 
 **Returns**: The query result — a single value for `single_number` mode, or a markdown table for `table` mode.
+
+The full nested schema for `query` comes from the tool definition. The above shows the most commonly used fields.
 
 ## Query Modes
 
@@ -45,11 +63,7 @@ update_query_block(
 
 Returns a single aggregate value. Use for KPIs, metrics, and inline numbers in text.
 
-**Example prompts**:
-- "Total revenue for the reporting period"
-- "Number of active customers"
-- "Average order value this quarter"
-- "Percentage of deals closed vs opened"
+**Example**: A query with `measures: [{name: "total_revenue", cube_name: "revenue"}]` and no dimensions returns the total.
 
 The result substitutes directly into text: `Revenue grew to {total_revenue} this quarter.`
 
@@ -57,23 +71,7 @@ The result substitutes directly into text: `Revenue grew to {total_revenue} this
 
 Returns the full query result as a markdown table. Use when you need multi-row data for LLM analysis or table blocks.
 
-**Example prompts**:
-- "Monthly revenue breakdown for the last 12 months"
-- "Top 10 customers by order count"
-- "Revenue by region and product category"
-
-The result is a formatted markdown table that the LLM can analyze or display.
-
-## Writing Effective Prompts
-
-Be specific about:
-- **What measure**: "total revenue", "count of orders", "average deal size"
-- **What filters**: "for active customers only", "where status is completed"
-- **What grouping** (for table mode): "by region", "by month", "by product category"
-- **What ordering**: "sorted by revenue descending", "top 10 by count"
-- **What time range**: "for the last 12 months", "year to date" (or rely on master's sample_parameters)
-
-The query LLM automatically has access to the master's `sample_parameters` (customer name, date range), so filters for the reporting period and customer are applied automatically unless you specify otherwise.
+**Example**: A query with measures + dimensions returns grouped results as a table.
 
 ## Workflow
 
@@ -84,8 +82,9 @@ The query LLM automatically has access to the master's `sample_parameters` (cust
    update_query_block(
        location={doc_id: 42, slide_name: "Overview", parent_block: "metrics_text"},
        query_name="total_revenue",
-       prompt="Total revenue for the reporting period",
-       cube_name="revenue"
+       query={
+           measures: [{name: "total_revenue", cube_name: "revenue"}]
+       }
    )
    ```
 
@@ -109,7 +108,14 @@ Pivots a dimension's values into column headers. Useful for creating cross-tab t
 update_query_block(
     location={doc_id: 42, slide_name: "Breakdown", parent_block: "data_table"},
     query_name="revenue_by_region_month",
-    prompt="Revenue by region and month for the last 6 months",
+    query={
+        measures: [{name: "total_revenue", cube_name: "revenue"}],
+        dimensions: [{name: "region", cube_name: "revenue"}],
+        time_dimension: {
+            dimension: {name: "created_at", cube_name: "revenue"},
+            granularity: "month"
+        }
+    },
     mode="table",
     pivot_dimension="time"
 )
@@ -149,8 +155,9 @@ update_query_block(
 update_query_block(
     location={doc_id: 42, slide_name: "Executive Summary", parent_block: "kpi_text"},
     query_name="active_users",
-    prompt="Count of active users in the current period",
-    cube_name="users"
+    query={
+        measures: [{name: "active_user_count", cube_name: "users"}]
+    }
 )
 ```
 
@@ -160,8 +167,10 @@ update_query_block(
 update_query_block(
     location={doc_id: 42, slide_name: "Executive Summary", parent_block: "kpi_text"},
     query_name="prev_active_users",
-    prompt="Count of active users in the previous period (same length as reporting period, immediately before start_date)",
-    cube_name="users"
+    query={
+        measures: [{name: "active_user_count", cube_name: "users"}],
+        filters: [{"member": "users.period", "operator": "equals", "values": ["previous"]}]
+    }
 )
 ```
 
@@ -173,9 +182,19 @@ Then in the parent: `Active users: {active_users} ({percent((active_users - prev
 update_query_block(
     location={doc_id: 42, slide_name: "Trends", parent_block: "trend_table"},
     query_name="monthly_data",
-    prompt="Monthly revenue and order count for the last 12 months, sorted chronologically",
-    mode="table",
-    cube_name="orders"
+    query={
+        measures: [
+            {name: "total_revenue", cube_name: "orders"},
+            {name: "order_count", cube_name: "orders"}
+        ],
+        time_dimension: {
+            dimension: {name: "created_at", cube_name: "orders"},
+            granularity: "month"
+        },
+        limit: 12,
+        order: [{column: {name: "created_at", cube_name: "orders"}, order: "ASC"}]
+    },
+    mode="table"
 )
 ```
 
@@ -185,15 +204,22 @@ update_query_block(
 update_query_block(
     location={doc_id: 42, slide_name: "Comparison", parent_block: "comparison_table"},
     query_name="region_quarterly",
-    prompt="Revenue by region and quarter for the last 4 quarters",
+    query={
+        measures: [{name: "total_revenue", cube_name: "revenue"}],
+        dimensions: [{name: "region", cube_name: "revenue"}],
+        time_dimension: {
+            dimension: {name: "created_at", cube_name: "revenue"},
+            granularity: "quarter"
+        },
+        limit: 20
+    },
     mode="table",
-    pivot_dimension="time",
-    cube_name="revenue"
+    pivot_dimension="time"
 )
 ```
 
 ## Related Skills
 
-- For exploring cubes before writing prompts: see the `explore-cube` skill
+- For exploring cubes before writing queries: see the `explore-cube` skill
 - For expression syntax in templates: see [variable-reference-syntax.md](../_shared/variable-reference-syntax.md)
 - For context variables: see [resolution-context.md](../_shared/resolution-context.md)

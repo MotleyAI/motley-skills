@@ -104,27 +104,31 @@ This merges the provided values with existing parameters and re-resolves all blo
 
 ### Create Blocks
 
-Creating blocks and updating them is done using the tools:
+**IMPORTANT: NEVER call `update_text_block`, `update_table_block`, `update_chart_block`, or `update_query_block` directly.** Always delegate block creation and modification to the **block-modifier** sub-agent.
 
-- `update_text_block`
-- `update_table_block`
-- `update_chart_block`
-- `update_query_block`
+The only exception is `render_chart`, which is read-only and can be called directly to visually verify chart output.
 
-Each block must have a unique name by which it can be referenced.
-To create a new block provide a new, unique name.
+#### Delegating to block-modifier
+
+For each block you need to create or modify, launch the `block-modifier` sub-agent with clear instructions:
+
+- The **doc_id**, **slide_name**, and **block_name** (or parent_block for queries)
+- The **block type** (text, table, chart, or query)
+- The **full content/configuration** for the block (template text, query parameters, chart configuration, etc.)
+- Any relevant context (cube names, variable names, etc.)
+
+You can delegate multiple independent blocks in a single message by launching multiple sub-agents in parallel.
 
 #### Chart Blocks
 
-```
-update_chart_block(
-    location={doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"},
-    prompt="<detailed chart description>",
-    cube_name="<cube>"
-)
-```
+Delegate to block-modifier with:
+- Block type: chart
+- Location: `{doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"}`
+- Query configuration (measures, dimensions, time_dimension, filters, etc.)
+- Chart details (chart type, axis labels, series config, etc.)
+- Cube name
 
-Then verify:
+After the sub-agent completes, verify the chart visually:
 
 ```
 render_chart(
@@ -132,54 +136,23 @@ render_chart(
 )
 ```
 
-See the `update-chart` skill for writing effective chart prompts.
+See the `update-chart` skill for chart type guidance and configuration patterns.
 
 #### Text Blocks
 
-First create query blocks for the data:
+Delegate to block-modifier with:
+1. First, the **query blocks** the text needs (type: query, with query_name, query config, mode, cube_name)
+2. Then, the **text block** itself (type: text, with user_prompt template referencing `{query_name}` variables)
 
-```
-update_query_block(
-    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<text_block>"},
-    query_name="<name>",
-    prompt="<what data to fetch>",
-    cube_name="<cube>"
-)
-```
-
-Then set the template:
-
-```
-update_text_block(
-    location={doc_id: <id>, slide_name: "<slide>", block_name: "<text_block>"},
-    user_prompt="<template with {variables}>",
-    call_llm=<true/false>
-)
-```
-
-Verify the text block by checking the returned content. See the `update-text-block` skill.
+See the `update-text-block` skill for template syntax and modes.
 
 #### Table Blocks
 
-Same pattern as text — create query blocks first, then set the template:
+Same pattern as text — delegate query blocks first, then the table block:
+1. Query blocks (type: query, mode="table" for multi-row data)
+2. Table block (type: table, with user_prompt and target_shape)
 
-```
-update_query_block(
-    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<table_block>"},
-    query_name="<name>",
-    prompt="<what data to fetch>",
-    mode="table",
-    cube_name="<cube>"
-)
-
-update_table_block(
-    location={doc_id: <id>, slide_name: "<slide>", block_name: "<table_block>"},
-    user_prompt="{<query_name>}",
-    target_shape=[<rows>, <cols>]
-)
-```
-
-See the `update-table-block` skill.
+See the `update-table-block` skill for table patterns.
 
 ---
 
@@ -193,7 +166,7 @@ Export the document to markdown format:
 export_markdown(doc_id=<id>)
 ```
 
-Check the output carefully. Does it look as expected? If not, go back and update the blocks.
+Check the output carefully. Does it look as expected? If not, delegate block updates to block-modifier.
 
 
 ### Render for the user
@@ -202,7 +175,7 @@ Show the user the rendered document as markdown. Ask for approval.
 
 If the user is happy with the document, proceed to the next phase.
 
-If not, understand the user's feedback and go back and update the blocks.
+If not, understand the user's feedback and delegate corrections to block-modifier.
 
 ---
 
@@ -218,5 +191,5 @@ If you need the data for the charts instead of images (say, for creating an HTML
 export_markdown(doc_id=<id>, mode="table")
 ```
 
-This will embed the data for the charts as markdown tables, with chart metadata next to them. 
+This will embed the data for the charts as markdown tables, with chart metadata next to them.
 Again, use the frontend-slides skill to generate slides as needed.

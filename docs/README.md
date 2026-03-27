@@ -7,14 +7,14 @@ An MCP (Model Context Protocol) bundle that connects Claude to the Motley data s
 This bundle provides a passthrough MCP server that forwards requests to a remote Motley backend. It allows Claude (via Claude Desktop or other MCP clients) to:
 
 - Query data from your semantic layer
-- Create and modify chart templates
+- Create and modify chart configurations
 - Generate text and table content blocks
-- Build complete data-driven presentations
+- Build complete data-driven reports
 
 ## Features
 
 - **Semantic Layer Queries**: Access your data through a unified semantic layer with measures, dimensions, and filters
-- **Chart Generation**: Create bar charts, line charts, pie charts, and funnels with customizable styling
+- **Chart Generation**: Create bar charts, line charts, pie charts, and funnels with structured configuration
 - **Text Templates**: Generate data-driven text with variable substitution and optional LLM enhancement
 - **Table Blocks**: Create formatted tables with pivoting and flexible layouts
 - **Time Intelligence**: Built-in support for time filters, period comparisons, and date range calculations
@@ -33,39 +33,14 @@ See [setup.md](setup.md) for detailed installation instructions.
 
 ## Available Tools
 
-The Motley MCP server provides 35 tools organized into five categories:
+The Motley MCP server provides 20 tools organized into four categories:
 
 | Category | Tools | Description |
 |----------|-------|-------------|
-| **Outline** | 8 | Deck planning and outline sessions |
-| **Layout** | 6 | Layout libraries and template management |
 | **Cube** | 6 | Data modeling and schema management |
-| **Master** | 9 | Operations on master decks and slides |
-| **Element** | 6 | Content blocks (text, table, chart, query) |
-
-### Outline Tools
-
-| Tool | Description |
-|------|-------------|
-| `create_outline` | Create a new deck outline session |
-| `get_outline` | Get outline state with all cards |
-| `clear_outline` | Remove all cards from outline |
-| `delete_outline` | Delete outline session |
-| `add_outline_card` | Add a slide card to outline |
-| `edit_outline_card` | Edit card title/content |
-| `move_outline_card` | Reposition a card |
-| `delete_outline_card` | Remove a card |
-
-### Layout Tools
-
-| Tool | Description |
-|------|-------------|
-| `list_layout_libraries` | List available layout libraries |
-| `list_masters` | List all master decks |
-| `inspect_layout_library` | Get layout structure details |
-| `get_thumbnails` | Get slide thumbnail URLs |
-| `create_master` | Create master from template |
-| `import_layout_library` | Import Google Slides as layout library |
+| **Element** | 5 | Content blocks (text, table, chart, query, render) |
+| **Document** | 8 | Document operations, inspection, and variables |
+| **Export** | 1 | PDF export |
 
 ### Cube Tools
 
@@ -78,36 +53,37 @@ The Motley MCP server provides 35 tools organized into five categories:
 | `add_dimensions` | Add custom dimensions to cube |
 | `delete_measures_dimensions` | Remove measures/dimensions |
 
-### Master Tools
-
-| Tool | Description |
-|------|-------------|
-| `get_master_summary` | Get master outline with slides/blocks |
-| `inspect_slide` | Get full slide content |
-| `inspect_block` | Get specific block content |
-| `get_master_variables` | Get all variables for a master |
-| `resolve_master` | Trigger resolution of all blocks |
-| `copy_slide` | Copy slide with contents |
-| `move_slide` | Move slide to new position |
-| `delete_slide` | Delete a slide |
-| `update_slide` | Update slide visibility, name, or description |
-
 ### Element Tools
 
 | Tool | Description |
 |------|-------------|
-| `update_text_block` | Update text block template |
-| `update_table_block` | Update table block template |
-| `update_chart_block` | Update chart with LLM prompt |
-| `update_query_block` | Create/update numerical query |
+| `update_text_block` | Update text block template and resolve |
+| `update_table_block` | Update table block template and resolve |
+| `update_chart_block` | Update chart with structured query and chart details |
+| `update_query_block` | Create/update numerical query with structured query |
 | `render_chart` | Render chart to base64 PNG image |
-| `copy_block` | Copy content between blocks (cross-slide/cross-master) |
 
-See [tools.md](tools.md) for the complete tool reference with detailed documentation for each tool:
-- [Outline Tools](tools/outline.md) — Deck planning and outline sessions
-- [Layout Tools](tools/layout.md) — Layout libraries and master creation
+### Document Tools
+
+| Tool | Description |
+|------|-------------|
+| `create_document` | Create a new document |
+| `export_markdown` | Export document as markdown |
+| `get_doc_summary` | Get document outline with slides/blocks |
+| `get_doc_variables` | Get all variables for a document |
+| `set_doc_variables` | Set document context variables |
+| `inspect_block` | Get specific block content |
+| `inspect_slide` | Get full slide content |
+| `move_block` | Move a block to a new position |
+
+### Export Tools
+
+| Tool | Description |
+|------|-------------|
+| `html_to_pdf` | Convert HTML content to PDF |
+
+See [tools.md](tools.md) for the complete tool reference with detailed documentation:
 - [Cube Tools](tools/cube.md) — Cube management and schema modification
-- [Master Tools](tools/master.md) — Master inspection, resolution, and slide management
 - [Element Tools](tools/element.md) — Content block updates (text, table, chart, query)
 
 ## Skills Reference
@@ -116,13 +92,12 @@ This bundle includes skill documentation to help Claude understand the Motley do
 
 | Skill | Purpose |
 |-------|---------|
-| [master-builder](../skills/master-builder/SKILL.md) | End-to-end master creation workflow |
-| [update-chart](../skills/update-chart/SKILL.md) | Chart creation via natural language prompts |
+| [create-report](../skills/create-report/SKILL.md) | End-to-end report creation workflow |
+| [update-chart](../skills/update-chart/SKILL.md) | Chart creation via structured configuration |
 | [update-text-block](../skills/update-text-block/SKILL.md) | Text content with variable substitution |
 | [update-table-block](../skills/update-table-block/SKILL.md) | Table formatting and constraints |
 | [update-query-block](../skills/update-query-block/SKILL.md) | Query blocks for data retrieval |
 | [explore-cube](../skills/explore-cube/SKILL.md) | Cube exploration and custom data modeling |
-| [layout-library-sync](../skills/layout-library-sync/SKILL.md) | Layout library import and sync |
 
 See [skills.md](skills.md) for the complete skills reference.
 
