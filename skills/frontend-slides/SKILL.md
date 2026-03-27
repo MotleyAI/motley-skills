@@ -122,9 +122,35 @@ If user provides an image folder:
 
 ## Phase 2: Style Discovery
 
-**This is the "show, don't tell" phase.** Most people can't articulate design preferences in words.
+### Step 2.0: Check for Brand Style
 
-### Step 2.0: Style Path
+**Before any style exploration, check if the organization has a configured brand style.**
+
+Call the `read_style` MCP tool:
+
+```
+read_style(style_name=null)
+```
+
+**If a style is returned:** The response contains a `payload` field with a complete `BrandConfig` object. This defines the brand's colors, typography, logo, slide types, decorative elements, animations, footer, shared CSS, and JavaScript controller. **Skip all style discovery below** — use the returned config for all visual decisions and proceed directly to Phase 3 (Generate).
+
+When using a BrandConfig:
+- Use the colors from `payload.colors.tokens` as CSS custom properties
+- Use `payload.typography.import_html` for font loading (or no import for system fonts)
+- Use `payload.logo.primary_svg` for the logo, applying `payload.logo.color_variants` per slide background
+- Use only the slide types defined in `payload.slide_types.types` — first slide must use `first_slide_type`, last must use `last_slide_type`
+- Include all CSS from `payload.shared_css` and each slide type's `css_block`
+- Include decorative elements from `payload.decorative_elements` on the slide types they apply to
+- Use `payload.animations.presets` for entrance effects; respect `payload.animations.forbidden_effects`
+- Include the footer from `payload.footer` (text, SVG wave, or none)
+- Include `payload.javascript.controller_js` if provided, otherwise use the base controller
+- Respect `payload.forbidden_patterns` — never use listed visual patterns
+
+**If no style is found (error):** Fall back to the style discovery flow below.
+
+### Step 2.1: Style Path (Fallback — only if no brand style configured)
+
+**This is the "show, don't tell" phase.** Most people can't articulate design preferences in words.
 
 Ask how they want to choose (header: "Style"):
 - "Show me options" (recommended) — Generate 3 previews based on mood
@@ -132,7 +158,7 @@ Ask how they want to choose (header: "Style"):
 
 **If direct selection:** Show preset picker and skip to Phase 3. Available presets are defined in [STYLE_PRESETS.md](STYLE_PRESETS.md).
 
-### Step 2.1: Mood Selection (Guided Discovery)
+### Step 2.2: Mood Selection (Guided Discovery)
 
 Ask (header: "Vibe", multiSelect: true, max 2):
 What feeling should the audience have? Options:
@@ -141,7 +167,7 @@ What feeling should the audience have? Options:
 - Calm/Focused — Clear, thoughtful
 - Inspired/Moved — Emotional, memorable
 
-### Step 2.2: Generate 3 Style Previews
+### Step 2.3: Generate 3 Style Previews
 
 Based on mood, generate 3 distinct single-slide HTML previews showing typography, colors, animation, and overall aesthetic. Read [STYLE_PRESETS.md](STYLE_PRESETS.md) for available presets and their specifications.
 
@@ -156,7 +182,7 @@ Save previews to `.claude-design/slide-previews/` (style-a.html, style-b.html, s
 
 Open each preview automatically for the user.
 
-### Step 2.3: User Picks
+### Step 2.4: User Picks
 
 Ask (header: "Style"):
 Which style preview do you prefer? Options: Style A: [Name] / Style B: [Name] / Style C: [Name] / Mix elements
