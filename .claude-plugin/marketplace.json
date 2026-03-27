@@ -1,0 +1,21 @@
+{
+  "name": "motley-plugins",
+  "owner": {
+    "name": "MotleyAI"
+  },
+  "metadata": {
+    "description": "Skills and MCP tools for creating data-driven reports and presentations with the Motley platform"
+  },
+  "plugins": [
+    {
+      "name": "motley",
+      "source": "./",
+      "description": "Motley data storytelling skills and MCP integration",
+      "version": "0.1.1",
+      "author": {
+        "name": "MotleyAI"
+      },
+      "category": "productivity"
+    }
+  ]
+}
