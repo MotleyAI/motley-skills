@@ -56,6 +56,7 @@ These invariants apply to EVERY slide in EVERY presentation:
 | Code slide | 1 heading + 8-10 lines of code |
 | Quote slide | 1 quote (max 3 lines) + attribution |
 | Image slide | 1 heading + 1 image (max 60vh height) |
+| Chart slide | 1 heading + 1 chart (max 60vh height) + optional caption |
 
 **Content exceeds limits? Split into multiple slides. Never cram, never scroll.**
 
@@ -197,10 +198,25 @@ Generate the full presentation using content from Phase 1 (text, or text + curat
 
 If images were provided, the slide outline already incorporates them from Step 1.2. If not, CSS-generated visuals (gradients, shapes, patterns) provide visual interest — this is a fully supported first-class path.
 
+### Charts and Data Visualization
+
+**NEVER generate chart data, chart options, or chart rendering code yourself.** All charts come from Storyline MCP tools.
+
+When a presentation includes data charts:
+1. Read [charting.md](charting.md) for the full integration guide
+2. Call `read_style` to get brand colors for chart color overrides
+3. If the Storyline document has existing chart blocks, call `render_chart` to get `chart_config`
+4. If a chart is needed but doesn't exist, call `update_chart_block` with a prompt to create it in the document first
+5. Embed the returned `chart_config` as interactive eCharts in the HTML (see charting.md for the pattern)
+6. Inline `echarts_config.min.js` in the generated HTML — it converts chart configs to eCharts options
+
+---
+
 **Before generating, read these supporting files:**
 - [html-template.md](html-template.md) — HTML architecture and JS features
 - [viewport-base.css](viewport-base.css) — Mandatory CSS (include in full)
 - [animation-patterns.md](animation-patterns.md) — Animation reference for the chosen feeling
+- [charting.md](charting.md) — Chart integration (only if presentation includes data charts)
 
 **Key requirements:**
 - Single self-contained HTML file, all CSS/JS inline
@@ -242,4 +258,6 @@ When converting PowerPoint files:
 | [viewport-base.css](viewport-base.css) | Mandatory responsive CSS — copy into every presentation | Phase 3 (generation) |
 | [html-template.md](html-template.md) | HTML structure, JS features, code quality standards | Phase 3 (generation) |
 | [animation-patterns.md](animation-patterns.md) | CSS/JS animation snippets and effect-to-feeling guide | Phase 3 (generation) |
+| [charting.md](charting.md) | Interactive chart integration via eCharts from MCP data | Phase 3 (when presentation includes charts) |
+| [echarts_config.min.js](echarts_config.min.js) | PlottableChartConfig → eCharts option mapper (inline in HTML) | Phase 3 (generation with charts) |
 | [scripts/extract-pptx.py](scripts/extract-pptx.py) | Python script for PPT content extraction | Phase 4 (conversion) |

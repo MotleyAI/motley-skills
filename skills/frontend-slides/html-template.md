@@ -322,6 +322,52 @@ Save processed images with `_processed` suffix. Never overwrite originals.
 
 ---
 
+## Chart Slides
+
+When a slide includes an interactive chart from Motley MCP tools, use this pattern:
+
+```html
+<!-- In <head>, load eCharts from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+<!-- Inline the echarts_config.min.js mapper -->
+<script>
+/* Contents of echarts_config.min.js inlined here */
+</script>
+
+<!-- Chart slide -->
+<section class="slide chart-slide">
+    <div class="slide-content">
+        <h2 class="reveal">Chart Title</h2>
+        <div id="chart-1" class="chart-container reveal" style="width: 100%; height: min(60vh, 500px);"></div>
+        <p class="reveal caption">Optional caption</p>
+    </div>
+</section>
+
+<!-- Initialization (in the main <script> block, after SlidePresentation) -->
+<script>
+(function() {
+    const chartConfig = /* chart_config JSON from MCP tool */;
+    const colorOverride = /* from read_style, or null */;
+    const option = window.chartConfigToEChartsOption(chartConfig, colorOverride);
+    const chart = echarts.init(document.getElementById('chart-1'));
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+})();
+</script>
+```
+
+```css
+.chart-container {
+    width: 100%;
+    max-height: min(60vh, 500px);
+}
+```
+
+**Important:** Never generate chart data or eCharts options manually. Always use the `chart_config` returned by MCP tools, transformed through `chartConfigToEChartsOption`.
+
+---
+
 ## Code Quality
 
 **Comments:** Every section needs clear comments explaining what it does and how to modify it.
