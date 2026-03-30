@@ -93,7 +93,7 @@ Create or update a chart block with a structured query and chart configuration.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `location` | object | No | `{doc_id: int, slide_name: str, block_name: str}` — the chart block. If omitted, creates a transient chart. |
+| `location` | object | **Yes** | `{doc_id: int, slide_name: str, block_name: str}` — the chart block to update. |
 | `query` | object | **Yes** | Semantic layer query (MinimalSemanticLayerQueryForLLM as JSON). Contains `measures`, `dimensions`, `time_dimension`, `filters`, `limit`, `order`. |
 | `chart_details` | object | **Yes** | Chart rendering configuration (ChartDetailsTemplate as JSON). Contains `series`, `x_axis`, `y_axis`, `y_right_axis`, `series_default`, `color_scheme`, `title`, `legend`. |
 | `sample_values` | object | No | Override filter values (e.g., `{"start_date": "2025-01-01"}`). Takes priority over document parameters. |
@@ -143,7 +143,7 @@ Create or update a numerical query within a parent text or table block's queries
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `location` | object | No | `{doc_id: int, slide_name: str, parent_block: str}` — the parent block. If omitted, creates a transient query. |
+| `location` | object | **Yes** | `{doc_id: int, slide_name: str, parent_block: str}` — the parent block containing the query. |
 | `query_name` | string | **Yes** | Identifier for the query within the parent's queries list. Creates new if not found. |
 | `query` | object | **Yes** | Semantic layer query (MinimalSemanticLayerQueryForLLM as JSON). Contains `measures`, `dimensions`, `time_dimension`, `filters`, `limit`, `order`. |
 | `mode` | string | No | Query mode. Default: `"single_number"`. |
