@@ -182,6 +182,7 @@ If not, understand the user's feedback and delegate corrections to block-modifie
 ## Phase 4: Output
 
 Use the frontend-slides skill to generate slides from the markdown you just created.
+The frontend-slides skill will call `save_html` to upload the presentation and return a shareable URL.
 
 On user request, export the report to the user's preferred format.
 

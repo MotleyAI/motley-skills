@@ -56,6 +56,7 @@ The MCP server provides tools for building data-driven reports programmatically.
 | Tool | Description |
 |------|-------------|
 | `html_to_pdf` | Convert self-contained HTML to PDF |
+| `save_html` | Validate and save self-contained HTML to storage, returns shareable URL |
 
 ## Typical Workflow
 

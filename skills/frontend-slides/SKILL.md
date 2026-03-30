@@ -241,12 +241,13 @@ When converting PowerPoint files:
 ## Phase 5: Delivery
 
 1. **Clean up** — Delete `.claude-design/slide-previews/` if it exists
-2. **Open** — Use `open [filename].html` to launch in browser
+2. **Save & share** — Call `save_html(html_content=<the generated HTML string>, filename="presentation-name.html")` to upload the presentation. Note the `html_id` from the response for potential PDF conversion.
 3. **Summarize** — Tell the user:
-   - File location, style name, slide count
+   - Shareable HTML URL, style name, slide count
    - Navigation: Arrow keys, Space, scroll/swipe, click nav dots
    - How to customize: `:root` CSS variables for colors, font link for typography, `.reveal` class for animations
    - If inline editing was enabled: Hover top-left corner or press E to enter edit mode, click any text to edit, Ctrl+S to save
+4. **Offer PDF** — Ask if the user would also like a PDF version. If yes, call `html_to_pdf(html_id=<the html_id from step 2>)` — this reuses the already-saved HTML without re-uploading it. Share the returned PDF URL with the user.
 
 ---
 
