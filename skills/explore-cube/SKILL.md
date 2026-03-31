@@ -23,6 +23,11 @@ Returns for each cube:
 - Dimensions (with types: string, time, date, boolean, number)
 - Derived dimensions (computed columns)
 
+For a compact overview (names only, no types/descriptions):
+```
+cubes_summary(verbose=false)
+```
+
 ## Inspecting a Cube
 
 Use `inspect_cube` to get detailed information including sample data:

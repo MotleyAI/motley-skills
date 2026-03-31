@@ -11,7 +11,7 @@ A **cube** is a data model backed by a SQL query or table. Each cube has:
 - **Dimensions** — grouping/filtering columns (region, status, category)
 - **Derived dimensions** — computed columns from sub-queries
 
-Use `cubes_summary()` to list all available cubes and their schemas.
+Use `cubes_summary()` to list all available cubes and their schemas, or `cubes_summary(verbose=false)` for a compact name-only listing.
 Use `inspect_cube(cube_name=..., num_rows=3)` to see sample data.
 
 ### Measures

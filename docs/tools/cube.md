@@ -12,26 +12,22 @@ List all available cubes with their dimensions, measures, and derived dimensions
 
 ### Arguments
 
-*No arguments required.*
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `verbose` | boolean | `true` | If true, show full tables with type and description. If false, show comma-separated names only. |
 
 ### Returns
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `cubes` | array | List of cube summaries |
-| `count` | integer | Total number of cubes |
-
-Each cube in the array contains:
-- `name` - Cube name (use this with other cube tools)
-- `description` - Human-readable description
-- `dimensions` - Array of dimension definitions
-- `measures` - Array of measure definitions
-- `derived_dimensions` - Array of derived dimension definitions
+Markdown-formatted summary of all cubes. For each cube:
+- Cube name and description
+- `source_id`
+- **Dimensions**, **Measures**, and **Derived dimensions** — as tables (verbose) or comma-separated name lists (compact)
 
 ### Notes
 
 - Does **not** include sample data - use `inspect_cube` for that
 - Use this tool to discover available cubes and their schemas
+- Use `verbose=false` for a quick overview when you already know the cube schemas
 
 ---
 
