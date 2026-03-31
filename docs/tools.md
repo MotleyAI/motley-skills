@@ -12,7 +12,7 @@ The MCP server provides tools for building data-driven reports programmatically.
 |----------|-------|-------------|
 | [Cube](tools/cube.md) | 6 | Cube management and schema modification |
 | [Element](tools/element.md) | 5 | Content block updates (text, table, chart, query) |
-| Document | 8 | Document operations, inspection, and variables |
+| [Document](tools/document.md) | 8 | Document operations, inspection, and variables |
 | Export | 1 | PDF export |
 
 ## Quick Reference
@@ -42,14 +42,14 @@ The MCP server provides tools for building data-driven reports programmatically.
 
 | Tool | Description |
 |------|-------------|
-| `create_document` | Create a new document with a data source |
-| `export_markdown` | Export document as markdown (image or table mode) |
-| `get_doc_summary` | Get document outline with slides and blocks |
-| `get_doc_variables` | Get all variables and context for a document |
-| `set_doc_variables` | Set document context variables (merges with existing) |
-| `inspect_slide` | Get full slide content |
-| `inspect_block` | Get specific block configuration and content |
-| `move_block` | Move a block to a new position within the document |
+| [`create_document`](tools/document.md#create_document) | Create a new document with a data source |
+| [`export_markdown`](tools/document.md#export_markdown) | Export document as markdown (image or table mode, optionally with chart configs) |
+| [`get_doc_summary`](tools/document.md#get_doc_summary) | Get document outline with slides and blocks |
+| [`get_doc_variables`](tools/document.md#get_doc_variables) | Get all variables and context for a document |
+| [`set_doc_variables`](tools/document.md#set_doc_variables) | Set document context variables (merges with existing) |
+| [`inspect_slide`](tools/document.md#inspect_slide) | Get full slide content |
+| [`inspect_block`](tools/document.md#inspect_block) | Get specific block configuration and content |
+| [`move_block`](tools/document.md#move_block) | Move a block to a new position within the document |
 
 ### Export Tools
 
@@ -122,6 +122,9 @@ export_markdown(doc_id=42)
 
 export_markdown(doc_id=42, mode="table")
   → Markdown with chart data as tables
+
+export_markdown(doc_id=42, mode="table", include_chart_configs=True)
+  → Markdown with chart data as tables + PlottableChartConfig JSON in HTML comments
 
 html_to_pdf(html_content="<html>...</html>")
   → PDF output

@@ -205,10 +205,9 @@ If images were provided, the slide outline already incorporates them from Step 1
 When a presentation includes data charts:
 1. Read [charting.md](charting.md) for the full integration guide
 2. Call `read_style` to get brand colors for chart color overrides
-3. If the Storyline document has existing chart blocks, call `render_chart` to get `chart_config`
-4. If a chart is needed but doesn't exist, call `update_chart_block` with a prompt to create it in the document first
-5. Embed the returned `chart_config` as interactive eCharts in the HTML (see charting.md for the pattern)
-6. Inline `echarts_config.min.js` in the generated HTML — it converts chart configs to eCharts options
+3. Extract `chart_config` JSON from the markdown — when `export_markdown` was called with `include_chart_configs=True`, each chart block has its `PlottableChartConfig` embedded as an HTML comment: `<!-- chart_config: {...} -->`. Parse this JSON to get the chart config.
+4. Embed each `chart_config` as interactive eCharts in the HTML (see charting.md for the pattern)
+5. Inline `echarts_config.min.js` in the generated HTML — it converts chart configs to eCharts options
 
 ---
 

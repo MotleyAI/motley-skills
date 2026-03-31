@@ -46,35 +46,35 @@ The Motley MCP server provides 20 tools organized into four categories:
 
 | Tool | Description |
 |------|-------------|
-| `cubes_summary` | List all cubes with schemas |
-| `inspect_cube` | Get cube details with sample data |
-| `create_cube` | Create cube from SQL query |
-| `add_measures` | Add custom measures to cube |
-| `add_dimensions` | Add custom dimensions to cube |
-| `delete_measures_dimensions` | Remove measures/dimensions |
+| [`cubes_summary`](tools/cube.md#cubes_summary) | List all cubes with schemas |
+| [`inspect_cube`](tools/cube.md#inspect_cube) | Get cube details with sample data |
+| [`create_cube`](tools/cube.md#create_cube) | Create cube from SQL query |
+| [`add_measures`](tools/cube.md#add_measures) | Add custom measures to cube |
+| [`add_dimensions`](tools/cube.md#add_dimensions) | Add custom dimensions to cube |
+| [`delete_measures_dimensions`](tools/cube.md#delete_measures_dimensions) | Remove measures/dimensions |
 
 ### Element Tools
 
 | Tool | Description |
 |------|-------------|
-| `update_text_block` | Update text block template and resolve |
-| `update_table_block` | Update table block template and resolve |
-| `update_chart_block` | Update chart with structured query and chart details |
-| `update_query_block` | Create/update numerical query with structured query |
-| `render_chart` | Render chart to base64 PNG image |
+| [`update_text_block`](tools/element.md#update_text_block) | Update text block template and resolve |
+| [`update_table_block`](tools/element.md#update_table_block) | Update table block template and resolve |
+| [`update_chart_block`](tools/element.md#update_chart_block) | Update chart with structured query and chart details |
+| [`update_query_block`](tools/element.md#update_query_block) | Create/update numerical query with structured query |
+| [`render_chart`](tools/element.md#render_chart) | Render chart to base64 PNG image |
 
 ### Document Tools
 
 | Tool | Description |
 |------|-------------|
-| `create_document` | Create a new document |
-| `export_markdown` | Export document as markdown |
-| `get_doc_summary` | Get document outline with slides/blocks |
-| `get_doc_variables` | Get all variables for a document |
-| `set_doc_variables` | Set document context variables |
-| `inspect_block` | Get specific block content |
-| `inspect_slide` | Get full slide content |
-| `move_block` | Move a block to a new position |
+| [`create_document`](tools/document.md#create_document) | Create a new document |
+| [`export_markdown`](tools/document.md#export_markdown) | Export document as markdown |
+| [`get_doc_summary`](tools/document.md#get_doc_summary) | Get document outline with slides/blocks |
+| [`get_doc_variables`](tools/document.md#get_doc_variables) | Get all variables for a document |
+| [`set_doc_variables`](tools/document.md#set_doc_variables) | Set document context variables |
+| [`inspect_block`](tools/document.md#inspect_block) | Get specific block content |
+| [`inspect_slide`](tools/document.md#inspect_slide) | Get full slide content |
+| [`move_block`](tools/document.md#move_block) | Move a block to a new position |
 
 ### Export Tools
 
@@ -85,6 +85,7 @@ The Motley MCP server provides 20 tools organized into four categories:
 See [tools.md](tools.md) for the complete tool reference with detailed documentation:
 - [Cube Tools](tools/cube.md) — Cube management and schema modification
 - [Element Tools](tools/element.md) — Content block updates (text, table, chart, query)
+- [Document Tools](tools/document.md) — Document operations, inspection, and variables
 
 ## Skills Reference
 

@@ -186,11 +186,12 @@ The frontend-slides skill will call `save_html` to upload the presentation and r
 
 On user request, export the report to the user's preferred format.
 
-If you need the data for the charts instead of images (say, for creating an HTML with a charting library), use
+When exporting for the frontend-slides skill, always include chart configs so charts can be rendered interactively:
 
 ```
-export_markdown(doc_id=<id>, mode="table")
+export_markdown(doc_id=<id>, mode="table", include_chart_configs=True)
 ```
 
 This will embed the data for the charts as markdown tables, with chart metadata next to them.
+Each chart block will also have its full `PlottableChartConfig` JSON embedded as an HTML comment (`<!-- chart_config: {...} -->`), which the frontend-slides skill uses to render interactive eCharts.
 Again, use the frontend-slides skill to generate slides as needed.
