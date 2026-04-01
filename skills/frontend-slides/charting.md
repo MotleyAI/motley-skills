@@ -6,49 +6,55 @@
 
 ## Getting a Chart
 
-- If the Storyline document already has a chart block → call `render_chart` to get its `chart_config`
-- If no chart exists → call `update_chart_block` with a prompt describing the desired chart, specifying a location in the document. Use the returned `chart_config`.
+- If the Storyline document already has a chart block -> call `render_chart` to get its `chart_config`
+- If no chart exists -> call `update_chart_block` with a prompt describing the desired chart, specifying a location in the document. Use the returned `chart_config`.
 
-## Getting Brand Colors for Charts
+## Embedding Charts in Body HTML
 
-1. Call `read_style` to get the BrandConfig
-2. If `default_chart_color_scheme` is set, pass it as the second arg to `chartConfigToEChartsOption`
-3. If not set but `colors.tokens` exist, extract the hex values and pass as an array:
-   `chartConfigToEChartsOption(config, ["#016FFF", "#FF6B35", ...])`
-4. If neither, omit the second arg (uses the chart's embedded color scheme)
+**Do NOT embed any chart initialization JavaScript.** The server handles all chart rendering.
 
-## Embedding an Interactive eChart in HTML
+Place a chart container with a `data-chart-ref` attribute that references the source document's chart block:
 
-Load eCharts from CDN:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<div id="chart-1" class="chart-container rv" data-chart-ref="SLIDE_INDEX:BLOCK_NAME"></div>
 ```
 
-Read and inline the contents of `echarts_config.min.js` in a `<script>` tag.
+- `SLIDE_INDEX`: zero-based index of the slide in the source document containing the chart block
+- `BLOCK_NAME`: name of the chart block within that slide
 
-Create a container:
+### Example
+
+If the source document's slide 2 has a chart block named `monthly_spend_trend`:
+
 ```html
-<div id="chart-N" style="width: 100%; height: min(60vh, 500px);"></div>
+<section class="slide slide-data" id="slide-3">
+  <div class="topbar">
+    <div class="logo on-light rv"><!-- logo --></div>
+    <span class="pg-num rv">03 / 07</span>
+  </div>
+  <div class="s-hdr rv">
+    <span class="accent-bar"></span>
+    <span class="s-title">Monthly Spend Trend</span>
+  </div>
+  <div class="content-body">
+    <div id="chart-1" class="chart-container rv" data-chart-ref="2:monthly_spend_trend"></div>
+  </div>
+</section>
 ```
 
-Initialize:
-```javascript
-const chartConfig = <chart_config JSON>;
-const colorOverride = <from read_style, or null>;
-const option = window.chartConfigToEChartsOption(chartConfig, colorOverride);
-const chart = echarts.init(document.getElementById('chart-N'));
-chart.setOption(option);
-window.addEventListener('resize', () => chart.resize());
-```
+### Requirements
 
-## Available Named Color Schemes
+- **Every** `chart-container` element **must** have a `data-chart-ref` attribute. Missing refs cause an error.
+- The referenced chart block must be resolved (call `render_chart` first if needed).
+- Each chart container must have a unique `id` attribute.
+- The server fetches chart configs from the source document, applies brand colors, and generates all initialization JS.
 
-`"motley"`, `"greens"`, `"blues"`, `"light"`, `"chromatica"`, `"flash"`
+## What You Do NOT Generate
 
-## Fallback
+- No `<script src="...echarts...">` CDN tags
+- No `echarts_config.min.js` inlining
+- No `echarts.init()` calls
+- No `chartConfigToEChartsOption()` calls
+- No `chart_config` JSON embedding
 
-If MCP tools are unavailable, embed a static PNG via `<img src="data:image/png;base64,...">`
-
-## Sizing
-
-Chart containers respect viewport fitting — `height: min(60vh, 500px)`. Always call `chart.resize()` on window resize.
+All of this is handled server-side during HTML enrichment.
