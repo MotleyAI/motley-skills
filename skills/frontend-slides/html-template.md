@@ -2,6 +2,12 @@
 
 You generate **only the slide `<section>` elements**. The server wraps them with DOCTYPE, `<head>`, CSS, JS, fonts, logos, and chrome.
 
+## CRITICAL: No Inline Styles
+
+All visual styling comes from CSS classes defined in the BrandConfig's `css_block` fields. The server injects these automatically. **NEVER add inline `style=` attributes** for colors, fonts, padding, borders, alignment, or sizing. The ONLY exception is `transition-delay` for animation stagger timing.
+
+Use the CSS class names from the BrandConfig's `html_template` and `css_block` fields. If a class like `.data-table`, `.dtbl`, `.metric-card`, `.chart-container` exists in the css_block, USE IT — don't reinvent the styling inline.
+
 ## Body HTML Structure
 
 ```html
@@ -45,7 +51,7 @@ You generate **only the slide `<section>` elements**. The server wraps them with
     <span class="s-title">Monthly Trend</span>
   </div>
   <div class="content-body" style="position:relative;z-index:1;">
-    <div id="chart-1" class="chart-container rv" data-chart-ref="2:monthly_trend"></div>
+    <div id="chart-1" class="chart-container rv" data-chart-block="monthly_trend"></div>
   </div>
 </section>
 
@@ -91,7 +97,7 @@ Use `css_class` from `slide_types.types` on each `<section>`. Use class names fr
 
 Every chart container **must** have:
 - A unique `id` attribute
-- A `data-chart-ref="SLIDE_INDEX:BLOCK_NAME"` attribute
+- A `data-chart-block="BLOCK_NAME"` attribute
 - The `chart-container` class
 
 ## Content Density Limits Per Slide

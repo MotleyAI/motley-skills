@@ -143,9 +143,24 @@ The slim BrandConfig tells you:
 
 Generate **body-only HTML** — just the slide `<section>` elements. The server handles all CSS, JS, fonts, logos, and chrome.
 
+### CRITICAL: Use Brand CSS Classes, NEVER Inline Styles
+
+The BrandConfig's `css_block` fields define all the CSS classes you need. The server injects these CSS rules automatically. **You MUST use these classes and NEVER add inline `style=` attributes for visual styling.**
+
+**Rules:**
+- **NEVER** add inline `style=` for colors, fonts, padding, borders, alignment, or sizing
+- **NEVER** hardcode hex colors (e.g. `style="color: #016FFF"`) — the CSS classes handle all colors
+- **NEVER** wrap elements in extra `<div style="position:relative;z-index:1;">` containers
+- **Tables** MUST use the brand's table class (`.data-table`, `.dtbl`, etc.) from the css_block — no inline table styling. Apply cell classes (`.n`, `.hi`, `.dim`) consistently to ALL rows, not just the first.
+- **Charts** MUST use `class="chart-container"` with no inline width/height
+- **Logos** MUST use `<!-- logo -->` marker inside `<div class="logo VARIANT">` — never paste SVG inline or leave the div empty
+- The ONLY acceptable inline styles are `transition-delay` for animation stagger timing
+
+**Read the `css_block` fields** in the BrandConfig to see exactly what CSS classes are available for each slide type.
+
 ### What You Generate
 
-Use the `html_template` patterns from the slim BrandConfig to structure each slide:
+Use the `html_template` patterns from the BrandConfig to structure each slide:
 
 ```html
 <section class="slide slide-title" id="slide-1">
@@ -185,10 +200,10 @@ The server replaces these markers with actual content:
 **NEVER generate chart data, chart options, or chart rendering code.** Place chart containers that reference the source document's chart blocks:
 
 ```html
-<div id="chart-1" class="chart-container rv" data-chart-ref="SLIDE_INDEX:BLOCK_NAME"></div>
+<div id="chart-1" class="chart-container rv" data-chart-block="BLOCK_NAME"></div>
 ```
 
-The `data-chart-ref` attribute is **required** on every chart container. The server fetches the chart config from the source document and generates all initialization code.
+The `data-chart-block` attribute is **required** on every chart container. The server fetches the chart config from the source document and generates all initialization code.
 
 ### What You Do NOT Generate
 
@@ -242,5 +257,5 @@ When converting PowerPoint files:
 |------|---------|-------------|
 | [html-template.md](html-template.md) | Body-only HTML structure reference | Phase 3 (generation) |
 | [animation-patterns.md](animation-patterns.md) | Animation class reference and effect-to-feeling guide | Phase 3 (generation) |
-| [charting.md](charting.md) | Chart container reference (data-chart-ref convention) | Phase 3 (when presentation includes charts) |
+| [charting.md](charting.md) | Chart container reference (data-chart-block convention) | Phase 3 (when presentation includes charts) |
 | [scripts/extract-pptx.py](scripts/extract-pptx.py) | Python script for PPT content extraction | Phase 4 (conversion) |

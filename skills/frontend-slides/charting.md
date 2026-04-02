@@ -13,18 +13,17 @@
 
 **Do NOT embed any chart initialization JavaScript.** The server handles all chart rendering.
 
-Place a chart container with a `data-chart-ref` attribute that references the source document's chart block:
+Place a chart container with a `data-chart-block` attribute referencing the chart block by name:
 
 ```html
-<div id="chart-1" class="chart-container rv" data-chart-ref="SLIDE_INDEX:BLOCK_NAME"></div>
+<div id="chart-1" class="chart-container rv" data-chart-block="monthly_spend_trend"></div>
 ```
 
-- `SLIDE_INDEX`: zero-based index of the slide in the source document containing the chart block
-- `BLOCK_NAME`: name of the chart block within that slide
+The server searches all slides in the source document for a block with this name.
 
 ### Example
 
-If the source document's slide 2 has a chart block named `monthly_spend_trend`:
+If the source document has a chart block named `monthly_spend_trend`:
 
 ```html
 <section class="slide slide-data" id="slide-3">
@@ -37,14 +36,14 @@ If the source document's slide 2 has a chart block named `monthly_spend_trend`:
     <span class="s-title">Monthly Spend Trend</span>
   </div>
   <div class="content-body">
-    <div id="chart-1" class="chart-container rv" data-chart-ref="2:monthly_spend_trend"></div>
+    <div id="chart-1" class="chart-container rv" data-chart-block="monthly_spend_trend"></div>
   </div>
 </section>
 ```
 
 ### Requirements
 
-- **Every** `chart-container` element **must** have a `data-chart-ref` attribute. Missing refs cause an error.
+- **Every** `chart-container` element **must** have a `data-chart-block` attribute. Missing refs cause an error.
 - The referenced chart block must be resolved (call `render_chart` first if needed).
 - Each chart container must have a unique `id` attribute.
 - The server fetches chart configs from the source document, applies brand colors, and generates all initialization JS.
