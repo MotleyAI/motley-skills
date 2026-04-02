@@ -151,7 +151,26 @@ Then define color variants in CSS:
 
 Set `uses_current_color: true` in the logo config. If the SVG has multiple colors that cannot be simplified to currentColor, set `uses_current_color: false` and skip color_variants.
 
-### Pitfall 9: html_template must demonstrate proper class usage
+### Pitfall 9: Table CSS must use colors visible on the table's background
+
+The server resolves `data-table-block` containers by injecting `<table>` elements with the brand's `table_css_class`. The table CSS must use colors that are readable against the background where tables actually render — NOT the global theme colors.
+
+**Wrong** — dark-theme brand using global color tokens for tables that render on a white panel:
+```css
+.dtbl th { color: var(--text-muted); }    /* --text-muted is rgba(255,255,255,0.6) → invisible on white */
+.dtbl td { color: var(--text-primary); }  /* --text-primary is #ffffff → invisible on white */
+```
+
+**Right** — use colors appropriate for the table's actual background context:
+```css
+.dtbl th { color: #6B7280; }                   /* gray, readable on white */
+.dtbl td { color: var(--bg-deep); }            /* dark brand color, readable on white */
+.dtbl td { border-bottom: 1px solid #E5E7EB; } /* light gray border on white */
+```
+
+**Rule:** If your brand is dark-themed (global `--text-primary` is white/light) but tables appear on light panels (e.g. inside `.content-card` on a white `.split-light` panel), the table CSS must use dark text colors — either hardcoded hex values or dark-side brand tokens like `var(--bg-deep)`. Check where tables will actually be placed and style accordingly.
+
+### Pitfall 10: html_template must demonstrate proper class usage
 
 The LLM sees the css_block in the slim config and SHOULD use the CSS classes defined there, but it tends to write inline styles instead. The `html_template` field on each slide type is the primary way to steer the LLM toward correct class usage.
 
@@ -214,6 +233,7 @@ The JSON file that gets uploaded has this outer structure:
 | `javascript` | JavaScriptConfig | No | Navigation controller and counter animations |
 | `workflow` | WorkflowConfig | No | Which workflow phases are enabled |
 | `default_chart_color_scheme` | string | No | Named color scheme for eCharts |
+| `table_css_class` | string | No | CSS class applied to server-resolved `<table>` elements (e.g. `"dtbl"`, `"data-table"`) |
 | `forbidden_patterns` | list[string] | No | Rules the LLM must never violate |
 
 ### colors (ColorPalette)
@@ -505,7 +525,7 @@ Choose footer `kind` (`"svg_wave"`, `"text"`, or `"none"`). If using svg_wave, p
 
 Set chrome boolean flags and provide CSS for progress bar, nav dots, and topbar if needed.
 
-### Step 10: Set chart container CSS
+### Step 10: Set chart and table container CSS
 
 If any slide type includes charts, make sure the css_block includes:
 ```css
@@ -513,7 +533,13 @@ If any slide type includes charts, make sure the css_block includes:
 ```
 Never use flex centering for chart containers (see Pitfall 4).
 
-If any slide type includes tables, make sure to use `overflow: hidden` on table wrappers (see Pitfall 5).
+If any slide type includes tables:
+1. Set `table_css_class` at the top level (e.g. `"dtbl"` or `"data-table"`)
+2. Define CSS for that class in a slide type's css_block (e.g. `.dtbl`, `.dtbl th`, `.dtbl td`)
+3. Use `overflow: hidden` on table wrappers (see Pitfall 5)
+4. **Critical:** Make sure the table CSS uses colors that are visible against the background where tables render — NOT the global theme color tokens if they're designed for dark backgrounds (see Pitfall 9)
+
+The server resolves `<div class="table-container" data-table-block="BLOCK_NAME">` containers by looking up the table block in the source document and injecting a `<table class="<table_css_class>">` element with the rendered data.
 
 ### Step 11: Validate
 
@@ -523,6 +549,8 @@ Before uploading, verify:
 - [ ] `stagger_delay` matches the pattern `^\d+(\.\d+)?(s|ms)$`
 - [ ] Chart containers have explicit height, no flex centering
 - [ ] Table wrappers use `overflow: hidden`
+- [ ] If tables are supported, `table_css_class` is set and its CSS is defined in a slide type css_block
+- [ ] Table CSS colors are visible against the background where tables actually render (see Pitfall 9)
 - [ ] Every `var(--...)` reference in any CSS field is defined in `brand_tokens_css`
 - [ ] Logo SVG uses `fill="currentColor"` (if `uses_current_color` is true)
 - [ ] `html_template` fields demonstrate correct class usage for tables, charts, metrics

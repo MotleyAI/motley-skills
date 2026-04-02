@@ -57,6 +57,7 @@ These invariants apply to EVERY slide in EVERY presentation:
 | Quote slide | 1 quote (max 3 lines) + attribution |
 | Image slide | 1 heading + 1 image (max 60vh height) |
 | Chart slide | 1 heading + 1 chart (max 60vh height) + optional caption |
+| Table slide | 1 heading + 1 table container + optional caption |
 
 **Content exceeds limits? Split into multiple slides. Never cram, never scroll.**
 
@@ -195,6 +196,12 @@ The server replaces these markers with actual content:
 - **`<!-- wave -->`** inside a `<div class="wave">` — server generates wave footer SVGs with unique gradient IDs
 - **`<!-- footer-text -->`** — server injects footer text content
 
+**CRITICAL — Logos: NEVER look up, extract, fetch, or paste actual logo SVG markup.** You do not need the SVG. Just write the HTML comment marker `<!-- logo -->` inside a container div. The server has the logo and injects it automatically. Example:
+```html
+<div class="evalart-logo reveal"><!-- logo --></div>
+```
+That is ALL you write. Do not call any tools to get the logo. Do not read any files to find the logo. Do not inline any `<svg>` elements. Just the marker comment.
+
 ### Charts
 
 **NEVER generate chart data, chart options, or chart rendering code.** Place chart containers that reference the source document's chart blocks:
@@ -204,6 +211,16 @@ The server replaces these markers with actual content:
 ```
 
 The `data-chart-block` attribute is **required** on every chart container. The server fetches the chart config from the source document and generates all initialization code.
+
+### Tables
+
+**NEVER generate table data or `<table>` markup.** Place table containers that reference the source document's table blocks:
+
+```html
+<div id="table-1" class="table-container rv" data-table-block="BLOCK_NAME"></div>
+```
+
+The `data-table-block` attribute is **required** on every table container. The server fetches the table data from the source document and generates the styled `<table>` element using the brand's `table_css_class`.
 
 ### What You Do NOT Generate
 
@@ -227,6 +244,7 @@ The `data-chart-block` attribute is **required** on every chart container. The s
 - [html-template.md](html-template.md) — Body-only template reference
 - [animation-patterns.md](animation-patterns.md) — Animation class reference
 - [charting.md](charting.md) — Chart container reference (if presentation includes charts)
+- [tabling.md](tabling.md) — Table container reference (if presentation includes tables)
 
 ---
 
@@ -258,4 +276,5 @@ When converting PowerPoint files:
 | [html-template.md](html-template.md) | Body-only HTML structure reference | Phase 3 (generation) |
 | [animation-patterns.md](animation-patterns.md) | Animation class reference and effect-to-feeling guide | Phase 3 (generation) |
 | [charting.md](charting.md) | Chart container reference (data-chart-block convention) | Phase 3 (when presentation includes charts) |
+| [tabling.md](tabling.md) | Table container reference (data-table-block convention) | Phase 3 (when presentation includes tables) |
 | [scripts/extract-pptx.py](scripts/extract-pptx.py) | Python script for PPT content extraction | Phase 4 (conversion) |

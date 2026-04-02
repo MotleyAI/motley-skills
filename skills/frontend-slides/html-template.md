@@ -73,6 +73,8 @@ Use the CSS class names from the BrandConfig's `html_template` and `css_block` f
 | `<!-- wave -->` | Inside `<div class="wave">` | Generates wave footer SVG |
 | `<!-- footer-text -->` | Where footer text should appear | Injects footer text |
 
+**Logos: NEVER look up, extract, fetch, or paste actual logo SVG markup.** Just write `<!-- logo -->` inside a container div. The server injects the real SVG automatically. Do not call any tools or read any files to get the logo.
+
 ### Animation Classes
 
 Apply these from the BrandConfig's `animations.presets`:
@@ -100,6 +102,19 @@ Every chart container **must** have:
 - A `data-chart-block="BLOCK_NAME"` attribute
 - The `chart-container` class
 
+### Table Containers
+
+Every table container **must** have:
+- A unique `id` attribute
+- A `data-table-block="BLOCK_NAME"` attribute
+- The `table-container` class
+
+```html
+<div id="table-1" class="table-container rv" data-table-block="quarterly_metrics"></div>
+```
+
+The server resolves the table data from the source document and injects a styled `<table>` element using the brand's `table_css_class`.
+
 ## Content Density Limits Per Slide
 
 | Slide Type | Maximum Content |
@@ -109,6 +124,7 @@ Every chart container **must** have:
 | Feature grid | 1 heading + 6 cards maximum (2x3 or 3x2) |
 | Quote slide | 1 quote (max 3 lines) + attribution |
 | Chart slide | 1 heading + 1 chart container + optional caption |
+| Table slide | 1 heading + 1 table container + optional caption |
 
 **Content exceeds limits? Split into multiple slides. Never cram, never scroll.**
 
