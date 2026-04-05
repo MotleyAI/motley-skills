@@ -80,12 +80,21 @@ Construct a JSON **DeckSpec** object. The schema:
 
 ### Panel header fields
 
+All header fields accept **either** a raw string **or** a block reference from the
+source Motley document. Block references are resolved server-side before rendering.
+
 | Field | Purpose | Example |
 |-------|---------|---------|
-| `badge` | Small label above title (eyebrow, section tag) | "Section 01", "Platform Overview" |
-| `title` | Main heading (supports `\n` for line breaks) | "Q1 Results" |
-| `subtitle` | Text below title (supports markdown) | "**Jan–Mar 2025**\nAll departments" |
-| `aside` | Right-aligned secondary text | "Jan – Dec 2025" |
+| `badge` | Small label above title (eyebrow, section tag) | `"Section 01"` or `{"kind": "text_block_ref", "block_name": "section_label"}` |
+| `title` | Main heading (supports `\n` for line breaks) | `"Q1 Results"` or `{"kind": "text_block_ref", "block_name": "report_title"}` |
+| `subtitle` | Text below title (supports markdown) | `"**Jan–Mar 2025**"` or `{"kind": "query_block_ref", "block_name": "date_range"}` |
+| `aside` | Right-aligned secondary text | `"Jan – Dec 2025"` or `{"kind": "query_block_ref", "block_name": "period"}` |
+
+**Block reference types:**
+- `{"kind": "text_block_ref", "block_name": "..."}` — resolves to the text block's markdown content, rendered as HTML.
+- `{"kind": "query_block_ref", "block_name": "..."}` — resolves to the query block's formatted value (e.g. "$1.2M"). Only single-number mode queries are supported.
+
+The `prose` body type's `text` field also accepts these block references.
 
 ### Rules
 
@@ -95,6 +104,7 @@ Construct a JSON **DeckSpec** object. The schema:
 - **Single-panel layouts**: Provide exactly 1 panel.
 - **Content density**: Follow the `notes` in each panel slot — don't overfill.
 - **Chart/table refs**: Use exact block names from the Motley document.
+- **No literal numbers**: Text elements must NEVER contain a single literal number (e.g. `"$1.2M"`, `"340%"`, `"1,234"`). This applies to header fields, prose text, **and** `data_points` `value`/`detail` fields. Instead, always use a `query_block_ref` or `text_block_ref` pointing to the block that produced that number. This ensures values stay in sync with the underlying data.
 
 ---
 
