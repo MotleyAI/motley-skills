@@ -1,6 +1,6 @@
 # MCP Tools Reference
 
-Comprehensive reference for all 20 tools available via the Motley MCP server.
+Comprehensive reference for all tools available via the Motley MCP server.
 
 ## Overview
 
@@ -13,7 +13,8 @@ The MCP server provides tools for building data-driven reports programmatically.
 | [Cube](tools/cube.md) | 6 | Cube management and schema modification |
 | [Element](tools/element.md) | 5 | Content block updates (text, table, chart, query) |
 | [Document](tools/document.md) | 8 | Document operations, inspection, and variables |
-| Export | 1 | PDF export |
+| Deck | 3 | Persist DeckSpec, render to HTML/PDF, list layouts |
+| Export | 2 | PDF export, HTML save |
 
 ## Quick Reference
 
@@ -50,6 +51,14 @@ The MCP server provides tools for building data-driven reports programmatically.
 | [`inspect_slide`](tools/document.md#inspect_slide) | Get full slide content |
 | [`inspect_block`](tools/document.md#inspect_block) | Get specific block configuration and content |
 | [`move_block`](tools/document.md#move_block) | Move a block to a new position within the document |
+
+### Deck Tools
+
+| Tool | Description |
+|------|-------------|
+| `save_deck` | Persist a DeckSpec to the database, copying referenced blocks from a source document and resolving them. Returns a `document_id`. |
+| `get_document` | Render a saved deck to HTML or PDF on demand. |
+| `read_layouts` | List available slide layouts for a brand style. |
 
 ### Export Tools
 
@@ -128,6 +137,29 @@ export_markdown(doc_id=42, mode="table", include_chart_configs=True)
 
 html_to_pdf(html_content="<html>...</html>")
   → PDF output
+```
+
+### 6. Create a Branded Deck (DeckSpec workflow)
+
+```
+list_styles()                → Available brand styles
+read_layouts(style_name="Cledara")
+                             → Layout catalog for the brand
+
+save_deck(
+    deck_spec={...},
+    style_name="Cledara",
+    source_document_id=42,
+    title="Q1 Report"
+)
+  → Persists deck, copies blocks from source, resolves them
+  → Returns {document_id: 99}
+
+get_document(document_id=99, format="html")
+  → Rendered HTML URL
+
+get_document(document_id=99, format="pdf")
+  → Rendered PDF URL
 ```
 
 ## Error Handling

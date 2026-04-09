@@ -34,8 +34,14 @@ Ask the user these questions (skip any already answered):
 2. Ask the user which style to use (or pick the default if only one exists).
 3. Call **`read_layouts(style_name="chosen_style")`** to get the layout catalog.
 
+> **IMPORTANT:** Layout names, panel counts, and constraints differ across styles.
+> Each style has its own set of layouts — they are **not** interchangeable.
+> You **MUST** call `read_layouts` for the specific style you are building for —
+> never reuse layout names from another style or from the example at the bottom
+> of this file. Using a wrong layout name will cause `save_deck` to fail.
+
 The catalog returns a list of layouts, each with:
-- **name** — Layout identifier (e.g. "Content + Badge", "Split (Data/Detail)")
+- **name** — Layout identifier (use these **exactly** as returned — they are style-specific)
 - **when_to_use** — Guidance on when this layout fits
 - **panels** — List of panel slots, each describing:
   - Which header fields are supported (badge, title, subtitle, aside)
@@ -110,10 +116,12 @@ The `prose` body type's `text` field also accepts these block references.
 
 ## Phase 4: Deliver
 
-1. Call **`save_deck(deck_spec=<your JSON>, style_name="chosen_style", title="Presentation Title", document_id=<if charts/tables>)`**
-2. This returns `html_url` and `html_id`.
+1. Call **`save_deck(deck_spec=<your JSON>, style_name="chosen_style", title="Presentation Title", source_document_id=<if charts/tables>)`**
+   - This copies referenced blocks from the source document, resolves them, and persists the deck.
+   - Returns `{"document_id": <new_id>}`.
+2. Call **`get_document(document_id=<new_id>, format="html")`** to render the HTML.
 3. Present the `html_url` to the user.
-4. If the user wants PDF, call **`html_to_pdf(html_id=<from step 2>)`**.
+4. If the user wants PDF, call **`get_document(document_id=<new_id>, format="pdf")`**.
 
 ---
 

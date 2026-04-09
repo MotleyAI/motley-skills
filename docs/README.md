@@ -76,11 +76,20 @@ The Motley MCP server provides 20 tools organized into four categories:
 | [`inspect_slide`](tools/document.md#inspect_slide) | Get full slide content |
 | [`move_block`](tools/document.md#move_block) | Move a block to a new position |
 
+### Deck Tools
+
+| Tool | Description |
+|------|-------------|
+| `save_deck` | Persist a DeckSpec to the database, returns `document_id` |
+| `get_document` | Render a saved deck to HTML or PDF |
+| `read_layouts` | List available slide layouts for a brand style |
+
 ### Export Tools
 
 | Tool | Description |
 |------|-------------|
 | `html_to_pdf` | Convert HTML content to PDF |
+| `save_html` | Save self-contained HTML to storage |
 
 See [tools.md](tools.md) for the complete tool reference with detailed documentation:
 - [Cube Tools](tools/cube.md) — Cube management and schema modification
