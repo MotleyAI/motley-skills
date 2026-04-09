@@ -27,7 +27,7 @@ End-to-end workflow for creating a data-driven report in Motley.
 1. Research & Plan — explore cubes, understand user needs
 2. Create Document — initialize document, set context variables, create blocks via block-modifier sub-agent
 3. User Approval — export markdown, present for feedback
-4. Output — generate slides via frontend-slides skill
+4. Output — generate slides via make-slides skill
 
 [Full documentation](../skills/create-report/SKILL.md)
 

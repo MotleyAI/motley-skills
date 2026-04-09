@@ -60,13 +60,6 @@ The MCP server provides tools for building data-driven reports programmatically.
 | `get_document` | Render a saved deck to HTML or PDF on demand. |
 | `read_layouts` | List available slide layouts for a brand style. |
 
-### Export Tools
-
-| Tool | Description |
-|------|-------------|
-| `html_to_pdf` | Convert self-contained HTML to PDF |
-| `save_html` | Validate and save self-contained HTML to storage, returns shareable URL |
-
 ## Typical Workflow
 
 ### 1. Discover Available Data
@@ -135,8 +128,6 @@ export_markdown(doc_id=42, mode="table")
 export_markdown(doc_id=42, mode="table", include_chart_configs=True)
   → Markdown with chart data as tables + PlottableChartConfig JSON in HTML comments
 
-html_to_pdf(html_content="<html>...</html>")
-  → PDF output
 ```
 
 ### 6. Create a Branded Deck (DeckSpec workflow)

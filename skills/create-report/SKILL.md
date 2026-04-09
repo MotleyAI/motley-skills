@@ -181,17 +181,7 @@ If not, understand the user's feedback and delegate corrections to block-modifie
 
 ## Phase 4: Output
 
-Use the frontend-slides skill to generate slides from the markdown you just created.
-The frontend-slides skill will call `save_html` to upload the presentation and return a shareable URL.
+Use the make-slides skill to generate slides from the document you just created.
+The make-slides skill will call `save_deck` to persist the deck and `get_document` to render it as HTML or PDF.
 
 On user request, export the report to the user's preferred format.
-
-When exporting for the frontend-slides skill, always include chart configs so charts can be rendered interactively:
-
-```
-export_markdown(doc_id=<id>, mode="table", include_chart_configs=True)
-```
-
-This will embed the data for the charts as markdown tables, with chart metadata next to them.
-Each chart block will also have its full `PlottableChartConfig` JSON embedded as an HTML comment (`<!-- chart_config: {...} -->`), which the frontend-slides skill uses to render interactive eCharts.
-Again, use the frontend-slides skill to generate slides as needed.
