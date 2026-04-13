@@ -6,8 +6,8 @@
 
 ## Getting a Chart
 
-- If the Storyline document already has a chart block -> call `render_chart` to get its `chart_config`
-- If no chart exists -> call `update_chart_block` with a prompt describing the desired chart, specifying a location in the document. Use the returned `chart_config`.
+- If the Storyline document already has a chart block -> call `render_chart` to resolve it (returns a PNG image and `chart_config`)
+- If no chart exists -> call `update_chart_block` with a prompt describing the desired chart, specifying a location in the document. This returns a confirmation with data preview, a PNG image, and the `chart_config` needed for embedding.
 
 ## Embedding Charts in Body HTML
 

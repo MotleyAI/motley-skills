@@ -139,7 +139,7 @@ The `prose` body type's `text` field also accepts these block references.
       "panels": [{
         "badge": "Overview",
         "title": "Key Findings",
-        "body": {"kind": "prose", "text": "- Revenue up 34% YoY\n- Churn reduced to 2.1%\n- 47 new enterprise accounts"}
+        "body": {"kind": "prose", "text": {"kind": "text_block_ref", "block_name": "key_findings"}}
       }]
     },
     {
@@ -147,9 +147,9 @@ The `prose` body type's `text` field also accepts these block references.
       "panels": [{
         "title": "Key Metrics",
         "body": {"kind": "data_points", "columns": 3, "items": [
-          {"value": "$1.2M", "label": "ARR"},
-          {"value": "340%", "label": "Growth"},
-          {"value": "98%", "label": "Retention"}
+          {"value": {"kind": "query_block_ref", "block_name": "arr_total"}, "label": "ARR"},
+          {"value": {"kind": "query_block_ref", "block_name": "growth_rate"}, "label": "Growth"},
+          {"value": {"kind": "query_block_ref", "block_name": "retention_rate"}, "label": "Retention"}
         ]}
       }]
     },
