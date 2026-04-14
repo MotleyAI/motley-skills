@@ -163,7 +163,7 @@ See the `update-table-block` skill for table patterns.
 Export the document to markdown format:
 
 ```
-export_markdown(doc_id=<id>)
+export_document(document_id=<id>, format="markdown")
 ```
 
 Check the output carefully. Does it look as expected? If not, delegate block updates to block-modifier.
@@ -182,6 +182,6 @@ If not, understand the user's feedback and delegate corrections to block-modifie
 ## Phase 4: Output
 
 Use the make-slides skill to generate slides from the document you just created.
-The make-slides skill will call `save_deck` to persist the deck and `get_document` to render it as HTML or PDF.
+The make-slides skill will call `save_deck` to persist the deck and `export_document` to render it as HTML or PDF.
 
 On user request, export the report to the user's preferred format.

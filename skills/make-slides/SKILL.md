@@ -119,9 +119,9 @@ The `prose` body type's `text` field also accepts these block references.
 1. Call **`save_deck(deck_spec=<your JSON>, style_name="chosen_style", title="Presentation Title", source_document_id=<if charts/tables>)`**
    - This copies referenced blocks from the source document, resolves them, and persists the deck.
    - Returns `{"document_id": <new_id>}`.
-2. Call **`get_document(document_id=<new_id>, format="html")`** to render the HTML.
+2. Call **`export_document(document_id=<new_id>, format="html")`** to render the HTML.
 3. Present the `html_url` to the user.
-4. If the user wants PDF, call **`get_document(document_id=<new_id>, format="pdf")`**.
+4. If the user wants PDF, call **`export_document(document_id=<new_id>, format="pdf")`**.
 
 ---
 

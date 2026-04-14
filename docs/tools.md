@@ -12,7 +12,7 @@ The MCP server provides tools for building data-driven reports programmatically.
 |----------|-------|-------------|
 | [Model](tools/model.md) | 4 | Model management and schema modification |
 | [Element](tools/element.md) | 5 | Content block updates (text, table, chart, query) |
-| [Document](tools/document.md) | 8 | Document operations, inspection, and variables |
+| [Document](tools/document.md) | 7 | Document operations, inspection, and variables |
 | Deck | 3 | Persist DeckSpec, render to HTML/PDF, list layouts |
 | Export | 2 | PDF export, HTML save |
 
@@ -42,7 +42,6 @@ The MCP server provides tools for building data-driven reports programmatically.
 | Tool | Description |
 |------|-------------|
 | [`create_document`](tools/document.md#create_document) | Create a new document with a data source |
-| [`export_markdown`](tools/document.md#export_markdown) | Export document as markdown (image or table mode, optionally with chart configs) |
 | [`inspect_document`](tools/document.md#inspect_document) | Inspect a document, slide, or block (doc outline / slide content / block detail) |
 | [`get_doc_variables`](tools/document.md#get_doc_variables) | Get all variables and context for a document |
 | [`set_doc_variables`](tools/document.md#set_doc_variables) | Set document context variables (merges with existing) |
@@ -53,7 +52,7 @@ The MCP server provides tools for building data-driven reports programmatically.
 | Tool | Description |
 |------|-------------|
 | `save_deck` | Persist a DeckSpec to the database, copying referenced blocks from a source document and resolving them. Returns a `document_id`. |
-| `get_document` | Render a saved deck to HTML or PDF on demand. |
+| `export_document` | Export a saved document to HTML, PDF, or markdown. |
 | `read_layouts` | List available slide layouts for a brand style. |
 
 ## Typical Workflow
@@ -115,14 +114,11 @@ render_chart(
 ### 5. Export
 
 ```
-export_markdown(doc_id=42)
+export_document(document_id=42, format="markdown")
   → Markdown with chart images
 
-export_markdown(doc_id=42, mode="table")
+export_document(document_id=42, format="markdown", mode="table")
   → Markdown with chart data as tables
-
-export_markdown(doc_id=42, mode="table", include_chart_configs=True)
-  → Markdown with chart data as tables + PlottableChartConfig JSON in HTML comments
 
 ```
 
@@ -142,10 +138,10 @@ save_deck(
   → Persists deck, copies blocks from source, resolves them
   → Returns {document_id: 99}
 
-get_document(document_id=99, format="html")
+export_document(document_id=99, format="html")
   → Rendered HTML URL
 
-get_document(document_id=99, format="pdf")
+export_document(document_id=99, format="pdf")
   → Rendered PDF URL
 ```
 

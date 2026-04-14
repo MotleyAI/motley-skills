@@ -66,7 +66,6 @@ The Motley MCP server provides 18 tools organized into four categories:
 | Tool | Description |
 |------|-------------|
 | [`create_document`](tools/document.md#create_document) | Create a new document |
-| [`export_markdown`](tools/document.md#export_markdown) | Export document as markdown |
 | [`inspect_document`](tools/document.md#inspect_document) | Inspect a document, slide, or block |
 | [`get_doc_variables`](tools/document.md#get_doc_variables) | Get all variables for a document |
 | [`set_doc_variables`](tools/document.md#set_doc_variables) | Set document context variables |
@@ -77,7 +76,7 @@ The Motley MCP server provides 18 tools organized into four categories:
 | Tool | Description |
 |------|-------------|
 | `save_deck` | Persist a DeckSpec to the database, returns `document_id` |
-| `get_document` | Render a saved deck to HTML or PDF |
+| `export_document` | Export a saved document to HTML, PDF, or markdown |
 | `read_layouts` | List available slide layouts for a brand style |
 
 See [tools.md](tools.md) for the complete tool reference with detailed documentation:

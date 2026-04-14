@@ -32,30 +32,6 @@ Create a new document with a data source.
 
 ---
 
-## export_markdown
-
-Export a document as markdown.
-
-### Arguments
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `doc_id` | integer | **Yes** | The document to export. |
-| `mode` | string | No | Export mode: `"image"` (default) embeds chart images, `"table"` renders chart data as markdown tables with metadata. |
-
-### Returns
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `markdown` | string | The full document exported as markdown |
-
-### Notes
-
-- `"image"` mode is best for visual review — charts appear as embedded images
-- `"table"` mode is useful when you need the underlying chart data (e.g. for re-rendering with a different charting library)
-
----
-
 ## get_doc_variables
 
 Get all variables and their values for a document, optionally filtered to a specific slide.
