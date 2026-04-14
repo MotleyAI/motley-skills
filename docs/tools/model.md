@@ -93,7 +93,7 @@ Create a new model from a SQL SELECT query.
 
 ## edit_model
 
-Add or delete measures, dimensions, and derived dimensions on an existing model in a single operation.
+Add or delete measures and dimensions on an existing model in a single operation. `delete_names` may also remove derived dimensions.
 
 ### Arguments
 
