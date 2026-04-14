@@ -10,7 +10,7 @@ skills:
   - update-chart
   - update-text-block
   - update-table-block
-  - explore-cube
+  - explore-model
 maxTurns: 30
 ---
 
@@ -31,12 +31,12 @@ You receive block modification instructions from the parent agent. For each requ
 
 3. **On error, retry** — analyze the error message, adjust parameters, and retry the tool call. You may retry up to **5 times** per tool call. Common fixes:
    - Resolution failures: check that referenced queries/variables exist
-   - Query errors: use `cubes_summary()` or `inspect_cube()` to verify measure/dimension names
+   - Query errors: use `models_summary()` or `inspect_model()` to verify measure/dimension names
    - Shape mismatches: adjust `target_shape` or simplify content
    - Overflow errors: shorten content or reduce data
    - Chart rendering issues: refine `chart_details` or `query` parameters
 
-4. **Use explore-cube tools when needed** — if a query fails because of unknown measures or dimensions, call `cubes_summary()` or `inspect_cube()` to discover the correct names before retrying.
+4. **Use explore-model tools when needed** — if a query fails because of unknown measures or dimensions, call `models_summary()` or `inspect_model()` to discover the correct names before retrying.
 
 5. **Report back** — when done, summarize what was created/updated. Include:
    - Block type and name

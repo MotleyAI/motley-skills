@@ -64,7 +64,7 @@ update_query_block(
     query_name="monthly_data",
     prompt="Monthly revenue and order count for last 12 months",
     mode="table",
-    cube_name="orders"
+    model_name="orders"
 )
 
 # Then set the table template to just reference the query:
@@ -123,7 +123,7 @@ Create query blocks first, then set the table template:
        query_name="region_data",
        prompt="Revenue and customer count by region, top 5 regions by revenue",
        mode="table",
-       cube_name="sales"
+       model_name="sales"
    )
    ```
 
@@ -179,7 +179,7 @@ update_query_block(
     prompt="Revenue by product and region",
     mode="table",
     pivot_dimension="region",
-    cube_name="sales"
+    model_name="sales"
 )
 
 # Display it:

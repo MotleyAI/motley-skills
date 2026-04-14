@@ -1,40 +1,40 @@
 ---
-name: explore-cube
+name: explore-model
 description: >
-  Explore available cubes before building documents. Covers listing cubes,
-  inspecting schemas, and creating custom cubes/measures.
+  Explore available models before building documents. Covers listing models,
+  inspecting schemas, and creating custom models/measures.
 ---
 
-# Explore Cube
+# Explore Model
 
-Explore available cubes to understand what data is available before building documents. This is typically the first step in any report creation workflow.
+Explore available models to understand what data is available before building documents. This is typically the first step in any report creation workflow.
 
-## Listing Cubes
+## Listing Models
 
-Use `cubes_summary` to see all available cubes and their schemas:
+Use `models_summary` to see all available models and their schemas:
 
 ```
-cubes_summary()
+models_summary()
 ```
 
-Returns for each cube:
-- Cube name
+Returns for each model:
+- Model name
 - Measures (with types: count, sum, avg, etc.)
 - Dimensions (with types: string, time, date, boolean, number)
 - Derived dimensions (computed columns)
 
 For a compact overview (names only, no types/descriptions):
 ```
-cubes_summary(verbose=false)
+models_summary(verbose=false)
 ```
 
-## Inspecting a Cube
+## Inspecting a Model
 
-Use `inspect_cube` to get detailed information including sample data:
+Use `inspect_model` to get detailed information including sample data:
 
 ```
-inspect_cube(
-    cube_name="revenue",
+inspect_model(
+    model_name="revenue",
     num_rows=3,
     show_sql=false
 )
@@ -45,7 +45,7 @@ Returns:
 - Sample data rows (to understand value formats and data quality)
 - Optionally: the underlying SQL definition (`show_sql=true`)
 
-**Tip**: Always inspect cubes relevant to your document before writing chart/query prompts. Knowing exact measure and dimension names leads to better results.
+**Tip**: Always inspect models relevant to your document before writing chart/query prompts. Knowing exact measure and dimension names leads to better results.
 
 ## Understanding Schemas
 
@@ -61,16 +61,16 @@ Time dimensions can be grouped at: `DAY`, `WEEK`, `MONTH`, `QUARTER`, `YEAR`
 
 When writing prompts, specify the granularity you want (e.g., "monthly revenue", "quarterly breakdown").
 
-For full details on data types and constraints, see [cube-guide.md](../_shared/cube-guide.md).
+For full details on data types and constraints, see [model-guide.md](../_shared/model-guide.md).
 
-## Creating Custom Cubes
+## Creating Custom Models
 
-When existing cubes don't have the data you need, create a new cube from a SQL query:
+When existing models don't have the data you need, create a new model from a SQL query:
 
 ```
-create_cube(
-    source_cube_name="orders",
-    cube_name="monthly_order_summary",
+create_model(
+    source_model_name="orders",
+    model_name="monthly_order_summary",
     sql="SELECT DATE_TRUNC('month', created_at) AS month, customer_id, COUNT(*) AS order_count, SUM(amount) AS total_amount FROM orders GROUP BY 1, 2",
     column_descriptions=[
         {"name": "month", "description": "Order month"},
@@ -81,18 +81,18 @@ create_cube(
 )
 ```
 
-The new cube:
-- Uses the database connection from `source_cube_name`
+The new model:
+- Uses the database connection from `source_model_name`
 - Auto-detects column types (measures vs dimensions)
 - Is immediately available for queries
 
-## Adding Custom Measures
+## Editing a Model — Adding and Removing Measures/Dimensions
 
-Add computed measures to an existing cube:
+Use `edit_model` to add computed measures, add computed dimensions, and/or delete existing measures/dimensions on a model, all in a single call:
 
 ```
-add_measures(
-    cube_name="orders",
+edit_model(
+    model_name="orders",
     measures=[
         {
             "name": "large_order_count",
@@ -107,21 +107,7 @@ add_measures(
             "format": "currency",
             "description": "Average revenue per order"
         }
-    ]
-)
-```
-
-**Measure types**: `count`, `count_distinct`, `count_distinct_approx`, `sum`, `avg`, `min`, `max`, `number`
-
-**Format options**: `percent`, `currency`, `integer`, `float`
-
-## Adding Custom Dimensions
-
-Add computed dimensions to an existing cube:
-
-```
-add_dimensions(
-    cube_name="orders",
+    ],
     dimensions=[
         {
             "name": "size_bucket",
@@ -129,28 +115,27 @@ add_dimensions(
             "type": "string",
             "description": "Order size category"
         }
-    ]
+    ],
+    delete_names=["old_measure", "unused_dimension"]
 )
 ```
+
+All parameters except `model_name` are optional — include only what you need:
+- **measures** — list of measures to add (same format as before)
+- **dimensions** — list of dimensions to add
+- **delete_names** — list of measure/dimension names to remove
+
+**Measure types**: `count`, `count_distinct`, `count_distinct_approx`, `sum`, `avg`, `min`, `max`, `number`
+
+**Format options**: `percent`, `currency`, `integer`, `float`
 
 **Dimension types**: `string`, `time`, `date`, `boolean`, `number`
 
-## Removing Measures/Dimensions
-
-Clean up unused or incorrect measures and dimensions:
-
-```
-delete_measures_dimensions(
-    cube_name="orders",
-    names=["old_measure", "unused_dimension"]
-)
-```
-
 ## Tips for Report Building
 
-1. **Start with `cubes_summary`** — get the big picture of available data
-2. **Inspect relevant cubes** — `inspect_cube` with `num_rows=3` to see real data
+1. **Start with `models_summary`** — get the big picture of available data
+2. **Inspect relevant models** — `inspect_model` with `num_rows=3` to see real data
 3. **Note exact names** — use precise measure/dimension names from the schema in your chart and query configurations
-4. **Check for time dimensions** — if you need time series charts, confirm the cube has a time dimension and what it's called
-5. **Create cubes when needed** — if the data model doesn't fit, create a custom cube from SQL rather than fighting with the existing schema
+4. **Check for time dimensions** — if you need time series charts, confirm the model has a time dimension and what it's called
+5. **Create models when needed** — if the data model doesn't fit, create a custom model from SQL rather than fighting with the existing schema
 6. **Add measures for derived metrics** — if you need ratios, percentages, or conditional counts, add them as custom measures

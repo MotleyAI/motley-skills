@@ -10,7 +10,7 @@ The MCP server provides tools for building data-driven reports programmatically.
 
 | Category | Tools | Description |
 |----------|-------|-------------|
-| [Cube](tools/cube.md) | 6 | Cube management and schema modification |
+| [Model](tools/model.md) | 4 | Model management and schema modification |
 | [Element](tools/element.md) | 5 | Content block updates (text, table, chart, query) |
 | [Document](tools/document.md) | 8 | Document operations, inspection, and variables |
 | Deck | 3 | Persist DeckSpec, render to HTML/PDF, list layouts |
@@ -18,16 +18,14 @@ The MCP server provides tools for building data-driven reports programmatically.
 
 ## Quick Reference
 
-### Cube Tools
+### Model Tools
 
 | Tool | Description |
 |------|-------------|
-| [`cubes_summary`](tools/cube.md#cubes_summary) | List all cubes with schemas |
-| [`inspect_cube`](tools/cube.md#inspect_cube) | Get cube details with sample data |
-| [`create_cube`](tools/cube.md#create_cube) | Create cube from SQL query |
-| [`add_measures`](tools/cube.md#add_measures) | Add custom measures to cube |
-| [`add_dimensions`](tools/cube.md#add_dimensions) | Add custom dimensions to cube |
-| [`delete_measures_dimensions`](tools/cube.md#delete_measures_dimensions) | Remove measures/dimensions |
+| [`models_summary`](tools/model.md#models_summary) | List all models with schemas |
+| [`inspect_model`](tools/model.md#inspect_model) | Get model details with sample data |
+| [`create_model`](tools/model.md#create_model) | Create model from SQL query |
+| [`edit_model`](tools/model.md#edit_model) | Add/delete measures and dimensions |
 
 ### Element Tools
 
@@ -63,8 +61,8 @@ The MCP server provides tools for building data-driven reports programmatically.
 ### 1. Discover Available Data
 
 ```
-cubes_summary()              → List available cubes
-inspect_cube(cube_name="sales_data", num_rows=3)
+models_summary()             → List available models
+inspect_model(model_name="sales_data", num_rows=3)
                              → Schema and sample data
 ```
 

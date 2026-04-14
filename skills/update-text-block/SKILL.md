@@ -118,14 +118,14 @@ Create query blocks first, then set the text template:
        location={doc_id: 42, slide_name: "Overview", parent_block: "summary_text"},
        query_name="total_revenue",
        prompt="Total revenue for the reporting period",
-       cube_name="revenue"
+       model_name="revenue"
    )
 
    update_query_block(
        location={doc_id: 42, slide_name: "Overview", parent_block: "summary_text"},
        query_name="customer_count",
        prompt="Number of active customers",
-       cube_name="customers"
+       model_name="customers"
    )
    ```
 

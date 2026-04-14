@@ -220,6 +220,6 @@ update_query_block(
 
 ## Related Skills
 
-- For exploring cubes before writing queries: see the `explore-cube` skill
+- For exploring models before writing queries: see the `explore-model` skill
 - For expression syntax in templates: see [variable-reference-syntax.md](../_shared/variable-reference-syntax.md)
 - For context variables: see [resolution-context.md](../_shared/resolution-context.md)

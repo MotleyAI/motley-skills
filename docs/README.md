@@ -33,25 +33,23 @@ See [setup.md](setup.md) for detailed installation instructions.
 
 ## Available Tools
 
-The Motley MCP server provides 20 tools organized into four categories:
+The Motley MCP server provides 18 tools organized into four categories:
 
 | Category | Tools | Description |
 |----------|-------|-------------|
-| **Cube** | 6 | Data modeling and schema management |
+| **Model** | 4 | Data modeling and schema management |
 | **Element** | 5 | Content blocks (text, table, chart, query, render) |
 | **Document** | 8 | Document operations, inspection, and variables |
 | **Export** | 1 | PDF export |
 
-### Cube Tools
+### Model Tools
 
 | Tool | Description |
 |------|-------------|
-| [`cubes_summary`](tools/cube.md#cubes_summary) | List all cubes with schemas |
-| [`inspect_cube`](tools/cube.md#inspect_cube) | Get cube details with sample data |
-| [`create_cube`](tools/cube.md#create_cube) | Create cube from SQL query |
-| [`add_measures`](tools/cube.md#add_measures) | Add custom measures to cube |
-| [`add_dimensions`](tools/cube.md#add_dimensions) | Add custom dimensions to cube |
-| [`delete_measures_dimensions`](tools/cube.md#delete_measures_dimensions) | Remove measures/dimensions |
+| [`models_summary`](tools/model.md#models_summary) | List all models with schemas |
+| [`inspect_model`](tools/model.md#inspect_model) | Get model details with sample data |
+| [`create_model`](tools/model.md#create_model) | Create model from SQL query |
+| [`edit_model`](tools/model.md#edit_model) | Add/delete measures and dimensions |
 
 ### Element Tools
 
@@ -83,7 +81,7 @@ The Motley MCP server provides 20 tools organized into four categories:
 | `read_layouts` | List available slide layouts for a brand style |
 
 See [tools.md](tools.md) for the complete tool reference with detailed documentation:
-- [Cube Tools](tools/cube.md) — Cube management and schema modification
+- [Model Tools](tools/model.md) — Model management and schema modification
 - [Element Tools](tools/element.md) — Content block updates (text, table, chart, query)
 - [Document Tools](tools/document.md) — Document operations, inspection, and variables
 
@@ -98,7 +96,7 @@ This bundle includes skill documentation to help Claude understand the Motley do
 | [update-text-block](../skills/update-text-block/SKILL.md) | Text content with variable substitution |
 | [update-table-block](../skills/update-table-block/SKILL.md) | Table formatting and constraints |
 | [update-query-block](../skills/update-query-block/SKILL.md) | Query blocks for data retrieval |
-| [explore-cube](../skills/explore-cube/SKILL.md) | Cube exploration and custom data modeling |
+| [explore-model](../skills/explore-model/SKILL.md) | Model exploration and custom data modeling |
 
 See [skills.md](skills.md) for the complete skills reference.
 

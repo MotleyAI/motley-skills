@@ -11,7 +11,7 @@ This document provides an overview of the skills included in the Motley bundle. 
 | Create or modify text content | [update-text-block](#update-text-block) |
 | Create or modify a table | [update-table-block](#update-table-block) |
 | Create data queries for text/tables | [update-query-block](#update-query-block) |
-| Explore available data | [explore-cube](#explore-cube) |
+| Explore available data models | [explore-model](#explore-model) |
 
 ---
 
@@ -24,7 +24,7 @@ End-to-end workflow for creating a data-driven report in Motley.
 **When to use**: Creating a report, building a document, or making a data-driven presentation from scratch.
 
 **Phases:**
-1. Research & Plan — explore cubes, understand user needs
+1. Research & Plan — explore models, understand user needs
 2. Create Document — initialize document, set context variables, create blocks via block-modifier sub-agent
 3. User Approval — export markdown, present for feedback
 4. Output — generate slides via make-slides skill
@@ -122,19 +122,19 @@ Create or modify numerical queries within text or table blocks.
 
 ---
 
-### explore-cube
+### explore-model
 
-Explore available cubes to understand what data is available.
+Explore available models to understand what data is available.
 
-**When to use**: Before building a report — discover cubes, inspect schemas, create custom cubes/measures.
+**When to use**: Before building a report — discover models, inspect schemas, create custom models/measures.
 
 **Key tools:**
-- `cubes_summary()` — list all cubes
-- `inspect_cube(cube_name=..., num_rows=3)` — see schema and sample data
-- `create_cube(...)` — create custom cube from SQL
-- `add_measures(...)` / `add_dimensions(...)` — extend existing cubes
+- `models_summary()` — list all models
+- `inspect_model(model_name=..., num_rows=3)` — see schema and sample data
+- `create_model(...)` — create custom model from SQL
+- `edit_model(...)` — add/delete measures and dimensions on existing models
 
-[Full documentation](../skills/explore-cube/SKILL.md)
+[Full documentation](../skills/explore-model/SKILL.md)
 
 ---
 
@@ -162,16 +162,16 @@ Auto-generated context variables:
 
 [View](../skills/_shared/resolution-context.md)
 
-### cube-guide.md
+### model-guide.md
 
-Cube data modeling concepts:
+Model data modeling concepts:
 - Measures and dimensions
 - Time granularities
 - Dimension constraints for charts
 - Filter concepts
-- Custom cubes and measures
+- Custom models and measures
 
-[View](../skills/_shared/cube-guide.md)
+[View](../skills/_shared/model-guide.md)
 
 ---
 

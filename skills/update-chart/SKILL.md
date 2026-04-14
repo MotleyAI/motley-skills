@@ -210,14 +210,14 @@ If the chart doesn't look right, call `update_chart_block` again with adjusted `
 | Issue | Solution |
 |-------|----------|
 | Wrong chart type | Set `series_default.type` explicitly (BAR, LINE, PIE, FUNNEL) |
-| Missing data points | Check that the cube has data for the requested time range. Use `inspect_cube` to verify. |
+| Missing data points | Check that the model has data for the requested time range. Use `inspect_model` to verify. |
 | Too many categories | Add `limit` to the query |
 | Wrong time granularity | Set `time_dimension.granularity` explicitly |
 | Axis scale issues | Set `scale: "LOG"` on the axis, or use dual axis with `y_axis: "right"` |
-| Unknown measure/dimension | Use `inspect_cube` to see exact names |
+| Unknown measure/dimension | Use `inspect_model` to see exact names |
 | Wrong cube | Set `cube_name` on each measure/dimension explicitly |
 
 ## Related Skills
 
-- For exploring cubes before building charts: see the `explore-cube` skill
-- For understanding cube schemas: see [cube-guide.md](../_shared/cube-guide.md)
+- For exploring models before building charts: see the `explore-model` skill
+- For understanding model schemas: see [model-guide.md](../_shared/model-guide.md)

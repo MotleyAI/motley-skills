@@ -15,7 +15,7 @@ Create a new document with a data source.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `name` | string | **Yes** | Descriptive name for the document. |
-| `source_id` | integer | **Yes** | Data source ID (from `cubes_summary` or `inspect_cube`). All cubes in the document must come from this source. |
+| `source_id` | integer | **Yes** | Data source ID (from `models_summary` or `inspect_model`). All models in the document must come from this source. |
 
 ### Returns
 

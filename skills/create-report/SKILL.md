@@ -31,28 +31,28 @@ Enter plan mode.
 
 Make sure you understand **why** the user wants to create this report, **what** exactly they want to show.
 
-### Explore Cubes
+### Explore Models
 
 Data is central to the report generation. It can be used both for charts and inline queries
 embedded in the text.
 
 The purpose of this step is to find the relevant data for the queries and charts that should be in the report.
-Data is represented as cubes (data models), containing measures and dimensions, that can be queried.
+Data is represented as models (data models), containing measures and dimensions, that can be queried.
 
-Understand what cubes are available:
-
-```
-cubes_summary()
-```
-
-Then inspect relevant cubes to see measures, dimensions, and sample data:
+Understand what models are available:
 
 ```
-inspect_cube(cube_name="revenue", num_rows=3)
-inspect_cube(cube_name="customers", num_rows=3)
+models_summary()
 ```
 
-If the existing cubes don't have the data you need, you can create custom cubes from SQL (`create_cube`), add computed measures to existing cubes (`add_measures`), or add computed dimensions (`add_dimensions`). See the `explore-cube` skill for details.
+Then inspect relevant models to see measures, dimensions, and sample data:
+
+```
+inspect_model(model_name="revenue", num_rows=3)
+inspect_model(model_name="customers", num_rows=3)
+```
+
+If the existing models don't have the data you need, you can create custom models from SQL (`create_model`), or add computed measures/dimensions to existing models (`edit_model`). See the `explore-model` skill for details.
 
 ### Ask questions
 
@@ -78,8 +78,8 @@ create_document(
 )
 ```
 
-You need to provide the `source_id` of the cubes you are going to use. Currently, all the cubes in a document must
-come from a single source. The `source_id` can be found in outputs of `cubes_summary` and `inspect_cube` tools.
+You need to provide the `source_id` of the models you are going to use. Currently, all the models in a document must
+come from a single source. The `source_id` can be found in outputs of `models_summary` and `inspect_model` tools.
 
 ### Set Context Variables
 
