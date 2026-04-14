@@ -56,33 +56,6 @@ Export a document as markdown.
 
 ---
 
-## get_doc_summary
-
-Get the outline of a document including slide names, positions, descriptions, and block names.
-
-### Arguments
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `doc_id` | integer | **Yes** | The document's ID. |
-
-### Returns
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Document identifier |
-| `title` | string | Document title |
-| `slides` | array | List of slide summaries |
-
-Each slide in the array contains:
-- `id` - Slide database ID
-- `position` - Position in the document (1-indexed)
-- `name` - Slide name (use this to reference the slide)
-- `description` - Slide description
-- `blocks` - Array of block names in the slide
-
----
-
 ## get_doc_variables
 
 Get all variables and their values for a document, optionally filtered to a specific slide.
@@ -139,61 +112,38 @@ Set document context variables. Merges provided values with existing parameters 
 
 ---
 
-## inspect_slide
+## inspect_document
 
-Get the full content of a specific slide including layout, blocks, and available variables.
+Inspect a document, slide, or block. The level of detail depends on which arguments you provide:
 
-### Arguments
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `doc_id` | integer | **Yes** | The document containing the slide. |
-| `slide_name` | string | **Yes** | The exact name of the slide to inspect (from `get_doc_summary`). |
-
-### Returns
-
-Returns the full slide domain model as a JSON object, including:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Slide name |
-| `layout` | object | Full layout structure with all blocks |
-| `variables` | array | Available variables for this slide |
-
-The `variables` array includes context variables and block-generated variables that can be used in templates.
-
-### Notes
-
-- Heavy fields (like chart images) are stripped from the response to reduce size
-- Block directives are stripped from the response
-
----
-
-## inspect_block
-
-Get the complete configuration of a specific content block.
+- **doc_id only** — returns document outline (slide names, block names)
+- **doc_id + slide_name** — returns full slide content with variables
+- **doc_id + slide_name + block_name** — returns a specific block with full data
 
 ### Arguments
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `doc_id` | integer | **Yes** | The document containing the block. |
-| `slide_name` | string | **Yes** | The slide containing the block. |
-| `block_name` | string | **Yes** | The specific block to inspect (from `get_doc_summary` or `inspect_slide`). |
+| `doc_id` | integer | **Yes** | The document to inspect. |
+| `slide_name` | string | No | The slide to inspect. Required for multi-slide decks when inspecting a slide or block. |
+| `block_name` | string | No | A specific block to inspect. If provided, returns detailed block content instead of the full slide. |
 
-### Returns
-
-Returns the full block domain model as a JSON object. The structure varies by block type but typically includes:
+### Returns (document outline mode)
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `name` | string | Block name |
-| `type` | string | Block type (text, table, chart, etc.) |
-| `description` | string | Block description |
-| `template` | object | Template configuration (if applicable) |
-| `content` | varies | Resolved content (if available) |
-| `queries` | array | Associated queries (for text/table blocks) |
-| `is_out_of_date` | boolean | Whether the block needs re-resolution |
+| `doc_id` | integer | Document identifier |
+| `title` | string | Document title |
+| `mode` | string | Document mode (single or regular) |
+| `slides` | array | List of slide summaries (name, position, description, block names) |
+
+### Returns (slide mode)
+
+Returns the full slide domain model including layout, blocks, and available variables. Heavy fields are stripped to reduce response size.
+
+### Returns (block mode)
+
+Returns the full block domain model (name, type, description, template, content, queries, etc.). Large DataFrames are truncated.
 
 ---
 

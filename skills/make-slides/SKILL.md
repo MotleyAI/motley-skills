@@ -30,7 +30,7 @@ Ask the user these questions (skip any already answered):
 
 ## Phase 2: Load Layouts
 
-1. Call **`list_styles()`** to see available brand styles.
+1. Call **`list_resources(what="styles")`** to see available brand styles.
 2. Ask the user which style to use (or pick the default if only one exists).
 3. Call **`read_layouts(style_name="chosen_style")`** to get the layout catalog.
 

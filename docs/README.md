@@ -69,11 +69,9 @@ The Motley MCP server provides 20 tools organized into four categories:
 |------|-------------|
 | [`create_document`](tools/document.md#create_document) | Create a new document |
 | [`export_markdown`](tools/document.md#export_markdown) | Export document as markdown |
-| [`get_doc_summary`](tools/document.md#get_doc_summary) | Get document outline with slides/blocks |
+| [`inspect_document`](tools/document.md#inspect_document) | Inspect a document, slide, or block |
 | [`get_doc_variables`](tools/document.md#get_doc_variables) | Get all variables for a document |
 | [`set_doc_variables`](tools/document.md#set_doc_variables) | Set document context variables |
-| [`inspect_block`](tools/document.md#inspect_block) | Get specific block content |
-| [`inspect_slide`](tools/document.md#inspect_slide) | Get full slide content |
 | [`move_block`](tools/document.md#move_block) | Move a block to a new position |
 
 ### Deck Tools

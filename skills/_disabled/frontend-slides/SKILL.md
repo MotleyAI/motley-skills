@@ -124,7 +124,7 @@ If user provides an image folder:
 
 ## Phase 2: Load Brand Style
 
-Call `list_styles()` to see available styles. If multiple exist, ask the user which to use. Then call `read_style(style_name=chosen_name)` — the response is a slim BrandConfig with only the semantic metadata you need (no CSS, JS, or SVG).
+Call `list_resources(what="styles")` to see available styles. If multiple exist, ask the user which to use. Then call `read_style(style_name=chosen_name)` — the response is a slim BrandConfig with only the semantic metadata you need (no CSS, JS, or SVG).
 
 The slim BrandConfig tells you:
 - **Slide types** (`payload.slide_types.types`): available slide archetypes with `html_template`, `layout_description`, `when_to_use`, `css_class`. First slide must use `first_slide_type`, last must use `last_slide_type`.

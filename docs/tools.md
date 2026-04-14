@@ -45,11 +45,9 @@ The MCP server provides tools for building data-driven reports programmatically.
 |------|-------------|
 | [`create_document`](tools/document.md#create_document) | Create a new document with a data source |
 | [`export_markdown`](tools/document.md#export_markdown) | Export document as markdown (image or table mode, optionally with chart configs) |
-| [`get_doc_summary`](tools/document.md#get_doc_summary) | Get document outline with slides and blocks |
+| [`inspect_document`](tools/document.md#inspect_document) | Inspect a document, slide, or block (doc outline / slide content / block detail) |
 | [`get_doc_variables`](tools/document.md#get_doc_variables) | Get all variables and context for a document |
 | [`set_doc_variables`](tools/document.md#set_doc_variables) | Set document context variables (merges with existing) |
-| [`inspect_slide`](tools/document.md#inspect_slide) | Get full slide content |
-| [`inspect_block`](tools/document.md#inspect_block) | Get specific block configuration and content |
 | [`move_block`](tools/document.md#move_block) | Move a block to a new position within the document |
 
 ### Deck Tools
@@ -76,7 +74,7 @@ inspect_cube(cube_name="sales_data", num_rows=3)
 create_document(name="Q1 Report", source_id=1)
   → Returns doc_id
 
-get_doc_summary(doc_id=42)
+inspect_document(doc_id=42)
   → See slides and blocks
 
 get_doc_variables(doc_id=42)
@@ -133,7 +131,7 @@ export_markdown(doc_id=42, mode="table", include_chart_configs=True)
 ### 6. Create a Branded Deck (DeckSpec workflow)
 
 ```
-list_styles()                → Available brand styles
+list_resources(what="styles") → Available brand styles
 read_layouts(style_name="Cledara")
                              → Layout catalog for the brand
 

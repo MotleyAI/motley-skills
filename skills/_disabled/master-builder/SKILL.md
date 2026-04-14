@@ -115,7 +115,7 @@ create_master(
 Get the full structure of the master:
 
 ```
-get_doc_summary(doc_id=<id>)
+inspect_document(doc_id=<id>)
 ```
 
 This returns all slides with their block names and types. For each slide, note:
