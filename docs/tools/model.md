@@ -20,7 +20,7 @@ List all available models with their dimensions, measures, and derived dimension
 
 Markdown-formatted summary of all models. For each model:
 - Model name and description
-- `source_id`
+- `datasource` name and `source_id`
 - **Dimensions**, **Measures**, and **Derived dimensions** -- as tables (verbose) or comma-separated name lists (compact)
 
 ### Notes
@@ -67,7 +67,7 @@ Create a new model from a SQL SELECT query.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `source_model_name` | string | **Yes** | Existing model whose database connection is used for introspection. This becomes the `data_source` on the new model. |
+| `datasource_name` | string | No | Name of the datasource whose database connection is used for introspection. This becomes the `data_source` on the new model. Optional when only one datasource exists. |
 | `model_name` | string | **Yes** | Name for the new model being created. |
 | `sql` | string | **Yes** | A valid SQL SELECT query. Column types are introspected from the database. |
 | `column_descriptions` | array[object] | No | Per-column descriptions. Each entry has `name` (column name) and `description` (human-readable text). Not every column needs a description. |
@@ -78,7 +78,7 @@ Create a new model from a SQL SELECT query.
 |-------|------|-------------|
 | `success` | boolean | Whether the operation succeeded |
 | `model_name` | string | Name of the created model |
-| `source_model_name` | string | The model used for database connection |
+| `datasource_name` | string | The datasource used for database connection |
 | `dimensions` | array | Auto-generated dimensions from the query |
 | `measures` | array | Auto-generated measures from the query |
 
@@ -86,7 +86,8 @@ Create a new model from a SQL SELECT query.
 
 - Column types are automatically introspected from the database
 - Dimensions and measures are inferred based on column types
-- The `source_model_name` parameter specifies which existing model's database connection to use
+- When only one datasource exists, `datasource_name` can be omitted and it will be auto-selected
+- Use `list_resources(what="datasources")` to discover available datasource names
 
 ---
 

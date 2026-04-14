@@ -106,14 +106,14 @@ Use `create_model` when existing models don't have the data you need:
 
 ```
 create_model(
-    source_model_name="orders",        -- existing model for DB connection
     model_name="monthly_summary",      -- name for new model
     sql="SELECT DATE_TRUNC('month', created_at) AS month, COUNT(*) AS order_count, SUM(amount) AS total FROM orders GROUP BY 1",
     column_descriptions=[
         {"name": "month", "description": "Order month"},
         {"name": "order_count", "description": "Number of orders"},
         {"name": "total", "description": "Total revenue"}
-    ]
+    ],
+    datasource_name="my_datasource"    -- optional if only one datasource exists
 )
 ```
 

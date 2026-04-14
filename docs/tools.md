@@ -60,6 +60,7 @@ The MCP server provides tools for building data-driven reports programmatically.
 ### 1. Discover Available Data
 
 ```
+list_resources(what="datasources") → List available datasources
 models_summary()             → List available models
 inspect_model(model_name="sales_data", num_rows=3)
                              → Schema and sample data
@@ -125,7 +126,8 @@ export_document(document_id=42, format="markdown", mode="table")
 ### 6. Create a Branded Deck (DeckSpec workflow)
 
 ```
-list_resources(what="styles") → Available brand styles
+list_resources(what="styles")       → Available brand styles
+list_resources(what="datasources")  → Available datasources
 read_layouts(style_name="Cledara")
                              → Layout catalog for the brand
 

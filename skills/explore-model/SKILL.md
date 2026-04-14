@@ -69,7 +69,6 @@ When existing models don't have the data you need, create a new model from a SQL
 
 ```
 create_model(
-    source_model_name="orders",
     model_name="monthly_order_summary",
     sql="SELECT DATE_TRUNC('month', created_at) AS month, customer_id, COUNT(*) AS order_count, SUM(amount) AS total_amount FROM orders GROUP BY 1, 2",
     column_descriptions=[
@@ -77,12 +76,13 @@ create_model(
         {"name": "customer_id", "description": "Customer identifier"},
         {"name": "order_count", "description": "Number of orders"},
         {"name": "total_amount", "description": "Total order value"}
-    ]
+    ],
+    datasource_name="my_datasource"  -- optional if only one datasource exists
 )
 ```
 
 The new model:
-- Uses the database connection from `source_model_name`
+- Uses the database connection from the specified datasource (or the only available one)
 - Auto-detects column types (measures vs dimensions)
 - Is immediately available for queries
 
