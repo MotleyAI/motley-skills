@@ -1,52 +1,49 @@
 # Skills Reference
 
-This document provides an overview of the skills included in the Motley bundle. Skills help Claude understand how to work with the Motley MCP tools for data-driven presentation generation.
+This document provides an overview of the skills included in the Motley bundle. Skills help Claude understand how to work with the Motley MCP tools for data-driven report generation.
 
 ## When to Use Each Skill
 
 | Task | Skill |
 |------|-------|
-| Build a master from scratch | [master-builder](#master-builder) |
+| Create a report end-to-end | [create-report](#create-report) |
 | Create or modify a chart | [update-chart](#update-chart) |
 | Create or modify text content | [update-text-block](#update-text-block) |
 | Create or modify a table | [update-table-block](#update-table-block) |
 | Create data queries for text/tables | [update-query-block](#update-query-block) |
-| Explore available data | [explore-cube](#explore-cube) |
-| Import and sync layout libraries | [layout-library-sync](#layout-library-sync) |
+| Explore available data models | [explore-model](#explore-model) |
 
 ---
 
 ## Core Skills
 
-### master-builder
+### create-report
 
-End-to-end workflow for creating a data-driven master in Motley.
+End-to-end workflow for creating a data-driven report in Motley.
 
-**When to use**: Creating a master, building a deck, or making a presentation from scratch.
+**When to use**: Creating a report, building a document, or making a data-driven presentation from scratch.
 
 **Phases:**
-1. Research & Plan — explore cubes and layouts, write slide-by-slide outline
-2. User Approval — present outline for feedback
-3. Create Master — initialize from layout library
-4. Understand the Master — inspect slides and elements
-5. Build Each Slide — configure content for each slide
-6. Final Review — verify everything looks correct
+1. Research & Plan — explore models, understand user needs
+2. Create Document — initialize document, set context variables, create blocks via block-modifier sub-agent
+3. User Approval — export markdown, present for feedback
+4. Output — generate slides via make-slides skill
 
-[Full documentation](../skills/master-builder/SKILL.md)
+[Full documentation](../skills/create-report/SKILL.md)
 
 ---
 
 ### update-chart
 
-Create or modify charts using `update_chart_block` with natural language prompts.
+Create or modify charts using `update_chart_block` with structured query and chart configuration.
 
 **When to use**: Creating any chart or graph visualization (bar, line, pie, funnel).
 
 **Key concepts:**
-- Prompt-driven: describe the chart you want, LLM generates the full config
+- Structured input: provide `query` (data) and `chart_details` (rendering) directly
 - Chart types: BAR, LINE, PIE, FUNNEL
 - Charts resolve lazily — call `render_chart` to see results
-- Period comparisons, dual axis, stacked bars all supported via prompt
+- Dual axis, stacked bars, period comparisons all supported via configuration
 
 **Chart types:**
 
@@ -118,42 +115,26 @@ Create or modify numerical queries within text or table blocks.
 - `single_number` mode for KPIs and inline values
 - `table` mode for multi-row data and cross-tabs
 - `pivot_dimension` and `transpose` for flexible table layouts
+- Structured `query` parameter with measures, dimensions, filters
 - Must create queries BEFORE referencing in text/table templates
 
 [Full documentation](../skills/update-query-block/SKILL.md)
 
 ---
 
-### explore-cube
+### explore-model
 
-Explore available cubes to understand what data is available.
+Explore available models to understand what data is available.
 
-**When to use**: Before building a master — discover cubes, inspect schemas, create custom cubes/measures.
+**When to use**: Before building a report — discover models, inspect schemas, create custom models/measures.
 
 **Key tools:**
-- `cubes_summary()` — list all cubes
-- `inspect_cube(cube_name=..., num_rows=3)` — see schema and sample data
-- `create_cube(...)` — create custom cube from SQL
-- `add_measures(...)` / `add_dimensions(...)` — extend existing cubes
+- `models_summary()` — list all models
+- `inspect_model(model_name=..., num_rows=3)` — see schema and sample data
+- `create_model(...)` — create custom model from SQL
+- `edit_model(...)` — add/delete measures and dimensions on existing models
 
-[Full documentation](../skills/explore-cube/SKILL.md)
-
----
-
-### layout-library-sync
-
-Import a Google Slides presentation as a layout library and sync content from a reference master.
-
-**When to use**: Importing new slide designs and migrating content from an existing master.
-
-**Workflow:**
-1. `import_layout_library` — import Google Slides presentation
-2. `create_master` — create editable master from library
-3. `match_slides` — find corresponding slides between masters
-4. `copy_block` — copy element content from reference
-5. `resolve_master` — populate content
-
-[Full documentation](../skills/layout-library-sync/SKILL.md)
+[Full documentation](../skills/explore-model/SKILL.md)
 
 ---
 
@@ -181,16 +162,16 @@ Auto-generated context variables:
 
 [View](../skills/_shared/resolution-context.md)
 
-### cube-guide.md
+### model-guide.md
 
-Cube data modeling concepts:
+Model data modeling concepts:
 - Measures and dimensions
 - Time granularities
 - Dimension constraints for charts
 - Filter concepts
-- Custom cubes and measures
+- Custom models and measures
 
-[View](../skills/_shared/cube-guide.md)
+[View](../skills/_shared/model-guide.md)
 
 ---
 

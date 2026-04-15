@@ -20,7 +20,7 @@ Create or modify text blocks using the `update_text_block` MCP tool. Text blocks
 ```
 update_text_block(
     location: {                        # Location of the block
-        doc_id: int,                   # The deck ID
+        doc_id: int,                   # The document ID
         slide_name: str,               # The slide containing the block
         block_name: str                # The name of the text block
     },
@@ -115,17 +115,17 @@ Create query blocks first, then set the text template:
 1. Create the data queries:
    ```
    update_query_block(
-       location={doc_id: 42, slide_name: "Overview", parent_block: "summary_text"},
+       parent_location={doc_id: 42, slide_name: "Overview", block_name: "summary_text"},
        query_name="total_revenue",
        prompt="Total revenue for the reporting period",
-       cube_name="revenue"
+       model_name="revenue"
    )
 
    update_query_block(
-       location={doc_id: 42, slide_name: "Overview", parent_block: "summary_text"},
+       parent_location={doc_id: 42, slide_name: "Overview", block_name: "summary_text"},
        query_name="customer_count",
        prompt="Number of active customers",
-       cube_name="customers"
+       model_name="customers"
    )
    ```
 
