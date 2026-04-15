@@ -56,8 +56,6 @@ These invariants apply to EVERY slide in EVERY presentation:
 | Code slide | 1 heading + 8-10 lines of code |
 | Quote slide | 1 quote (max 3 lines) + attribution |
 | Image slide | 1 heading + 1 image (max 60vh height) |
-| Chart slide | 1 heading + 1 chart (max 60vh height) + optional caption |
-| Table slide | 1 heading + 1 table container + optional caption |
 
 **Content exceeds limits? Split into multiple slides. Never cram, never scroll.**
 
@@ -122,129 +120,68 @@ If user provides an image folder:
 
 ---
 
-## Phase 2: Load Brand Style
+## Phase 2: Style Discovery
 
-Call `list_resources(what="styles")` to see available styles. If multiple exist, ask the user which to use. Then call `read_style(style_name=chosen_name)` — the response is a slim BrandConfig with only the semantic metadata you need (no CSS, JS, or SVG).
+**This is the "show, don't tell" phase.** Most people can't articulate design preferences in words.
 
-The slim BrandConfig tells you:
-- **Slide types** (`payload.slide_types.types`): available slide archetypes with `html_template`, `layout_description`, `when_to_use`, `css_class`. First slide must use `first_slide_type`, last must use `last_slide_type`.
-- **Colors** (`payload.colors.tokens`): named color tokens with values and usage descriptions.
-- **Animations** (`payload.animations.presets`): available animation classes (e.g. `.rv`, `.rv-l`) and stagger delay. Respect `forbidden_effects`.
-- **Decorative elements** (`payload.decorative_elements`): HTML templates for brand motifs, with `applies_to_slide_types`.
-- **Footer** (`payload.footer.kind`): `"text"`, `"svg_wave"`, or `"none"`.
-- **Chrome** (`payload.chrome`): boolean flags for progress bar, nav dots, topbar.
-- **Typography**: font family names (for reference, not for embedding).
-- **Forbidden patterns**: visual patterns to avoid.
+### Step 2.0: Style Path
 
-**You do NOT need to handle CSS, JS, fonts, logos, or viewport-base.css.** The server injects all of that when you call `save_html`.
+Ask how they want to choose (header: "Style"):
+- "Show me options" (recommended) — Generate 3 previews based on mood
+- "I know what I want" — Pick from preset list directly
+
+**If direct selection:** Show preset picker and skip to Phase 3. Available presets are defined in [STYLE_PRESETS.md](STYLE_PRESETS.md).
+
+### Step 2.1: Mood Selection (Guided Discovery)
+
+Ask (header: "Vibe", multiSelect: true, max 2):
+What feeling should the audience have? Options:
+- Impressed/Confident — Professional, trustworthy
+- Excited/Energized — Innovative, bold
+- Calm/Focused — Clear, thoughtful
+- Inspired/Moved — Emotional, memorable
+
+### Step 2.2: Generate 3 Style Previews
+
+Based on mood, generate 3 distinct single-slide HTML previews showing typography, colors, animation, and overall aesthetic. Read [STYLE_PRESETS.md](STYLE_PRESETS.md) for available presets and their specifications.
+
+| Mood | Suggested Presets |
+|------|-------------------|
+| Impressed/Confident | Bold Signal, Electric Studio, Dark Botanical |
+| Excited/Energized | Creative Voltage, Neon Cyber, Split Pastel |
+| Calm/Focused | Notebook Tabs, Paper & Ink, Swiss Modern |
+| Inspired/Moved | Dark Botanical, Vintage Editorial, Pastel Geometry |
+
+Save previews to `.claude-design/slide-previews/` (style-a.html, style-b.html, style-c.html). Each should be self-contained, ~50-100 lines, showing one animated title slide.
+
+Open each preview automatically for the user.
+
+### Step 2.3: User Picks
+
+Ask (header: "Style"):
+Which style preview do you prefer? Options: Style A: [Name] / Style B: [Name] / Style C: [Name] / Mix elements
+
+If "Mix elements", ask for specifics.
 
 ---
 
-## Phase 3: Generate Body HTML
+## Phase 3: Generate Presentation
 
-Generate **body-only HTML** — just the slide `<section>` elements. The server handles all CSS, JS, fonts, logos, and chrome.
+Generate the full presentation using content from Phase 1 (text, or text + curated images) and style from Phase 2.
 
-### CRITICAL: Use Brand CSS Classes, NEVER Inline Styles
+If images were provided, the slide outline already incorporates them from Step 1.2. If not, CSS-generated visuals (gradients, shapes, patterns) provide visual interest — this is a fully supported first-class path.
 
-The BrandConfig's `css_block` fields define all the CSS classes you need. The server injects these CSS rules automatically. **You MUST use these classes and NEVER add inline `style=` attributes for visual styling.**
+**Before generating, read these supporting files:**
+- [html-template.md](html-template.md) — HTML architecture and JS features
+- [viewport-base.css](viewport-base.css) — Mandatory CSS (include in full)
+- [animation-patterns.md](animation-patterns.md) — Animation reference for the chosen feeling
 
-**Rules:**
-- **NEVER** add inline `style=` for colors, fonts, padding, borders, alignment, or sizing
-- **NEVER** hardcode hex colors (e.g. `style="color: #016FFF"`) — the CSS classes handle all colors
-- **NEVER** wrap elements in extra `<div style="position:relative;z-index:1;">` containers
-- **Tables** MUST use the brand's table class (`.data-table`, `.dtbl`, etc.) from the css_block — no inline table styling. Apply cell classes (`.n`, `.hi`, `.dim`) consistently to ALL rows, not just the first.
-- **Charts** MUST use `class="chart-container"` with no inline width/height
-- **Logos** MUST use `<!-- logo -->` marker inside `<div class="logo VARIANT">` — never paste SVG inline or leave the div empty
-- The ONLY acceptable inline styles are `transition-delay` for animation stagger timing
-
-**Read the `css_block` fields** in the BrandConfig to see exactly what CSS classes are available for each slide type.
-
-### What You Generate
-
-Use the `html_template` patterns from the BrandConfig to structure each slide:
-
-```html
-<section class="slide slide-title" id="slide-1">
-  <div class="logo on-light rv"><!-- logo --></div>
-  <div class="slide-content">
-    <div class="accent-bar rv"></div>
-    <h1 class="rv">Presentation Title</h1>
-    <p class="subtitle rv" style="transition-delay:0.1s">Subtitle</p>
-  </div>
-</section>
-
-<section class="slide slide-content-default" id="slide-2">
-  <div class="topbar">
-    <div class="logo on-light rv"><!-- logo --></div>
-    <span class="pg-num rv">02 / 07</span>
-  </div>
-  <div class="s-hdr rv">
-    <span class="accent-bar"></span>
-    <span class="s-title">Section Title</span>
-  </div>
-  <div class="content-body">
-    <p class="rv">Content here...</p>
-  </div>
-</section>
-```
-
-### Marker Convention
-
-The server replaces these markers with actual content:
-
-- **`<!-- logo -->`** inside a `<div class="logo VARIANT rv">` — server injects the brand's SVG logo
-- **`<!-- wave -->`** inside a `<div class="wave">` — server generates wave footer SVGs with unique gradient IDs
-- **`<!-- footer-text -->`** — server injects footer text content
-
-**CRITICAL — Logos: NEVER look up, extract, fetch, or paste actual logo SVG markup.** You do not need the SVG. Just write the HTML comment marker `<!-- logo -->` inside a container div. The server has the logo and injects it automatically. Example:
-```html
-<div class="evalart-logo reveal"><!-- logo --></div>
-```
-That is ALL you write. Do not call any tools to get the logo. Do not read any files to find the logo. Do not inline any `<svg>` elements. Just the marker comment.
-
-### Charts
-
-**NEVER generate chart data, chart options, or chart rendering code.** Place chart containers that reference the source document's chart blocks:
-
-```html
-<div id="chart-1" class="chart-container rv" data-chart-block="BLOCK_NAME"></div>
-```
-
-The `data-chart-block` attribute is **required** on every chart container. The server fetches the chart config from the source document and generates all initialization code.
-
-### Tables
-
-**NEVER generate table data or `<table>` markup.** Place table containers that reference the source document's table blocks:
-
-```html
-<div id="table-1" class="table-container rv" data-table-block="BLOCK_NAME"></div>
-```
-
-The `data-table-block` attribute is **required** on every table container. The server fetches the table data from the source document and generates the styled `<table>` element using the brand's `table_css_class`.
-
-### What You Do NOT Generate
-
-- No `<!DOCTYPE>`, `<html>`, `<head>`, or `<body>` tags
-- No `<style>` blocks — all CSS is injected server-side
-- No `<script>` blocks — all JS is injected server-side
-- No font loading `<link>` tags
-- No viewport-base.css content
-- No echarts_config.min.js
-- No logo SVG markup (use `<!-- logo -->` marker)
-
-### What You Still Handle
-
-- Content splitting across slides (respect density limits)
-- Slide type selection (using `css_class` from the BrandConfig)
-- Animation class assignment (`.rv`, `.rv-l`, `.rv-r`) with stagger delays via `transition-delay` inline styles
-- HTML structure following `html_template` patterns
-- Content density limits (same rules as before)
-
-**Before generating, read:**
-- [html-template.md](html-template.md) — Body-only template reference
-- [animation-patterns.md](animation-patterns.md) — Animation class reference
-- [charting.md](charting.md) — Chart container reference (if presentation includes charts)
-- [tabling.md](tabling.md) — Table container reference (if presentation includes tables)
+**Key requirements:**
+- Single self-contained HTML file, all CSS/JS inline
+- Include the FULL contents of viewport-base.css in the `<style>` block
+- Use fonts from Fontshare or Google Fonts — never system fonts
+- Add detailed comments explaining each section
+- Every section needs a clear `/* === SECTION NAME === */` comment block
 
 ---
 
@@ -261,11 +198,13 @@ When converting PowerPoint files:
 
 ## Phase 5: Delivery
 
-1. **Save & share** — Call `save_html(html_content=<body HTML>, style_name=<chosen style>, document_id=<source doc ID>, title="Presentation Title", filename="presentation-name.html")` to enrich and upload the presentation. Note the `html_id` from the response for potential PDF conversion.
-2. **Summarize** — Tell the user:
-   - Shareable HTML URL, style name, slide count
+1. **Clean up** — Delete `.claude-design/slide-previews/` if it exists
+2. **Open** — Use `open [filename].html` to launch in browser
+3. **Summarize** — Tell the user:
+   - File location, style name, slide count
    - Navigation: Arrow keys, Space, scroll/swipe, click nav dots
-3. **Offer PDF** — Ask if the user would also like a PDF version. If yes, call `html_to_pdf(html_id=<the html_id from step 1>)` — this reuses the already-saved HTML without re-uploading it. Share the returned PDF URL with the user.
+   - How to customize: `:root` CSS variables for colors, font link for typography, `.reveal` class for animations
+   - If inline editing was enabled: Hover top-left corner or press E to enter edit mode, click any text to edit, Ctrl+S to save
 
 ---
 
@@ -273,8 +212,8 @@ When converting PowerPoint files:
 
 | File | Purpose | When to Read |
 |------|---------|-------------|
-| [html-template.md](html-template.md) | Body-only HTML structure reference | Phase 3 (generation) |
-| [animation-patterns.md](animation-patterns.md) | Animation class reference and effect-to-feeling guide | Phase 3 (generation) |
-| [charting.md](charting.md) | Chart container reference (data-chart-block convention) | Phase 3 (when presentation includes charts) |
-| [tabling.md](tabling.md) | Table container reference (data-table-block convention) | Phase 3 (when presentation includes tables) |
+| [STYLE_PRESETS.md](STYLE_PRESETS.md) | 12 curated visual presets with colors, fonts, and signature elements | Phase 2 (style selection) |
+| [viewport-base.css](viewport-base.css) | Mandatory responsive CSS — copy into every presentation | Phase 3 (generation) |
+| [html-template.md](html-template.md) | HTML structure, JS features, code quality standards | Phase 3 (generation) |
+| [animation-patterns.md](animation-patterns.md) | CSS/JS animation snippets and effect-to-feeling guide | Phase 3 (generation) |
 | [scripts/extract-pptx.py](scripts/extract-pptx.py) | Python script for PPT content extraction | Phase 4 (conversion) |

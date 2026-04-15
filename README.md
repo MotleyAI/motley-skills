@@ -35,14 +35,14 @@ Domain knowledge that helps Claude understand Motley's MCP tools and build data-
 | [`update-text-block`](docs/skills.md#update-text-block) | Generate data-driven text with variable substitution and optional LLM enhancement |
 | [`update-table-block`](docs/skills.md#update-table-block) | Build formatted tables with size constraints and flexible layouts |
 | [`update-query-block`](docs/skills.md#update-query-block) | Create data queries for text and table blocks |
-| [`explore-model`](docs/skills.md#explore-model) | Explore models, inspect schemas, create custom models/measures |
+| [`explore-cube`](docs/skills.md#explore-cube) | Explore cubes, inspect schemas, create custom cubes/measures |
 | [`layout-library-sync`](docs/skills.md#layout-library-sync) | Import Google Slides and sync content from reference masters |
 
 ### MCP Server
 
 A complete set of tools for Claude to interact with Motley programmatically:
 
-- [**Model tools**](docs/tools/model.md) — explore and create models, add measures and dimensions
+- [**Cube tools**](docs/tools/cube.md) — explore and create cubes, add measures and dimensions
 - [**Outline tools**](docs/tools/outline.md) — plan deck structure with outline sessions
 - [**Layout tools**](docs/tools/layout.md) — browse templates, get thumbnails, create masters
 - [**Master tools**](docs/tools/master.md) — inspect structure, variables, copy/move/delete slides

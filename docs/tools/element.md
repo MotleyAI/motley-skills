@@ -1,6 +1,6 @@
 # Element Tools
 
-Tools for updating content blocks within slides — text, tables, charts, and queries.
+Tools for updating content blocks within slides - text, tables, charts, and queries.
 
 [Back to Tools Overview](../tools.md)
 
@@ -14,7 +14,9 @@ Update the template of a text block and resolve it to generate content.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `location` | object | **Yes** | `{doc_id: int, slide_name: str, block_name: str}` — the block to update. |
+| `master_id` | integer | **Yes** | The master containing the slide. |
+| `slide_name` | string | **Yes** | The slide containing the text block. |
+| `block_name` | string | **Yes** | The text block to update. |
 | `user_prompt` | string | **Yes** | The template content with `{variable}` placeholders. Valid CommonMark markdown. |
 | `call_llm` | boolean | No | When true, pass template to LLM for generation. Default: false (direct variable substitution). |
 | `allowed_outputs` | array[string] | No | Constrain LLM to these exact outputs. Only valid when `call_llm=true`. |
@@ -27,7 +29,7 @@ Update the template of a text block and resolve it to generate content.
 | `success` | boolean | Whether the operation succeeded |
 | `slide_name` | string | The slide that was updated |
 | `block_name` | string | The block that was updated |
-| `content` | string | The resolved text content |
+| `block` | object | The updated block domain model |
 
 ### Notes
 
@@ -40,7 +42,7 @@ Update the template of a text block and resolve it to generate content.
 ```markdown
 ## {client_name} Performance Summary
 
-Revenue for the period was {currency(revenue_query)}, representing a {percent(growth_pct)} change.
+Revenue for the period was {revenue_query}, representing a {growth_pct}% change.
 ```
 
 ---
@@ -53,7 +55,9 @@ Update the template of a table block and resolve it to generate content.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `location` | object | **Yes** | `{doc_id: int, slide_name: str, block_name: str}` — the block to update. |
+| `master_id` | integer | **Yes** | The master containing the slide. |
+| `slide_name` | string | **Yes** | The slide containing the table block. |
+| `block_name` | string | **Yes** | The table block to update. |
 | `user_prompt` | string | **Yes** | The template content for the table. Uses markdown table syntax or variable references. |
 | `call_llm` | boolean | No | When true, use LLM to generate table content. Default: false. |
 | `target_shape` | tuple | No | Table dimension constraints. See below for format. |
@@ -81,56 +85,52 @@ The `target_shape` parameter constrains table dimensions as `(rows, columns)`. E
 | `success` | boolean | Whether the operation succeeded |
 | `slide_name` | string | The slide that was updated |
 | `block_name` | string | The block that was updated |
-| `content` | string | The resolved table content as markdown |
+| `block` | object | The updated block domain model |
 
 ---
 
 ## update_chart_block
 
-Create or update a chart block with a structured query and chart configuration.
+Regenerate a chart block using an LLM-based prompt.
 
 ### Arguments
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `location` | object | **Yes** | `{doc_id: int, slide_name: str, block_name: str}` — the chart block to update. |
-| `query` | object | **Yes** | Semantic layer query (MinimalSemanticLayerQueryForLLM as JSON). Contains `measures`, `dimensions`, `time_dimension`, `filters`, `limit`, `order`. |
-| `chart_details` | object | **Yes** | Chart rendering configuration (ChartDetailsTemplate as JSON). Contains `series`, `x_axis`, `y_axis`, `y_right_axis`, `series_default`, `color_scheme`, `title`, `legend`. |
-| `sample_values` | object | No | Override filter values (e.g., `{"start_date": "2025-01-01"}`). Takes priority over document parameters. |
-| `max_return_rows` | integer | No | Maximum rows in response preview. Default: 20. |
-| `add_default_filters` | boolean | No | Apply default cube filters (time range, tenant). Default: true. |
+| `master_id` | integer | **Yes** | The master containing the slide. |
+| `slide_name` | string | **Yes** | The slide containing the chart. |
+| `block_name` | string | **Yes** | The chart block to regenerate. |
+| `prompt` | string | **Yes** | Natural language description of the desired chart. |
+| `cube_name` | string | No | Limit query generation to this specific cube. If omitted, all cubes are available. |
 
 ### Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Whether the operation succeeded |
-| `doc_id` | integer | The document ID |
+| `master_id` | integer | The master |
 | `slide_name` | string | The slide |
 | `block_name` | string | The chart block |
-| `data_preview` | string | Preview of the query results |
+| `message` | string | Confirmation message |
 
 ### Notes
 
-- The chart is saved but NOT rendered immediately — use `render_chart` to see the output
-- Query and chart_details schemas are defined in the tool definition; see the `update-chart` skill for usage guidance
+- Uses Claude Opus 4.5 for high-quality chart generation
+- The chart's existing description is preserved on the new block
+- The generated chart is marked as out-of-date and needs resolution
 
-### Example
+### Example Prompts
 
 ```
-update_chart_block(
-    location={doc_id: 42, slide_name: "Revenue", block_name: "revenue_chart"},
-    query={
-        measures: [{name: "total_revenue", cube_name: "revenue"}],
-        time_dimension: {dimension: {name: "created_at", cube_name: "revenue"}, granularity: "month"}
-    },
-    chart_details={
-        series_default: {type: "LINE", y_axis: "left"},
-        x_axis: {lines: false},
-        y_axis: {lines: true, label: "Revenue"},
-        y_right_axis: {lines: false}
-    }
-)
+Show monthly revenue trend for the last 12 months as a line chart
+```
+
+```
+Create a bar chart comparing sales by region, sorted by value descending
+```
+
+```
+Pie chart of customer distribution by subscription tier
 ```
 
 ---
@@ -143,15 +143,15 @@ Create or update a numerical query within a parent text or table block's queries
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `parent_location` | object | **Yes** | `{doc_id: int, slide_name: str, block_name: str}` — the parent block containing the queries list. |
+| `master_id` | integer | **Yes** | The master containing the slide. |
+| `slide_name` | string | **Yes** | The slide containing the parent block. |
+| `parent_block` | string | **Yes** | The text or table block containing the queries list. |
 | `query_name` | string | **Yes** | Identifier for the query within the parent's queries list. Creates new if not found. |
-| `query` | object | **Yes** | Semantic layer query (MinimalSemanticLayerQueryForLLM as JSON). Contains `measures`, `dimensions`, `time_dimension`, `filters`, `limit`, `order`. |
+| `prompt` | string | **Yes** | Natural language description of the query. |
+| `cube_name` | string | No | Limit to a specific cube. If omitted, all cubes are available. |
 | `mode` | string | No | Query mode. Default: `"single_number"`. |
 | `pivot_dimension` | string | No | Dimension to pivot into columns (table mode only). Format: `"dim_name"` or `"cube_name.dim_name"`. |
 | `transpose` | boolean | No | Swap rows and columns (table mode only). Default: false. |
-| `sample_values` | object | No | Override filter values. Takes priority over document parameters. |
-| `max_return_rows` | integer | No | Max rows in response preview. Default: 20. |
-| `add_default_filters` | boolean | No | Apply default cube filters. Default: true. |
 
 ### Query Modes
 
@@ -165,26 +165,34 @@ Create or update a numerical query within a parent text or table block's queries
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Whether the operation succeeded |
-| `doc_id` | integer | The document ID |
+| `master_id` | integer | The master |
 | `slide_name` | string | The slide |
-| `block_name` | string | The parent block name |
+| `parent_block` | string | The parent block name |
 | `query_name` | string | The query identifier |
 | `action` | string | Either `"created"` or `"updated"` |
-| `result` | string | The query result (value or markdown table) |
+| `block` | object | The generated query block |
 
 ### Notes
 
-- The query is added to the parent block's queries list and can be referenced as `{query_name}` in the parent's template
-- If updating an existing query, the previous query provides context
+- Uses Claude Opus 4.5 for query generation from natural language
+- The query is added to `parent_block.queries` and can be referenced as `{query_name}` in the parent's template
+- If updating an existing query, context from the previous query is provided to the LLM
 
-### Example
+### Example Prompts
 
+**Single number mode:**
 ```
-update_query_block(
-    parent_location={doc_id: 42, slide_name: "Overview", block_name: "metrics_text"},
-    query_name="total_revenue",
-    query={measures: [{name: "total_revenue", cube_name: "revenue"}]}
-)
+Total revenue for the selected date range
+```
+
+**Table mode:**
+```
+Monthly revenue breakdown by product category
+```
+
+**Table mode with pivot:**
+```
+Sales by region with months as columns (set pivot_dimension="month")
 ```
 
 ---
@@ -197,7 +205,9 @@ Render a chart block to a PNG image and return it as base64-encoded data.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `location` | object | **Yes** | `{doc_id: int, slide_name: str, block_name: str}` — the chart block to render. |
+| `master_id` | integer | **Yes** | The master containing the slide. |
+| `slide_name` | string | **Yes** | The slide containing the chart. |
+| `block_name` | string | **Yes** | The chart block to render. |
 | `width` | integer | No | Image width in pixels. Default: 800. |
 | `height` | integer | No | Image height in pixels. Default: 600. |
 
@@ -206,7 +216,7 @@ Render a chart block to a PNG image and return it as base64-encoded data.
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Whether rendering succeeded |
-| `doc_id` | integer | The document ID |
+| `master_id` | integer | The master ID |
 | `slide_name` | string | The slide name |
 | `block_name` | string | The block name |
 | `image_base64` | string | Base64-encoded PNG image data |
@@ -220,13 +230,57 @@ Render a chart block to a PNG image and return it as base64-encoded data.
 - If the chart has not been resolved (no content), resolution is triggered automatically first
 - The image is rendered using ECharts and returned as base64-encoded PNG data
 - Default dimensions are 800x600 pixels
+- Uses 100 DPI internally for converting pixels to inches
 
 ### Example Usage
 
 ```
-render_chart(location={doc_id: 42, slide_name: "Overview", block_name: "revenue_chart"})
+render_chart(master_id=42, slide_name="Overview", block_name="revenue_chart")
 ```
 
 ```
-render_chart(location={doc_id: 42, slide_name: "Detail", block_name: "trend_chart"}, width=1200, height=800)
+render_chart(master_id=42, slide_name="Detail", block_name="trend_chart", width=1200, height=800)
 ```
+
+---
+
+## copy_block
+
+Copy content from one block to another. Supports copying between slides within the same master, or between different masters. If the block types differ, the target block is automatically converted to match the source block type while preserving its layout properties (width, height, placeholder, description). For numerical_query source blocks, the copied query is attached to a parent text or table block in the target slide.
+
+### Arguments
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `source_master_id` | integer | **Yes** | The master containing the source block. |
+| `source_slide_name` | string | **Yes** | The slide containing the source block. |
+| `source_block_name` | string | **Yes** | The block to copy from. |
+| `target_master_id` | integer | **Yes** | The master containing the target block. |
+| `target_slide_name` | string | **Yes** | The slide containing the target block. |
+| `target_block_name` | string | **Yes** | The block to copy to (or query name when copying a query). |
+| `parent_block_name` | string | No | Required when source is a `numerical_query` block. Name of a text or table block in the target slide whose queries list the copied query will be attached to. |
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the operation succeeded |
+| `source_master_id` | integer | Source master ID |
+| `source_slide_name` | string | Source slide name |
+| `source_block_name` | string | Source block name |
+| `target_master_id` | integer | Target master ID |
+| `target_slide_name` | string | Target slide name |
+| `target_block_name` | string | Target block name |
+| `type_converted` | boolean | Whether the target block type was converted to match the source |
+| `copied_content` | boolean | Whether content was copied |
+| `parent_block_name` | string | The parent block name (when a query was attached) |
+| `message` | string | Confirmation message |
+
+### Notes
+
+- If block types differ, the target is automatically converted to match the source type while preserving layout properties (width, height, placeholder, description)
+- Templates are always copied for non-query blocks; child queries are never copied
+- For `numerical_query` source blocks, `parent_block_name` is required and the query is deep-copied and attached to the parent block's queries list
+- Target block is marked as out-of-date after copy
+- Supports cross-master copying (source and target can be in different masters)
+- Use with `match_slides` to bulk-copy content between masters after layout library import

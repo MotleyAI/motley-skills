@@ -34,17 +34,47 @@ Each slide in the array contains:
 
 ---
 
-## inspect_document
+## inspect_slide
 
-Inspect a document/master, slide, or block. The level of detail depends on which arguments you provide.
+Get the full content of a specific slide including layout, blocks, and available variables.
 
 ### Arguments
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `doc_id` | integer | **Yes** | The document/master to inspect. |
-| `slide_name` | string | No | The slide to inspect. |
-| `block_name` | string | No | A specific block to inspect (from `get_master_summary` or `inspect_document`). |
+| `master_id` | integer | **Yes** | The master containing the slide. |
+| `slide_name` | string | **Yes** | The exact name of the slide to inspect (from `get_master_summary`). |
+
+### Returns
+
+Returns the full slide domain model as a JSON object, including:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Slide name |
+| `layout` | object | Full layout structure with all blocks |
+| `variables` | array | Available variables for this slide |
+
+The `variables` array includes context variables and block-generated variables that can be used in templates.
+
+### Notes
+
+- Heavy fields (like chart images) are stripped from the response to reduce size
+- Block directives are stripped from the response
+
+---
+
+## inspect_block
+
+Get the complete configuration of a specific content block.
+
+### Arguments
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `master_id` | integer | **Yes** | The master containing the block. |
+| `slide_name` | string | **Yes** | The slide containing the block. |
+| `block_name` | string | **Yes** | The specific block to inspect (from `get_master_summary` or `inspect_slide`). |
 
 ### Returns
 

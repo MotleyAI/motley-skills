@@ -1,18 +1,18 @@
-# Model Guide
+# Cube Guide
 
-This document covers data modeling concepts for working with models in Motley. The MCP tools handle query construction internally via LLM — you describe what data you want in natural language prompts. This guide helps you understand what's expressible.
+This document covers data modeling concepts for working with cubes in Motley. The MCP tools handle query construction internally via LLM — you describe what data you want in natural language prompts. This guide helps you understand what's expressible.
 
 ## Concepts
 
-### Models
+### Cubes
 
-A **model** is a data model backed by a SQL query or table. Each model has:
+A **cube** is a data model backed by a SQL query or table. Each cube has:
 - **Measures** — aggregate values (revenue, count, average)
 - **Dimensions** — grouping/filtering columns (region, status, category)
 - **Derived dimensions** — computed columns from sub-queries
 
-Use `models_summary()` to list all available models and their schemas, or `models_summary(verbose=false)` for a compact name-only listing.
-Use `inspect_model(model_name=..., num_rows=3)` to see sample data.
+Use `cubes_summary()` to list all available cubes and their schemas.
+Use `inspect_cube(cube_name=..., num_rows=3)` to see sample data.
 
 ### Measures
 
@@ -89,7 +89,7 @@ The query LLM also automatically applies customer and time range filters from th
 
 ## Format Options
 
-When creating custom measures with `edit_model`, you can specify display formats:
+When creating custom measures with `add_measures`, you can specify display formats:
 
 | Format | Description | Example output |
 |--------|-------------|----------------|
@@ -98,32 +98,32 @@ When creating custom measures with `edit_model`, you can specify display formats
 | `integer` | Whole number | 1,234 |
 | `float` | Decimal number | 1,234.56 |
 
-## Creating Custom Models and Measures
+## Creating Custom Cubes and Measures
 
-### Custom Models
+### Custom Cubes
 
-Use `create_model` when existing models don't have the data you need:
+Use `create_cube` when existing cubes don't have the data you need:
 
 ```
-create_model(
-    model_name="monthly_summary",      -- name for new model
+create_cube(
+    source_cube_name="orders",        -- existing cube for DB connection
+    cube_name="monthly_summary",      -- name for new cube
     sql="SELECT DATE_TRUNC('month', created_at) AS month, COUNT(*) AS order_count, SUM(amount) AS total FROM orders GROUP BY 1",
     column_descriptions=[
         {"name": "month", "description": "Order month"},
         {"name": "order_count", "description": "Number of orders"},
         {"name": "total", "description": "Total revenue"}
-    ],
-    datasource_name="my_datasource"    -- optional if only one datasource exists
+    ]
 )
 ```
 
-### Editing a Model — Custom Measures, Dimensions, and Deletion
+### Custom Measures
 
-Use `edit_model` to add computed measures, add computed dimensions, and/or delete existing measures/dimensions:
+Use `add_measures` to add computed measures to an existing cube:
 
 ```
-edit_model(
-    model_name="orders",
+add_measures(
+    cube_name="orders",
     measures=[
         {
             "name": "active_count",
@@ -138,7 +138,17 @@ edit_model(
             "format": "currency",
             "description": "Average order value"
         }
-    ],
+    ]
+)
+```
+
+### Custom Dimensions
+
+Use `add_dimensions` to add computed dimensions:
+
+```
+add_dimensions(
+    cube_name="orders",
     dimensions=[
         {
             "name": "order_size_bucket",
@@ -146,21 +156,29 @@ edit_model(
             "type": "string",
             "description": "Order size category"
         }
-    ],
-    delete_names=["old_measure", "unused_dimension"]
+    ]
 )
 ```
 
-All parameters except `model_name` are optional — include only what you need.
+### Removing Measures/Dimensions
+
+Use `delete_measures_dimensions` to clean up:
+
+```
+delete_measures_dimensions(
+    cube_name="orders",
+    names=["old_measure", "unused_dimension"]
+)
+```
 
 ## Tips for Master Building
 
-1. **Always inspect models first**: Run `models_summary()` then `inspect_model(model_name=..., num_rows=3)` on relevant models before writing any prompts
+1. **Always inspect cubes first**: Run `cubes_summary()` then `inspect_cube(cube_name=..., num_rows=3)` on relevant cubes before writing any prompts
 2. **Know exact names**: Use the exact measure/dimension names from the schema in your prompts for clarity
 3. **Check data quality**: Look at sample rows to understand value formats, null patterns, and data ranges
-4. **Mention the model**: When writing prompts for `update_chart_block` or `update_query_block`, specify `cube_name` if you know which model to use — this constrains the LLM to that model's schema
+4. **Mention the cube**: When writing prompts for `update_chart_block` or `update_query_block`, specify `cube_name` if you know which cube to use — this constrains the LLM to that cube's schema
 
 ## Related Documentation
 
-- For exploring models: see the `explore-model` skill
+- For exploring cubes: see the `explore-cube` skill
 - For creating queries within blocks: see the `update-query-block` skill

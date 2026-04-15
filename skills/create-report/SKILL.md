@@ -31,28 +31,28 @@ Enter plan mode.
 
 Make sure you understand **why** the user wants to create this report, **what** exactly they want to show.
 
-### Explore Models
+### Explore Cubes
 
 Data is central to the report generation. It can be used both for charts and inline queries
 embedded in the text.
 
 The purpose of this step is to find the relevant data for the queries and charts that should be in the report.
-Data is represented as models (data models), containing measures and dimensions, that can be queried.
+Data is represented as cubes (data models), containing measures and dimensions, that can be queried.
 
-Understand what models are available:
-
-```
-models_summary()
-```
-
-Then inspect relevant models to see measures, dimensions, and sample data:
+Understand what cubes are available:
 
 ```
-inspect_model(model_name="revenue", num_rows=3)
-inspect_model(model_name="customers", num_rows=3)
+cubes_summary()
 ```
 
-If the existing models don't have the data you need, you can create custom models from SQL (`create_model`), or add computed measures/dimensions to existing models (`edit_model`). See the `explore-model` skill for details.
+Then inspect relevant cubes to see measures, dimensions, and sample data:
+
+```
+inspect_cube(cube_name="revenue", num_rows=3)
+inspect_cube(cube_name="customers", num_rows=3)
+```
+
+If the existing cubes don't have the data you need, you can create custom cubes from SQL (`create_cube`), add computed measures to existing cubes (`add_measures`), or add computed dimensions (`add_dimensions`). See the `explore-cube` skill for details.
 
 ### Ask questions
 
@@ -78,8 +78,8 @@ create_document(
 )
 ```
 
-You need to provide the `source_id` of the models you are going to use. Currently, all the models in a document must
-come from a single source. The `source_id` can be found in outputs of `models_summary` and `inspect_model` tools.
+You need to provide the `source_id` of the cubes you are going to use. Currently, all the cubes in a document must
+come from a single source. The `source_id` can be found in outputs of `cubes_summary` and `inspect_cube` tools.
 
 ### Set Context Variables
 
@@ -104,31 +104,27 @@ This merges the provided values with existing parameters and re-resolves all blo
 
 ### Create Blocks
 
-**IMPORTANT: NEVER call `update_text_block`, `update_table_block`, `update_chart_block`, or `update_query_block` directly.** Always delegate block creation and modification to the **block-modifier** sub-agent.
+Creating blocks and updating them is done using the tools:
 
-The only exception is `render_chart`, which is read-only and can be called directly to visually verify chart output.
+- `update_text_block`
+- `update_table_block`
+- `update_chart_block`
+- `update_query_block`
 
-#### Delegating to block-modifier
-
-For each block you need to create or modify, launch the `block-modifier` sub-agent with clear instructions:
-
-- The **doc_id**, **slide_name**, and **block_name** (via parent_location for queries)
-- The **block type** (text, table, chart, or query)
-- The **full content/configuration** for the block (template text, query parameters, chart configuration, etc.)
-- Any relevant context (cube names, variable names, etc.)
-
-You can delegate multiple independent blocks in a single message by launching multiple sub-agents in parallel.
+Each block must have a unique name by which it can be referenced.
+To create a new block provide a new, unique name.
 
 #### Chart Blocks
 
-Delegate to block-modifier with:
-- Block type: chart
-- Location: `{doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"}`
-- Query configuration (measures, dimensions, time_dimension, filters, etc.)
-- Chart details (chart type, axis labels, series config, etc.)
-- Cube name
+```
+update_chart_block(
+    location={doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"},
+    prompt="<detailed chart description>",
+    cube_name="<cube>"
+)
+```
 
-After the sub-agent completes, verify the chart visually:
+Then verify:
 
 ```
 render_chart(
@@ -136,23 +132,54 @@ render_chart(
 )
 ```
 
-See the `update-chart` skill for chart type guidance and configuration patterns.
+See the `update-chart` skill for writing effective chart prompts.
 
 #### Text Blocks
 
-Delegate to block-modifier with:
-1. First, the **query blocks** the text needs (type: query, with query_name, query config, mode, cube_name)
-2. Then, the **text block** itself (type: text, with user_prompt template referencing `{query_name}` variables)
+First create query blocks for the data:
 
-See the `update-text-block` skill for template syntax and modes.
+```
+update_query_block(
+    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<text_block>"},
+    query_name="<name>",
+    prompt="<what data to fetch>",
+    cube_name="<cube>"
+)
+```
+
+Then set the template:
+
+```
+update_text_block(
+    location={doc_id: <id>, slide_name: "<slide>", block_name: "<text_block>"},
+    user_prompt="<template with {variables}>",
+    call_llm=<true/false>
+)
+```
+
+Verify the text block by checking the returned content. See the `update-text-block` skill.
 
 #### Table Blocks
 
-Same pattern as text — delegate query blocks first, then the table block:
-1. Query blocks (type: query, mode="table" for multi-row data)
-2. Table block (type: table, with user_prompt and target_shape)
+Same pattern as text — create query blocks first, then set the template:
 
-See the `update-table-block` skill for table patterns.
+```
+update_query_block(
+    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<table_block>"},
+    query_name="<name>",
+    prompt="<what data to fetch>",
+    mode="table",
+    cube_name="<cube>"
+)
+
+update_table_block(
+    location={doc_id: <id>, slide_name: "<slide>", block_name: "<table_block>"},
+    user_prompt="{<query_name>}",
+    target_shape=[<rows>, <cols>]
+)
+```
+
+See the `update-table-block` skill.
 
 ---
 
@@ -163,10 +190,10 @@ See the `update-table-block` skill for table patterns.
 Export the document to markdown format:
 
 ```
-export_document(document_id=<id>, format="markdown")
+export_markdown(doc_id=<id>)
 ```
 
-Check the output carefully. Does it look as expected? If not, delegate block updates to block-modifier.
+Check the output carefully. Does it look as expected? If not, go back and update the blocks.
 
 
 ### Render for the user
@@ -175,13 +202,21 @@ Show the user the rendered document as markdown. Ask for approval.
 
 If the user is happy with the document, proceed to the next phase.
 
-If not, understand the user's feedback and delegate corrections to block-modifier.
+If not, understand the user's feedback and go back and update the blocks.
 
 ---
 
 ## Phase 4: Output
 
-Use the make-slides skill to generate slides from the document you just created.
-The make-slides skill will call `save_deck` to persist the deck and `export_document` to render it as HTML or PDF.
+Use the frontend-slides skill to generate slides from the markdown you just created.
 
 On user request, export the report to the user's preferred format.
+
+If you need the data for the charts instead of images (say, for creating an HTML with a charting library), use
+
+```
+export_markdown(doc_id=<id>, mode="table")
+```
+
+This will embed the data for the charts as markdown tables, with chart metadata next to them. 
+Again, use the frontend-slides skill to generate slides as needed.

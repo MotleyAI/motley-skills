@@ -187,7 +187,8 @@ copy_block(
 - `list_layout_libraries`: List all available layout libraries
 - `list_masters`: List all masters
 - `inspect_layout_library`: See structure of a layout library
-- `inspect_document`: See structure of a master or get detailed slide content
+- `get_doc_summary`: See structure of a master
+- `inspect_slide`: Get detailed slide content
 - `resolve_master`: Trigger resolution of outdated blocks
 
 ---
@@ -197,7 +198,7 @@ copy_block(
 | Error | Cause | Solution |
 |-------|-------|----------|
 | "Layout library not found" | Invalid ID or no access | Verify library ID exists |
-| "Slide not found" | Slide name doesn't exist | Use `inspect_document(doc_id=...)` to list slides |
+| "Slide not found" | Slide name doesn't exist | Use `get_doc_summary` to list slides |
 | "Block types incompatible" | Deprecated — type conversion is now automatic | Target block is converted to match source type |
 | "Master not found" | Invalid master ID | Use `list_masters` to find valid IDs |
 

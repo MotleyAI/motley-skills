@@ -1,179 +1,141 @@
 ---
 name: update-chart
 description: >
-  Create or modify charts using update_chart_block. Covers chart type selection,
-  structured query and chart_details parameters, and verification with render_chart.
+  Create or modify charts using update_chart_block. Covers writing effective
+  natural language prompts for bar, line, pie, and funnel charts.
 ---
 
 # Update Chart
 
-Create or modify chart blocks using the `update_chart_block` MCP tool. You provide a structured query and chart configuration directly — no LLM intermediary.
+Create or modify chart blocks using the `update_chart_block` MCP tool. You provide a natural language prompt, and an LLM internally generates the full chart configuration (query, chart type, series, axes, formatting).
 
 ## How It Works
 
-1. Call `update_chart_block` with a `query` (what data to fetch) and `chart_details` (how to render it)
-2. The query is validated and the chart configuration is saved to the block
-3. Call `render_chart` to see the rendered PNG (this also triggers resolution)
+You do NOT construct chart objects, queries, or series configs. Instead:
+1. Call `update_chart_block` with a descriptive `prompt`
+2. An LLM generates the complete chart — query, type, axes, series, colors, legend
+3. The chart is saved to the block but NOT resolved immediately
+4. Call `render_chart` to see the rendered PNG (this also triggers resolution)
 
 ## Tool Signature
 
 ```
 update_chart_block(
     location: {                # Location of the chart block
-        doc_id: int,           # The document ID
+        doc_id: int,           # The deck ID
         slide_name: str,       # The slide containing the chart block
         block_name: str        # The name of the chart block
     },
-    query: {                   # Semantic layer query (MinimalSemanticLayerQueryForLLM)
-        measures: [            # List of measures to aggregate
-            {name: str, cube_name: str?}
-        ],
-        dimensions: [          # List of dimensions to group by
-            {name: str, cube_name: str?}
-        ]?,
-        time_dimension: {      # Single time dimension (NOT a list)
-            dimension: {name: str, cube_name: str?},
-            granularity: str?  # "day", "week", "month", "quarter", "year"
-        }?,
-        filters: [...]?,       # Filters array
-        limit: int?,           # Max rows to return
-        order: [               # Ordering
-            {column: {name: str, cube_name: str?}, order: "ASC"|"DESC"}
-        ]?
-    },
-    chart_details: {           # Chart rendering configuration (ChartDetailsTemplate)
-        series: {...},         # Series configs by name
-        x_axis: {lines: bool, label: str?, scale: "LINEAR"|"LOG"},
-        y_axis: {lines: bool, label: str?, scale: "LINEAR"|"LOG"},
-        y_right_axis: {...}?,  # Right Y axis (for dual axis)
-        series_default: {type: "BAR"|"LINE"|"PIE"|"FUNNEL", y_axis: "left"|"right", ...},
-        color_scheme: str?,    # e.g. "motley", "greens", "blues"
-        title: str?,
-        legend: {enabled: bool, location: str, orientation: "VERTICAL"|"HORIZONTAL"}?
-    },
-    sample_values: {str: str}?,   # Override filter values (e.g. start_date, end_date)
-    max_return_rows: int? = 20,   # Max rows in response preview
-    add_default_filters: bool? = true  # Apply default time/tenant filters
+    prompt: str,               # Natural language description of the desired chart
+    cube_name: str?            # Optional: constrain to this cube only
 )
 ```
 
-**Returns**: Confirmation that the chart was updated with a data preview. Does NOT return a rendered image — use `render_chart` for that.
+**Returns**: Confirmation that the chart was updated. Does NOT return rendered output — use `render_chart` for that.
 
-The full nested schemas for `query` and `chart_details` come from the tool definition. The above shows the most commonly used fields.
+## Writing Effective Prompts
+
+Be specific about these aspects in your prompt:
+
+- **Chart type**: "bar chart", "line chart", "pie chart", "funnel chart"
+- **Measure(s)**: "total revenue", "count of orders", "average session duration"
+- **Dimension(s)**: "by region", "over time monthly", "by product category"
+- **Time range**: "for the last 12 months", "year to date", "last 4 quarters"
+- **Ordering/limit**: "top 10 by revenue", "sorted chronologically"
+- **Dual axis**: "revenue on left axis, count on right axis"
+- **Period comparison**: "compare to same period last year"
+- **Filters**: "for active customers only", "excluding test accounts"
+
+The chart LLM automatically applies customer and time filters from the master's `sample_parameters`.
 
 ## Chart Type Guidance
 
 | Type | Best For | Example |
 |------|----------|---------|
-| **BAR** | Categorical comparisons, rankings, time series with few points | Revenue by region |
-| **LINE** | Trends over time, continuous data, multiple series comparison | Monthly active users over 12 months |
-| **PIE** | Part-to-whole relationships, distribution (use sparingly, max 5-7 segments) | Revenue distribution by category |
-| **FUNNEL** | Conversion stages, sequential process drop-off | Sales funnel from lead to close |
+| **Bar** | Categorical comparisons, rankings, time series with few points | "Revenue by region as a bar chart" |
+| **Line** | Trends over time, continuous data, multiple series comparison | "Monthly active users over the last 12 months as a line chart" |
+| **Pie** | Part-to-whole relationships, distribution (use sparingly, max 5-7 segments) | "Revenue distribution by product category as a pie chart" |
+| **Funnel** | Conversion stages, sequential process drop-off | "Sales funnel from lead to closed deal" |
 
 ### Tips
 
 - **Bar vs Line**: Use bars for categorical comparisons or few time points. Use lines for trends with many time points.
 - **Pie charts**: Only effective with 5-7 or fewer segments. For more categories, use a bar chart.
-- **Dual axis**: Useful when comparing measures with different scales (e.g., revenue in dollars vs count of orders). Set `y_axis: "right"` on the secondary series.
-- **Stacked bars**: Use the same `x_axis` dimension with multiple measures, all as BAR type.
-- **Horizontal bars**: Use BAR type with dimensions on the y-axis — good for long category labels or ranking displays.
+- **Dual axis**: Useful when comparing measures with different scales (e.g., revenue in dollars vs count of orders).
+- **Stacked bars**: Request "stacked bar chart" when showing composition over categories.
+- **Horizontal bars**: Request "horizontal bar chart" for long category labels or ranking displays.
 
-## Examples
+## Prompt Examples
 
 ### Time Series — Monthly Revenue
-
 ```
 update_chart_block(
     location={doc_id: 42, slide_name: "Revenue Trends", block_name: "revenue_chart"},
-    query={
-        measures: [{name: "total_revenue", cube_name: "revenue"}],
-        time_dimension: {
-            dimension: {name: "created_at", cube_name: "revenue"},
-            granularity: "month"
-        },
-        limit: 12,
-        order: [{column: {name: "created_at", cube_name: "revenue"}, order: "ASC"}]
-    },
-    chart_details={
-        series_default: {type: "LINE", y_axis: "left", number_format: {style: "currency"}, show_values: false},
-        x_axis: {lines: false, label: false},
-        y_axis: {lines: true, label: "Revenue"},
-        y_right_axis: {lines: false},
-        title: "Monthly Revenue"
-    }
+    prompt="Line chart showing monthly total revenue for the last 12 months",
+    cube_name="revenue"
 )
 ```
 
 ### Categorical — Top Regions
-
 ```
 update_chart_block(
     location={doc_id: 42, slide_name: "Regional Performance", block_name: "region_chart"},
-    query={
-        measures: [{name: "total_revenue", cube_name: "sales"}],
-        dimensions: [{name: "region", cube_name: "sales"}],
-        limit: 10,
-        order: [{column: {name: "total_revenue", cube_name: "sales"}, order: "DESC"}]
-    },
-    chart_details={
-        series_default: {type: "BAR", y_axis: "left", number_format: {style: "currency"}, show_values: true},
-        x_axis: {lines: false, label: "Region"},
-        y_axis: {lines: true, label: "Revenue"},
-        y_right_axis: {lines: false},
-        title: "Top 10 Regions by Revenue"
-    }
+    prompt="Horizontal bar chart of total revenue by region, top 10, sorted descending",
+    cube_name="sales"
+)
+```
+
+### Period Comparison — Year over Year
+```
+update_chart_block(
+    location={doc_id: 42, slide_name: "YoY Comparison", block_name: "yoy_chart"},
+    prompt="Bar chart of monthly revenue for the last 12 months, compared to the same period last year",
+    cube_name="revenue"
 )
 ```
 
 ### Dual Axis — Revenue vs Count
-
 ```
 update_chart_block(
     location={doc_id: 42, slide_name: "Overview", block_name: "dual_chart"},
-    query={
-        measures: [
-            {name: "total_revenue", cube_name: "orders"},
-            {name: "order_count", cube_name: "orders"}
-        ],
-        time_dimension: {
-            dimension: {name: "created_at", cube_name: "orders"},
-            granularity: "month"
-        },
-        limit: 12
-    },
-    chart_details={
-        series: {
-            "total_revenue": {type: "BAR", y_axis: "left", number_format: {style: "currency"}, show_values: false},
-            "order_count": {type: "LINE", y_axis: "right", number_format: {style: "decimal"}, show_values: false}
-        },
-        series_default: {type: "BAR", y_axis: "left"},
-        x_axis: {lines: false, label: false},
-        y_axis: {lines: true, label: "Revenue"},
-        y_right_axis: {lines: true, label: "Orders"},
-        title: "Revenue vs Order Count"
-    }
+    prompt="Monthly chart with revenue as bars on the left axis and order count as a line on the right axis, last 12 months",
+    cube_name="orders"
 )
 ```
 
 ### Pie — Distribution
-
 ```
 update_chart_block(
     location={doc_id: 42, slide_name: "Breakdown", block_name: "pie_chart"},
-    query={
-        measures: [{name: "total_revenue", cube_name: "products"}],
-        dimensions: [{name: "category", cube_name: "products"}],
-        limit: 5,
-        order: [{column: {name: "total_revenue", cube_name: "products"}, order: "DESC"}]
-    },
-    chart_details={
-        series_default: {type: "PIE", y_axis: "left", number_format: {style: "currency"}, show_values: true},
-        x_axis: {lines: false},
-        y_axis: {lines: false},
-        y_right_axis: {lines: false},
-        title: "Revenue by Category",
-        legend: {enabled: true, location: "auto", orientation: "VERTICAL"}
-    }
+    prompt="Pie chart showing revenue distribution by product category, top 5 categories with the rest grouped as Other",
+    cube_name="products"
+)
+```
+
+### Funnel — Conversion
+```
+update_chart_block(
+    location={doc_id: 42, slide_name: "Sales Funnel", block_name: "funnel_chart"},
+    prompt="Funnel chart showing the count at each stage: Lead, Qualified, Proposal, Negotiation, Closed Won",
+    cube_name="deals"
+)
+```
+
+### Stacked Bar — Composition Over Time
+```
+update_chart_block(
+    location={doc_id: 42, slide_name: "Mix Analysis", block_name: "stacked_chart"},
+    prompt="Stacked bar chart of monthly revenue broken down by product category for the last 6 months",
+    cube_name="revenue"
+)
+```
+
+### Two Measures — Side by Side
+```
+update_chart_block(
+    location={doc_id: 42, slide_name: "Efficiency", block_name: "comparison_chart"},
+    prompt="Grouped bar chart comparing total revenue and total cost by quarter for the last 4 quarters",
+    cube_name="financials"
 )
 ```
 
@@ -183,6 +145,7 @@ Charts are **NOT resolved immediately** after `update_chart_block`. The chart co
 
 To see the chart:
 - **Individual chart**: Call `render_chart(location={doc_id: ..., slide_name: ..., block_name: ...})` — this triggers resolution and returns a PNG image
+- **Batch resolution**: Call `resolve_master(doc_id=...)` — resolves all outdated blocks in the master
 
 ## Verifying Charts
 
@@ -203,21 +166,21 @@ Check the returned image for:
 - Legend is readable
 - Time series is in chronological order
 
-If the chart doesn't look right, call `update_chart_block` again with adjusted `query` or `chart_details`.
+If the chart doesn't look right, call `update_chart_block` again with a refined prompt.
 
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| Wrong chart type | Set `series_default.type` explicitly (BAR, LINE, PIE, FUNNEL) |
-| Missing data points | Check that the model has data for the requested time range. Use `inspect_model` to verify. |
-| Too many categories | Add `limit` to the query |
-| Wrong time granularity | Set `time_dimension.granularity` explicitly |
-| Axis scale issues | Set `scale: "LOG"` on the axis, or use dual axis with `y_axis: "right"` |
-| Unknown measure/dimension | Use `inspect_model` to see exact names |
-| Wrong cube | Set `cube_name` on each measure/dimension explicitly |
+| Wrong chart type | Be explicit: "as a bar chart", "as a line chart" |
+| Missing data points | Check that the cube has data for the requested time range. Use `inspect_cube` to verify. |
+| Too many categories | Add "top N" or "limit to N" to your prompt |
+| Wrong time granularity | Specify: "monthly", "quarterly", "weekly" |
+| Axis scale issues | Mention "use logarithmic scale" or "dual axis with right axis for counts" |
+| Period comparison not working | Ensure the cube has enough historical data for the comparison period |
+| Wrong cube | Specify `cube_name` explicitly to constrain the LLM |
 
 ## Related Skills
 
-- For exploring models before building charts: see the `explore-model` skill
-- For understanding model schemas: see [model-guide.md](../_shared/model-guide.md)
+- For exploring cubes before writing prompts: see the `explore-cube` skill
+- For understanding cube schemas: see [cube-guide.md](../_shared/cube-guide.md)
