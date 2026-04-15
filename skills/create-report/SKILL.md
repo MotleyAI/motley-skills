@@ -115,7 +115,7 @@ For each block you need to create or modify, launch the `block-modifier` sub-age
 - The **doc_id**, **slide_name**, and **block_name** (via parent_location for queries)
 - The **block type** (text, table, chart, or query)
 - The **full content/configuration** for the block (template text, query parameters, chart configuration, etc.)
-- Any relevant context (cube names, variable names, etc.)
+- Any relevant context (model names, variable names, etc.)
 
 You can delegate multiple independent blocks in a single message by launching multiple sub-agents in parallel.
 
@@ -126,7 +126,7 @@ Delegate to block-modifier with:
 - Location: `{doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"}`
 - Query configuration (measures, dimensions, time_dimension, filters, etc.)
 - Chart details (chart type, axis labels, series config, etc.)
-- Cube name
+- Model name
 
 After the sub-agent completes, verify the chart visually:
 
@@ -141,7 +141,7 @@ See the `update-chart` skill for chart type guidance and configuration patterns.
 #### Text Blocks
 
 Delegate to block-modifier with:
-1. First, the **query blocks** the text needs (type: query, with query_name, query config, mode, cube_name)
+1. First, the **query blocks** the text needs (type: query, with query_name, query config, mode, model context)
 2. Then, the **text block** itself (type: text, with user_prompt template referencing `{query_name}` variables)
 
 See the `update-text-block` skill for template syntax and modes.

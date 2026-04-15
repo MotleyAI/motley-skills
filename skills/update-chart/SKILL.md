@@ -43,8 +43,8 @@ update_chart_block(
     },
     chart_details: {           # Chart rendering configuration (ChartDetailsTemplate)
         series: {...},         # Series configs by name
-        x_axis: {lines: bool, label: str?, scale: "LINEAR"|"LOG"},
-        y_axis: {lines: bool, label: str?, scale: "LINEAR"|"LOG"},
+        x_axis: {lines: bool, label: str?, scale: ("LINEAR"|"LOG")?},
+        y_axis: {lines: bool, label: str?, scale: ("LINEAR"|"LOG")?},
         y_right_axis: {...}?,  # Right Y axis (for dual axis)
         series_default: {type: "BAR"|"LINE"|"PIE"|"FUNNEL", y_axis: "left"|"right", ...},
         color_scheme: str?,    # e.g. "motley", "greens", "blues"

@@ -27,7 +27,7 @@ Create a new document with a data source.
 
 ### Notes
 
-- The `source_id` determines which cubes are available for queries within the document
+- The `source_id` determines which models are available for queries within the document
 - Default context variables (e.g. date ranges) are derived from the source at creation time
 
 ---
