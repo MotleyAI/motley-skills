@@ -158,7 +158,7 @@ All parameters except `model_name` are optional — include only what you need.
 1. **Always inspect models first**: Run `models_summary()` then `inspect_model(model_name=..., num_rows=3)` on relevant models before writing any prompts
 2. **Know exact names**: Use the exact measure/dimension names from the schema in your prompts for clarity
 3. **Check data quality**: Look at sample rows to understand value formats, null patterns, and data ranges
-4. **Mention the model**: When writing prompts for `update_chart_block` or `update_query_block`, specify `cube_name` if you know which model to use — this constrains the LLM to that model's schema
+4. **Mention the model**: When writing prompts for `update_chart_block` or `update_query_block`, specify `model_name` if you know which model to use — this constrains the LLM to that model's schema
 
 ## Related Documentation
 

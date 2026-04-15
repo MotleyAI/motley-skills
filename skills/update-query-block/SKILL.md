@@ -117,7 +117,7 @@ update_query_block(
         }
     },
     mode="table",
-    pivot_dimension="time"
+    pivot_dimension="created_at"
 )
 ```
 
@@ -128,7 +128,7 @@ Result without pivot:
 | US | Feb | 120K |
 | EU | Jan | 80K |
 
-Result with `pivot_dimension="time"`:
+Result with `pivot_dimension="created_at"`:
 | Region | Jan | Feb |
 |--------|-----|-----|
 | US | 100K | 120K |
@@ -142,7 +142,7 @@ Swaps rows and columns. Combine with `pivot_dimension` for flexible layouts.
 update_query_block(
     ...,
     mode="table",
-    pivot_dimension="time",
+    pivot_dimension="created_at",
     transpose=true
 )
 ```
@@ -214,7 +214,7 @@ update_query_block(
         limit: 20
     },
     mode="table",
-    pivot_dimension="time"
+    pivot_dimension="created_at"
 )
 ```
 
