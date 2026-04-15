@@ -104,41 +104,31 @@ This merges the provided values with existing parameters and re-resolves all blo
 
 ### Create Blocks
 
-Creating blocks and updating them is done using the tools:
+**IMPORTANT: NEVER call `update_text_block`, `update_table_block`, `update_chart_block`, or `update_query_block` directly.** Always delegate block creation and modification to the **block-modifier** sub-agent.
 
-- `update_text_block`
-- `update_table_block`
-- `update_chart_block`
-- `update_query_block`
+The only exception is `render_chart`, which is read-only and can be called directly to visually verify chart output.
 
-Each block must have a unique name by which it can be referenced.
-To create a new block provide a new, unique name.
+#### Delegating to block-modifier
+
+For each block you need to create or modify, launch the `block-modifier` sub-agent with clear instructions:
+
+- The **doc_id**, **slide_name**, and **block_name** (via parent_location for queries)
+- The **block type** (text, table, chart, or query)
+- The **full content/configuration** for the block (template text, query parameters, chart configuration, etc.)
+- Any relevant context (model names, variable names, etc.)
+
+You can delegate multiple independent blocks in a single message by launching multiple sub-agents in parallel.
 
 #### Chart Blocks
 
-```
-update_chart_block(
-    location={doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"},
-    query={
-        measures: [{name: "total_revenue", cube_name: "revenue"}],
-        time_dimension: {
-            dimension: {name: "created_at", cube_name: "revenue"},
-            granularity: "month"
-        },
-        limit: 12,
-        order: [{column: {name: "created_at", cube_name: "revenue"}, order: "ASC"}]
-    },
-    chart_details={
-        series_default: {type: "LINE", y_axis: "left", number_format: {style: "currency"}, show_values: false},
-        x_axis: {lines: false, label: false},
-        y_axis: {lines: true, label: "Revenue"},
-        y_right_axis: {lines: false},
-        title: "Monthly Revenue"
-    }
-)
-```
+Delegate to block-modifier with:
+- Block type: chart
+- Location: `{doc_id: <id>, slide_name: "<slide>", block_name: "<chart_block>"}`
+- Query configuration (measures, dimensions, time_dimension, filters, etc.)
+- Chart details (chart type, axis labels, series config, etc.)
+- Model name
 
-Then verify:
+After the sub-agent completes, verify the chart visually:
 
 ```
 render_chart(
@@ -150,45 +140,17 @@ See the `update-chart` skill for chart type guidance and configuration patterns.
 
 #### Text Blocks
 
-First create query blocks for the data:
+Delegate to block-modifier with:
+1. First, the **query blocks** the text needs (type: query, with query_name, query config, mode, model context)
+2. Then, the **text block** itself (type: text, with user_prompt template referencing `{query_name}` variables)
 
-```
-update_query_block(
-    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<text_block>"},
-    query_name="<name>",
-    query={<query_config>}
-)
-```
-
-Then set the template:
-
-```
-update_text_block(
-    location={doc_id: <id>, slide_name: "<slide>", block_name: "<text_block>"},
-    user_prompt="<template with {variables}>",
-    call_llm=<true/false>
-)
-```
-
-Verify the text block by checking the returned content. See the `update-text-block` skill for template syntax and modes.
+See the `update-text-block` skill for template syntax and modes.
 
 #### Table Blocks
 
-Same pattern as text — create query blocks first, then set the template:
-
-```
-update_query_block(
-    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<table_block>"},
-    query_name="<name>",
-    query={<query_config>},
-    mode="table"
-)
-
-update_table_block(
-    location={doc_id: <id>, slide_name: "<slide>", block_name: "<table_block>"},
-    user_prompt="{<query_name>}"
-)
-```
+Same pattern as text — delegate query blocks first, then the table block:
+1. Query blocks (type: query, mode="table" for multi-row data)
+2. Table block (type: table, with user_prompt and target_shape)
 
 See the `update-table-block` skill for table patterns.
 
@@ -204,7 +166,7 @@ Export the document to markdown format:
 export_document(document_id=<id>, format="markdown")
 ```
 
-Check the output carefully. Does it look as expected? If not, go back and update the blocks.
+Check the output carefully. Does it look as expected? If not, delegate block updates to block-modifier.
 
 
 ### Render for the user
@@ -213,21 +175,13 @@ Show the user the rendered document as markdown. Ask for approval.
 
 If the user is happy with the document, proceed to the next phase.
 
-If not, understand the user's feedback and go back and update the blocks.
+If not, understand the user's feedback and delegate corrections to block-modifier.
 
 ---
 
 ## Phase 4: Output
 
-Use the frontend-slides skill to generate slides from the markdown you just created.
+Use the make-slides skill to generate slides from the document you just created.
+The make-slides skill will call `save_deck` to persist the deck and `export_document` to render it as HTML or PDF.
 
 On user request, export the report to the user's preferred format.
-
-If you need the data for the charts instead of images (say, for creating an HTML with a charting library), use
-
-```
-export_markdown(doc_id=<id>, mode="table")
-```
-
-This will embed the data for the charts as markdown tables, with chart metadata next to them.
-Again, use the frontend-slides skill to generate slides as needed.
