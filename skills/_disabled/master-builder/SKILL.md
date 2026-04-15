@@ -192,7 +192,7 @@ First create query blocks for the data:
 
 ```
 update_query_block(
-    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<text_block>"},
+    parent_location={doc_id: <id>, slide_name: "<slide>", block_name: "<text_block>"},
     query_name="<name>",
     prompt="<what data to fetch>",
     cube_name="<cube>"
@@ -217,7 +217,7 @@ Same pattern as text — create query blocks first, then set the template:
 
 ```
 update_query_block(
-    location={doc_id: <id>, slide_name: "<slide>", parent_block: "<table_block>"},
+    parent_location={doc_id: <id>, slide_name: "<slide>", block_name: "<table_block>"},
     query_name="<name>",
     prompt="<what data to fetch>",
     mode="table",

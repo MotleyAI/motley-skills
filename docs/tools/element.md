@@ -143,7 +143,7 @@ Create or update a numerical query within a parent text or table block's queries
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `location` | object | **Yes** | `{doc_id: int, slide_name: str, parent_block: str}` — the parent block containing the query. |
+| `parent_location` | object | **Yes** | `{doc_id: int, slide_name: str, block_name: str}` — the parent block containing the queries list. |
 | `query_name` | string | **Yes** | Identifier for the query within the parent's queries list. Creates new if not found. |
 | `query` | object | **Yes** | Semantic layer query (MinimalSemanticLayerQueryForLLM as JSON). Contains `measures`, `dimensions`, `time_dimension`, `filters`, `limit`, `order`. |
 | `mode` | string | No | Query mode. Default: `"single_number"`. |
@@ -167,21 +167,21 @@ Create or update a numerical query within a parent text or table block's queries
 | `success` | boolean | Whether the operation succeeded |
 | `doc_id` | integer | The document ID |
 | `slide_name` | string | The slide |
-| `parent_block` | string | The parent block name |
+| `block_name` | string | The parent block name |
 | `query_name` | string | The query identifier |
 | `action` | string | Either `"created"` or `"updated"` |
 | `result` | string | The query result (value or markdown table) |
 
 ### Notes
 
-- The query is added to `parent_block.queries` and can be referenced as `{query_name}` in the parent's template
+- The query is added to the parent block's queries list and can be referenced as `{query_name}` in the parent's template
 - If updating an existing query, the previous query provides context
 
 ### Example
 
 ```
 update_query_block(
-    location={doc_id: 42, slide_name: "Overview", parent_block: "metrics_text"},
+    parent_location={doc_id: 42, slide_name: "Overview", block_name: "metrics_text"},
     query_name="total_revenue",
     query={measures: [{name: "total_revenue", cube_name: "revenue"}]}
 )

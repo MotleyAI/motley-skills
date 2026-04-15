@@ -60,7 +60,7 @@ Pass a `table` mode query result directly as the table. No LLM needed.
 ```
 # First, create a table-mode query:
 update_query_block(
-    location={doc_id: 42, slide_name: "Data", parent_block: "data_table"},
+    parent_location={doc_id: 42, slide_name: "Data", block_name: "data_table"},
     query_name="monthly_data",
     prompt="Monthly revenue and order count for last 12 months",
     mode="table",
@@ -119,7 +119,7 @@ Create query blocks first, then set the table template:
 1. Create data queries:
    ```
    update_query_block(
-       location={doc_id: 42, slide_name: "Performance", parent_block: "perf_table"},
+       parent_location={doc_id: 42, slide_name: "Performance", block_name: "perf_table"},
        query_name="region_data",
        prompt="Revenue and customer count by region, top 5 regions by revenue",
        mode="table",
@@ -174,7 +174,7 @@ update_table_block(
 ```
 # Create a pivoted query first:
 update_query_block(
-    location={doc_id: 42, slide_name: "Matrix", parent_block: "matrix_table"},
+    parent_location={doc_id: 42, slide_name: "Matrix", block_name: "matrix_table"},
     query_name="product_region_matrix",
     prompt="Revenue by product and region",
     mode="table",

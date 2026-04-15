@@ -112,7 +112,7 @@ The only exception is `render_chart`, which is read-only and can be called direc
 
 For each block you need to create or modify, launch the `block-modifier` sub-agent with clear instructions:
 
-- The **doc_id**, **slide_name**, and **block_name** (or parent_block for queries)
+- The **doc_id**, **slide_name**, and **block_name** (via parent_location for queries)
 - The **block type** (text, table, chart, or query)
 - The **full content/configuration** for the block (template text, query parameters, chart configuration, etc.)
 - Any relevant context (cube names, variable names, etc.)

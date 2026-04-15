@@ -86,7 +86,7 @@ set_doc_variables(doc_id=42, variables={"client_name": "Acme"})
 
 ```
 update_query_block(
-    location={doc_id: 42, slide_name: "Revenue", parent_block: "metrics"},
+    parent_location={doc_id: 42, slide_name: "Revenue", block_name: "metrics"},
     query_name="total_revenue",
     query={measures: [{name: "total_revenue", cube_name: "sales"}]}
 )

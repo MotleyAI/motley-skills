@@ -21,10 +21,10 @@ Create or update numerical queries inside text or table blocks. Queries execute 
 
 ```
 update_query_block(
-    location: {                # Location of the query's parent block
+    parent_location: {         # Location of the query's parent block
         doc_id: int,           # The document ID
         slide_name: str,       # The slide containing the parent block
-        parent_block: str      # Name of the text or table block containing this query
+        block_name: str        # Name of the text or table block containing the queries list
     },
     query_name: str,           # Name for this query (used as {query_name} in parent's user_prompt)
     query: {                   # Semantic layer query (MinimalSemanticLayerQueryForLLM)
@@ -80,7 +80,7 @@ Returns the full query result as a markdown table. Use when you need multi-row d
 1. Create queries with `update_query_block`:
    ```
    update_query_block(
-       location={doc_id: 42, slide_name: "Overview", parent_block: "metrics_text"},
+       parent_location={doc_id: 42, slide_name: "Overview", block_name: "metrics_text"},
        query_name="total_revenue",
        query={
            measures: [{name: "total_revenue", cube_name: "revenue"}]
@@ -106,7 +106,7 @@ Pivots a dimension's values into column headers. Useful for creating cross-tab t
 
 ```
 update_query_block(
-    location={doc_id: 42, slide_name: "Breakdown", parent_block: "data_table"},
+    parent_location={doc_id: 42, slide_name: "Breakdown", block_name: "data_table"},
     query_name="revenue_by_region_month",
     query={
         measures: [{name: "total_revenue", cube_name: "revenue"}],
@@ -153,7 +153,7 @@ update_query_block(
 
 ```
 update_query_block(
-    location={doc_id: 42, slide_name: "Executive Summary", parent_block: "kpi_text"},
+    parent_location={doc_id: 42, slide_name: "Executive Summary", block_name: "kpi_text"},
     query_name="active_users",
     query={
         measures: [{name: "active_user_count", cube_name: "users"}]
@@ -165,7 +165,7 @@ update_query_block(
 
 ```
 update_query_block(
-    location={doc_id: 42, slide_name: "Executive Summary", parent_block: "kpi_text"},
+    parent_location={doc_id: 42, slide_name: "Executive Summary", block_name: "kpi_text"},
     query_name="prev_active_users",
     query={
         measures: [{name: "active_user_count", cube_name: "users"}],
@@ -180,7 +180,7 @@ Then in the parent: `Active users: {active_users} ({percent((active_users - prev
 
 ```
 update_query_block(
-    location={doc_id: 42, slide_name: "Trends", parent_block: "trend_table"},
+    parent_location={doc_id: 42, slide_name: "Trends", block_name: "trend_table"},
     query_name="monthly_data",
     query={
         measures: [
@@ -202,7 +202,7 @@ update_query_block(
 
 ```
 update_query_block(
-    location={doc_id: 42, slide_name: "Comparison", parent_block: "comparison_table"},
+    parent_location={doc_id: 42, slide_name: "Comparison", block_name: "comparison_table"},
     query_name="region_quarterly",
     query={
         measures: [{name: "total_revenue", cube_name: "revenue"}],
