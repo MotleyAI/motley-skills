@@ -2,7 +2,7 @@
   "mcpServers": {
     "motley": {
       "type": "http",
-      "url": "https://stable.storyline.motley.ai/api/v1/mcp"
+      "url": "http://localhost:8000/api/v1/mcp"
     }
   }
 }
