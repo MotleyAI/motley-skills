@@ -61,7 +61,7 @@ Time dimensions can be grouped at: `DAY`, `WEEK`, `MONTH`, `QUARTER`, `YEAR`
 
 When writing prompts, specify the granularity you want (e.g., "monthly revenue", "quarterly breakdown").
 
-For full details on data types and constraints, see [model-guide.md](../_shared/model-guide.md).
+For full details on data types and constraints, see [model-guide.md](../../shared/model-guide.md).
 
 ## Creating Custom Models
 

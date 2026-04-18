@@ -104,7 +104,7 @@ update_table_block(
 
 Same as text blocks — supports `{variable}`, `{Slide::Block}`, arithmetic, and formatting functions.
 
-See [variable-reference-syntax.md](../_shared/variable-reference-syntax.md) for full details.
+See [variable-reference-syntax.md](../../shared/variable-reference-syntax.md) for full details.
 
 ## Workflow
 
@@ -208,5 +208,5 @@ Same as text blocks:
 ## Related Skills
 
 - For creating query blocks: see the `update-query-block` skill
-- For expression syntax: see [variable-reference-syntax.md](../_shared/variable-reference-syntax.md)
-- For context variables: see [resolution-context.md](../_shared/resolution-context.md)
+- For expression syntax: see [variable-reference-syntax.md](../../shared/variable-reference-syntax.md)
+- For context variables: see [resolution-context.md](../../shared/resolution-context.md)

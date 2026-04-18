@@ -150,7 +150,7 @@ Expression syntax for templates:
 - Formatting functions (percent, integer, number, currency)
 - Cross-slide references `{Slide::Block}`
 
-[View](../skills/_shared/variable-reference-syntax.md)
+[View](../shared/variable-reference-syntax.md)
 
 ### resolution-context.md
 
@@ -160,7 +160,7 @@ Auto-generated context variables:
 - customer_name alias
 - Using variables in filters and templates
 
-[View](../skills/_shared/resolution-context.md)
+[View](../shared/resolution-context.md)
 
 ### model-guide.md
 
@@ -171,7 +171,7 @@ Model data modeling concepts:
 - Filter concepts
 - Custom models and measures
 
-[View](../skills/_shared/model-guide.md)
+[View](../shared/model-guide.md)
 
 ---
 

@@ -220,4 +220,4 @@ If the chart doesn't look right, call `update_chart_block` again with adjusted `
 ## Related Skills
 
 - For exploring models before building charts: see the `explore-model` skill
-- For understanding model schemas: see [model-guide.md](../_shared/model-guide.md)
+- For understanding model schemas: see [model-guide.md](../../shared/model-guide.md)

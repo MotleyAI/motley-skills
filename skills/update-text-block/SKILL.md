@@ -41,7 +41,7 @@ The `user_prompt` supports:
 - **Arithmetic**: `{a + b}`, `{a / b}`
 - **Formatting functions**: `{percent(x)}`, `{currency(x)}`, `{integer(x)}`, `{number(x, decimals=N)}`
 
-For full syntax details, see [variable-reference-syntax.md](../_shared/variable-reference-syntax.md).
+For full syntax details, see [variable-reference-syntax.md](../../shared/variable-reference-syntax.md).
 
 ## Variable Reference Rules
 
@@ -195,5 +195,5 @@ Controls what happens when a child query block fails to resolve:
 ## Related Skills
 
 - For creating query blocks: see the `update-query-block` skill
-- For expression syntax: see [variable-reference-syntax.md](../_shared/variable-reference-syntax.md)
-- For context variables: see [resolution-context.md](../_shared/resolution-context.md)
+- For expression syntax: see [variable-reference-syntax.md](../../shared/variable-reference-syntax.md)
+- For context variables: see [resolution-context.md](../../shared/resolution-context.md)

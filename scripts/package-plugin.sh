@@ -9,7 +9,7 @@ zip -r "$OUT" \
   .claude-plugin \
   .mcp.json \
   skills \
+  shared \
   LICENSE \
-  README.md \
-  -x "skills/_shared/*"
+  README.md
 echo "Created plugin package: $OUT"
