@@ -47,7 +47,7 @@ For full syntax details, see [variable-reference-syntax.md](../../shared/variabl
 
 - **Same-slide query**: Use bare name → `{total_revenue}`
 - **Cross-slide content**: Use `{Slide::Block}` → `{Sales::revenue_chart}`
-- **Context variables**: Use bare name → `{customer_name}`, `{end_month}`
+- **Context variables**: Use bare name → `{end_month}` (universal), or any source-specific variable shown by `get_doc_variables`
 - **Always verify**: Use `get_doc_variables(doc_id=..., show_context_vars=true)` to check available variables
 
 ## Content Rules
@@ -108,7 +108,7 @@ Use this for status labels, categories, or any content that must be one of a fix
 
 - `{query_name}` → call `update_query_block` first
 - `{Slide::Block}` → the referenced slide/block must already have content
-- `{context_var}` (e.g. `{customer_name}`) → always available, no setup needed
+- `{context_var}` (e.g. `{end_month}`, or any source-specific key from `get_doc_variables`) → no setup needed if `get_doc_variables` lists it
 
 Create query blocks first, then set the text template:
 
@@ -133,7 +133,7 @@ Create query blocks first, then set the text template:
    ```
    update_text_block(
        location={doc_id: 42, slide_name: "Overview", block_name: "summary_text"},
-       user_prompt="In {end_month}, {customer_name} generated {currency(total_revenue)} in revenue across {integer(customer_count)} active customers."
+       user_prompt="In {end_month}, the business generated {currency(total_revenue)} in revenue across {integer(customer_count)} active customers."
    )
    ```
 
@@ -153,7 +153,7 @@ update_text_block(
 ```
 update_text_block(
     location={doc_id: 42, slide_name: "Performance", block_name: "metrics_text"},
-    user_prompt="**{customer_name} — {end_month}**\n\n- Revenue: {currency(total_revenue)} ({percent(revenue_growth)} vs prior period)\n- Active users: {integer(active_users)}\n- Avg session duration: {number(avg_duration, decimals=1)} minutes"
+    user_prompt="**Performance — {end_month}**\n\n- Revenue: {currency(total_revenue)} ({percent(revenue_growth)} vs prior period)\n- Active users: {integer(active_users)}\n- Avg session duration: {number(avg_duration, decimals=1)} minutes"
 )
 ```
 

@@ -12,7 +12,7 @@ Total revenue: {total_revenue}
 
 The variable name must match:
 - A query block `query_name` created via `update_query_block`, OR
-- A context variable (e.g., `{customer_name}`, `{end_date}`) — see [resolution-context.md](resolution-context.md)
+- A context variable (e.g., `{end_date}`, or any source-specific variable shown by `get_doc_variables`) — see [resolution-context.md](resolution-context.md)
 
 ---
 
