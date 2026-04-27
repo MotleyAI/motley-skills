@@ -61,6 +61,8 @@ update_chart_block(
 
 The full nested schemas for `query` and `chart_details` come from the tool definition. The above shows the most commonly used fields.
 
+When `add_default_filters=true` (the default), the cube's default time dimension is filtered between the document's `start_date` and `end_date` automatically — you don't need to add a time filter to your `query` spec. Set it to `false` only for charts that should ignore the document's date range.
+
 ## Chart Type Guidance
 
 | Type | Best For | Example |
