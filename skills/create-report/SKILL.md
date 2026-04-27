@@ -83,24 +83,24 @@ come from a single source. The `source_id` can be found in outputs of `models_su
 
 ### Set Context Variables
 
-Documents have context variables (e.g. `client_name`, `start_date`, `end_date`) that are used during block resolution. When a query filter references a variable like `{client_name}`, it is substituted from the document's context variables at resolution time.
+Documents have context variables that are used during block resolution. Date variables like `start_date` / `end_date` are universal; additional variables (e.g. a client/customer filter) come from the source's default filters and only exist when the source declares them. When a query filter references a variable like `{start_date}`, it is substituted from the document's context variables at resolution time.
 
-Default values are derived from `source_id` at document creation. To check current values:
+Default values are derived from `source_id` at document creation. Always check what variables the document actually exposes before setting them:
 
 ```
 get_doc_variables(doc_id=<id>)
 ```
 
-To update them (e.g. to change the client or date range for the report):
+To update them (e.g. to change the date range for the report, or any source-specific variable shown by `get_doc_variables`):
 
 ```
 set_doc_variables(
     doc_id=<id>,
-    variables={"client_name": "Acme Corp", "start_date": "2025-01-01", "end_date": "2025-12-31"}
+    variables={"start_date": "2025-01-01", "end_date": "2025-12-31"}
 )
 ```
 
-This merges the provided values with existing parameters and re-resolves all blocks. Only provide the keys you want to change.
+This merges the provided values with existing parameters and re-resolves all blocks. Only provide the keys you want to change, and only set keys that `get_doc_variables` reports — don't invent variable names that the source doesn't expose.
 
 ### Create Blocks
 

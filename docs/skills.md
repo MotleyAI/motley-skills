@@ -155,9 +155,8 @@ Expression syntax for templates:
 ### resolution-context.md
 
 Auto-generated context variables:
-- end_month, start_month, quarter
-- now_date, now_month
-- customer_name alias
+- Universal date keys: end_month, start_month, quarter, now_date, now_month
+- Source-specific variables (only when the source declares them via default filters)
 - Using variables in filters and templates
 
 [View](../shared/resolution-context.md)

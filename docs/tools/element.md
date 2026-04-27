@@ -38,7 +38,7 @@ Update the template of a text block and resolve it to generate content.
 ### Example Template
 
 ```markdown
-## {client_name} Performance Summary
+## Performance Summary — {end_month}
 
 Revenue for the period was {currency(revenue_query)}, representing a {percent(growth_pct)} change.
 ```

@@ -112,7 +112,7 @@ See [variable-reference-syntax.md](../../shared/variable-reference-syntax.md) fo
 
 - `{query_name}` → call `update_query_block` first
 - `{Slide::Block}` → the referenced slide/block must already have content
-- `{context_var}` (e.g. `{customer_name}`) → always available, no setup needed
+- `{context_var}` (e.g. `{end_month}`, or any source-specific key from `get_doc_variables`) → no setup needed if `get_doc_variables` lists it
 
 Create query blocks first, then set the table template:
 

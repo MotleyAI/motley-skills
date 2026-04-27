@@ -70,7 +70,7 @@ Set document context variables. Merges provided values with existing parameters 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `doc_id` | integer | **Yes** | The document to update. |
-| `variables` | object | **Yes** | Key-value pairs to set (e.g. `{"client_name": "Acme", "start_date": "2025-01-01"}`). Only provide the keys you want to change. |
+| `variables` | object | **Yes** | Key-value pairs to set (e.g. `{"start_date": "2025-01-01", "end_date": "2025-12-31"}`, plus any source-specific variables shown by `get_doc_variables`). Only provide the keys you want to change. |
 
 ### Returns
 
@@ -84,7 +84,7 @@ Set document context variables. Merges provided values with existing parameters 
 
 - This merges with existing variables — you only need to provide keys you want to change
 - After setting variables, all blocks are re-resolved with the updated context
-- Common variables include `client_name`, `start_date`, `end_date`
+- Universal variables: `start_date`, `end_date`. Source-specific variables (e.g. a `client_name` filter) only exist when the source declares them — discover them with `get_doc_variables`.
 
 ---
 

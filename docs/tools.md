@@ -78,8 +78,8 @@ inspect_document(doc_id=42)
 get_doc_variables(doc_id=42)
   → Check context variables
 
-set_doc_variables(doc_id=42, variables={"client_name": "Acme"})
-  → Update context
+set_doc_variables(doc_id=42, variables={"start_date": "2025-01-01", "end_date": "2025-12-31"})
+  → Update context (use the keys reported by get_doc_variables)
 ```
 
 ### 3. Create Content Blocks
