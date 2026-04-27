@@ -8,7 +8,7 @@ description: >
 
 # Update Query Block
 
-Create or update numerical queries inside text or table blocks. Queries execute against a cube and make their results available as `{query_name}` variables in the parent block's `user_prompt`.
+Create or update numerical queries inside text or table blocks. Queries execute against a model and make their results available as `{query_name}` variables in the parent block's `user_prompt`.
 
 ## How It Works
 
@@ -56,6 +56,10 @@ update_query_block(
 **Returns**: The query result — a single value for `single_number` mode, or a markdown table for `table` mode.
 
 The full nested schema for `query` comes from the tool definition. The above shows the most commonly used fields.
+
+In the `query` schema, `cube_name` is the model name — the API still uses the historical `cube_name` label for this field. Pass the same name you'd give to `inspect_model`.
+
+When `add_default_filters=true` (the default), the model's default time dimension is filtered between the document's `start_date` and `end_date` automatically — you don't need to add a time filter to your `query` spec. Set it to `false` only for queries that should ignore the document's date range (e.g. "all-time" totals).
 
 ## Query Modes
 

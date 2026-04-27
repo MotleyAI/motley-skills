@@ -98,7 +98,7 @@ Create or update a chart block with a structured query and chart configuration.
 | `chart_details` | object | **Yes** | Chart rendering configuration (ChartDetailsTemplate as JSON). Contains `series`, `x_axis`, `y_axis`, `y_right_axis`, `series_default`, `color_scheme`, `title`, `legend`. |
 | `sample_values` | object | No | Override filter values (e.g., `{"start_date": "2025-01-01"}`). Takes priority over document parameters. |
 | `max_return_rows` | integer | No | Maximum rows in response preview. Default: 20. |
-| `add_default_filters` | boolean | No | Apply default cube filters (time range, tenant). Default: true. |
+| `add_default_filters` | boolean | No | Apply default model filters (time range, tenant). Default: true. |
 
 ### Returns
 
@@ -151,7 +151,7 @@ Create or update a numerical query within a parent text or table block's queries
 | `transpose` | boolean | No | Swap rows and columns (table mode only). Default: false. |
 | `sample_values` | object | No | Override filter values. Takes priority over document parameters. |
 | `max_return_rows` | integer | No | Max rows in response preview. Default: 20. |
-| `add_default_filters` | boolean | No | Apply default cube filters. Default: true. |
+| `add_default_filters` | boolean | No | Apply default model filters. Default: true. |
 
 ### Query Modes
 

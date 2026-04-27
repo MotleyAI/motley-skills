@@ -61,6 +61,10 @@ update_chart_block(
 
 The full nested schemas for `query` and `chart_details` come from the tool definition. The above shows the most commonly used fields.
 
+In the `query` schema, `cube_name` is the model name — the API still uses the historical `cube_name` label for this field. Pass the same name you'd give to `inspect_model`.
+
+When `add_default_filters=true` (the default), the model's default time dimension is filtered between the document's `start_date` and `end_date` automatically — you don't need to add a time filter to your `query` spec. Set it to `false` only for charts that should ignore the document's date range.
+
 ## Chart Type Guidance
 
 | Type | Best For | Example |
@@ -215,7 +219,7 @@ If the chart doesn't look right, call `update_chart_block` again with adjusted `
 | Wrong time granularity | Set `time_dimension.granularity` explicitly |
 | Axis scale issues | Set `scale: "LOG"` on the axis, or use dual axis with `y_axis: "right"` |
 | Unknown measure/dimension | Use `inspect_model` to see exact names |
-| Wrong cube | Set `cube_name` on each measure/dimension explicitly |
+| Wrong model | Set `cube_name` (i.e. the model name) on each measure/dimension explicitly |
 
 ## Related Skills
 
