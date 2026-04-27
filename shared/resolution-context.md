@@ -56,7 +56,7 @@ These variables are available alongside query block results — no query block i
 
 When you write prompts for `update_query_block` or `update_chart_block`, the query-generating LLM automatically has access to:
 - The document's resolved parameters (to generate appropriate time filters and any source-specific filters)
-- The cube schema (to pick the right measures/dimensions)
+- The model schema (to pick the right measures/dimensions)
 
 You don't need to manually specify filters for `start_date` / `end_date` — the query LLM handles them. The same goes for source-specific filters that the source declares; mention the intent in your prompt (e.g. "for the current reporting period" or "for the selected customer") and the query LLM applies the relevant default filter.
 

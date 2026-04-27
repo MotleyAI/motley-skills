@@ -102,7 +102,7 @@ set_doc_variables(
 
 This merges the provided values with existing parameters and re-resolves all blocks. Only provide the keys you want to change, and only set keys that `get_doc_variables` reports — don't invent variable names that the source doesn't expose.
 
-`start_date` and `end_date` are automatically injected as a time filter on every new query and chart created via `update_query_block` / `update_chart_block` (whenever the cube has a default time dimension), so you don't need to add a time filter to your query spec by hand.
+`start_date` and `end_date` are automatically injected as a time filter on every new query and chart created via `update_query_block` / `update_chart_block` (whenever the model has a default time dimension), so you don't need to add a time filter to your query spec by hand.
 
 ### Create Blocks
 
