@@ -15,22 +15,6 @@ Create or modify table blocks using the `update_table_block` MCP tool. Table blo
 2. The block resolves **immediately** — variables are substituted and (optionally) LLM generates the table
 3. The resolved table content is returned inline in the tool response
 
-## Tool Signature
-
-```
-update_table_block(
-    location: {                        # Location of the block
-        doc_id: int,                   # The document ID
-        slide_name: str,               # The slide containing the block
-        block_name: str                # The name of the table block
-    },
-    user_prompt: str,                  # Template string with {variables}
-    call_llm: bool = false,            # Whether to use LLM for table generation
-    target_shape: [rows, cols]? = null, # Size constraints for the table
-    behavior_if_query_fails: str? = null # "drop_slide" or "fail_resolution"
-)
-```
-
 **Returns**: The resolved table content as markdown.
 
 ## target_shape Format

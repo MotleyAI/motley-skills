@@ -201,7 +201,7 @@ See the `update-table-block` skill for table patterns.
 Export the document to markdown format:
 
 ```
-export_document(document_id=<id>, format="markdown")
+export_document(document_id=<id>, format="markdown", mode="image")
 ```
 
 Check the output carefully. Does it look as expected? If not, go back and update the blocks.

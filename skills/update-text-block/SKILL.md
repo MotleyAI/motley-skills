@@ -15,22 +15,6 @@ Create or modify text blocks using the `update_text_block` MCP tool. Text blocks
 2. The block resolves **immediately** — variables are substituted and (optionally) LLM generates content
 3. The resolved content is returned inline in the tool response
 
-## Tool Signature
-
-```
-update_text_block(
-    location: {                        # Location of the block
-        doc_id: int,                   # The document ID
-        slide_name: str,               # The slide containing the block
-        block_name: str                # The name of the text block
-    },
-    user_prompt: str,                  # Template string with {variables}
-    call_llm: bool = false,            # Whether to use LLM for content generation
-    allowed_outputs: list[str]? = null, # Constrain LLM to these exact outputs (call_llm must be true)
-    behavior_if_query_fails: str? = null # "drop_slide" or "fail_resolution"
-)
-```
-
 **Returns**: The resolved content of the text block.
 
 ## Template Syntax

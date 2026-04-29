@@ -17,45 +17,7 @@ Create or update numerical queries inside text or table blocks. Queries execute 
 3. The query result becomes available as `{query_name}` in the parent text/table block's `user_prompt`
 4. When the parent block is resolved (via `update_text_block` or `update_table_block`), the query value is substituted in
 
-## Tool Signature
-
-```
-update_query_block(
-    parent_location: {         # Location of the query's parent block
-        doc_id: int,           # The document ID
-        slide_name: str,       # The slide containing the parent block
-        block_name: str        # Name of the text or table block containing the queries list
-    },
-    query_name: str,           # Name for this query (used as {query_name} in parent's user_prompt)
-    query: {                   # Semantic layer query (MinimalSemanticLayerQueryForLLM)
-        measures: [            # List of measures to aggregate
-            {name: str, cube_name: str?}
-        ],
-        dimensions: [          # List of dimensions to group by
-            {name: str, cube_name: str?}
-        ]?,
-        time_dimension: {      # Single time dimension (NOT a list)
-            dimension: {name: str, cube_name: str?},
-            granularity: str?  # "day", "week", "month", "quarter", "year"
-        }?,
-        filters: [...]?,       # Filters array
-        limit: int?,           # Max rows to return
-        order: [               # Ordering
-            {column: {name: str, cube_name: str?}, order: "ASC"|"DESC"}
-        ]?
-    },
-    mode: str? = "single_number",  # "single_number" or "table"
-    pivot_dimension: str?,     # Dimension to pivot into columns (table mode only)
-    transpose: bool?,          # Swap rows/columns (table mode only)
-    sample_values: {str: str}?,    # Override filter values (e.g. start_date, end_date)
-    max_return_rows: int? = 20,    # Max rows in response preview
-    add_default_filters: bool? = true  # Apply default time/tenant filters
-)
-```
-
 **Returns**: The query result — a single value for `single_number` mode, or a markdown table for `table` mode.
-
-The full nested schema for `query` comes from the tool definition. The above shows the most commonly used fields.
 
 ## Query Modes
 

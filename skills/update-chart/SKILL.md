@@ -15,51 +15,7 @@ Create or modify chart blocks using the `update_chart_block` MCP tool. You provi
 2. The query is validated and the chart configuration is saved to the block
 3. Call `render_chart` to see the rendered PNG (this also triggers resolution)
 
-## Tool Signature
-
-```
-update_chart_block(
-    location: {                # Location of the chart block
-        doc_id: int,           # The document ID
-        slide_name: str,       # The slide containing the chart block
-        block_name: str        # The name of the chart block
-    },
-    query: {                   # Semantic layer query (MinimalSemanticLayerQueryForLLM)
-        measures: [            # List of measures to aggregate
-            {name: str, cube_name: str?}
-        ],
-        dimensions: [          # List of dimensions to group by
-            {name: str, cube_name: str?}
-        ]?,
-        time_dimension: {      # Single time dimension (NOT a list)
-            dimension: {name: str, cube_name: str?},
-            granularity: str?  # "day", "week", "month", "quarter", "year"
-        }?,
-        filters: [...]?,       # Filters array
-        limit: int?,           # Max rows to return
-        order: [               # Ordering
-            {column: {name: str, cube_name: str?}, order: "ASC"|"DESC"}
-        ]?
-    },
-    chart_details: {           # Chart rendering configuration (ChartDetailsTemplate)
-        series: {...},         # Series configs by name
-        x_axis: {lines: bool, label: str?, scale: ("LINEAR"|"LOG")?},
-        y_axis: {lines: bool, label: str?, scale: ("LINEAR"|"LOG")?},
-        y_right_axis: {...}?,  # Right Y axis (for dual axis)
-        series_default: {type: "BAR"|"LINE"|"PIE"|"FUNNEL", y_axis: "left"|"right", ...},
-        color_scheme: str?,    # e.g. "motley", "greens", "blues"
-        title: str?,
-        legend: {enabled: bool, location: str, orientation: "VERTICAL"|"HORIZONTAL"}?
-    },
-    sample_values: {str: str}?,   # Override filter values (e.g. start_date, end_date)
-    max_return_rows: int? = 20,   # Max rows in response preview
-    add_default_filters: bool? = true  # Apply default time/tenant filters
-)
-```
-
 **Returns**: Confirmation that the chart was updated with a data preview. Does NOT return a rendered image — use `render_chart` for that.
-
-The full nested schemas for `query` and `chart_details` come from the tool definition. The above shows the most commonly used fields.
 
 ## Chart Type Guidance
 
