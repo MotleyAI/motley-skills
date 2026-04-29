@@ -1,140 +1,419 @@
-# HTML Presentation Template (Body-Only Mode)
+# HTML Presentation Template
 
-You generate **only the slide `<section>` elements**. The server wraps them with DOCTYPE, `<head>`, CSS, JS, fonts, logos, and chrome.
+Reference architecture for generating slide presentations. Every presentation follows this structure.
 
-## CRITICAL: No Inline Styles
-
-All visual styling comes from CSS classes defined in the BrandConfig's `css_block` fields. The server injects these automatically. **NEVER add inline `style=` attributes** for colors, fonts, padding, borders, alignment, or sizing. The ONLY exception is `transition-delay` for animation stagger timing.
-
-Use the CSS class names from the BrandConfig's `html_template` and `css_block` fields. If a class like `.data-table`, `.dtbl`, `.metric-card`, `.chart-container` exists in the css_block, USE IT — don't reinvent the styling inline.
-
-## Body HTML Structure
+## Base HTML Structure
 
 ```html
-<!-- Slide 1: Title (first_slide_type from BrandConfig) -->
-<section class="slide slide-title" id="slide-1">
-  <div class="logo on-light rv"><!-- logo --></div>
-  <div class="slide-content" style="justify-content: center;">
-    <div class="accent-bar rv"></div>
-    <h1 class="rv">Presentation Title</h1>
-    <p class="subtitle rv" style="transition-delay:0.1s">Subtitle or author</p>
-  </div>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentation Title</title>
 
-<!-- Slide 2: Content -->
-<section class="slide slide-content-default" id="slide-2">
-  <div class="topbar">
-    <div class="logo on-light rv"><!-- logo --></div>
-    <span class="pg-num rv">02 / 07</span>
-  </div>
-  <div class="s-hdr rv">
-    <span class="accent-bar"></span>
-    <span class="s-title">Section Title</span>
-  </div>
-  <div class="content-body">
-    <p class="rv">Content goes here...</p>
-    <ul>
-      <li class="rv" style="transition-delay:0.1s">First point</li>
-      <li class="rv" style="transition-delay:0.2s">Second point</li>
-    </ul>
-  </div>
-</section>
+    <!-- Fonts: use Fontshare or Google Fonts — never system fonts -->
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=..." />
 
-<!-- Slide 3: Data with chart -->
-<section class="slide slide-data" id="slide-3">
-  <div class="topbar" style="position:relative;z-index:1;">
-    <div class="logo on-light rv"><!-- logo --></div>
-    <span class="pg-num rv">03 / 07</span>
-  </div>
-  <div class="s-hdr rv" style="position:relative;z-index:1;">
-    <span class="accent-bar"></span>
-    <span class="s-title">Monthly Trend</span>
-  </div>
-  <div class="content-body" style="position:relative;z-index:1;">
-    <div id="chart-1" class="chart-container rv" data-chart-block="monthly_trend"></div>
-  </div>
-</section>
+    <style>
+      /* ===========================================
+           CSS CUSTOM PROPERTIES (THEME)
+           Change these to change the whole look
+           =========================================== */
+      :root {
+        /* Colors — from BRAND_CONFIG.md */
+        --bg-primary: #0a0f1c;
+        --bg-secondary: #111827;
+        --text-primary: #ffffff;
+        --text-secondary: #9ca3af;
+        --accent: #00ffcc;
+        --accent-glow: rgba(0, 255, 204, 0.3);
 
-<!-- Slide N: Closing (last_slide_type from BrandConfig) -->
-<section class="slide slide-closing" id="slide-7">
-  <div class="logo on-dark rv" style="margin-bottom: 2rem;"><!-- logo --></div>
-  <div class="cl-title rv">Thank You</div>
-  <div class="cl-sub rv" style="transition-delay:0.1s">Subtitle</div>
-</section>
+        /* Typography — MUST use clamp() */
+        --font-display: "Clash Display", sans-serif;
+        --font-body: "Satoshi", sans-serif;
+        --title-size: clamp(2rem, 6vw, 5rem);
+        --subtitle-size: clamp(0.875rem, 2vw, 1.25rem);
+        --body-size: clamp(0.75rem, 1.2vw, 1rem);
+
+        /* Spacing — MUST use clamp() */
+        --slide-padding: clamp(1.5rem, 4vw, 4rem);
+        --content-gap: clamp(1rem, 2vw, 2rem);
+
+        /* Animation */
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-normal: 0.6s;
+      }
+
+      /* ===========================================
+           BASE STYLES
+           =========================================== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* --- PASTE viewport-base.css CONTENTS HERE --- */
+
+      /* ===========================================
+           ANIMATIONS
+           Trigger via .visible class (added by JS on scroll)
+           =========================================== */
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity var(--duration-normal) var(--ease-out-expo),
+          transform var(--duration-normal) var(--ease-out-expo);
+      }
+
+      .slide.visible .reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Stagger children for sequential reveal */
+      .reveal:nth-child(1) {
+        transition-delay: 0.1s;
+      }
+      .reveal:nth-child(2) {
+        transition-delay: 0.2s;
+      }
+      .reveal:nth-child(3) {
+        transition-delay: 0.3s;
+      }
+      .reveal:nth-child(4) {
+        transition-delay: 0.4s;
+      }
+
+      /* ... preset-specific styles ... */
+    </style>
+  </head>
+  <body>
+    <!-- Optional: Progress bar -->
+    <div class="progress-bar"></div>
+
+    <!-- Optional: Navigation dots -->
+    <nav class="nav-dots"><!-- Generated by JS --></nav>
+
+    <!-- Slides -->
+    <section class="slide title-slide">
+      <h1 class="reveal">Presentation Title</h1>
+      <p class="reveal">Subtitle or author</p>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <h2 class="reveal">Slide Title</h2>
+        <p class="reveal">Content...</p>
+      </div>
+    </section>
+
+    <!-- More slides... -->
+
+    <script>
+      /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           =========================================== */
+      class SlidePresentation {
+        constructor() {
+          this.slides = document.querySelectorAll(".slide");
+          this.currentSlide = 0;
+          this.setupIntersectionObserver();
+          this.setupKeyboardNav();
+          this.setupTouchNav();
+          this.setupProgressBar();
+          this.setupNavDots();
+        }
+
+        setupIntersectionObserver() {
+          // Add .visible class when slides enter viewport
+          // Triggers CSS animations efficiently
+        }
+
+        setupKeyboardNav() {
+          // Arrow keys, Space, Page Up/Down
+        }
+
+        setupTouchNav() {
+          // Touch/swipe support for mobile
+        }
+
+        setupProgressBar() {
+          // Update progress bar on scroll
+        }
+
+        setupNavDots() {
+          // IMPORTANT: Always clear before building — if outerHTML was
+          // captured while dots were rendered, re-opening the file would
+          // append a duplicate set on top of the existing ones.
+          this.navDotsContainer.innerHTML = "";
+          // Generate and manage navigation dots
+        }
+      }
+
+      new SlidePresentation();
+    </script>
+  </body>
+</html>
 ```
 
-## Key Conventions
+## Required JavaScript Features
 
-### Markers (Server Replaces These)
+Every presentation must include:
 
-| Marker | Where | Server Action |
-|--------|-------|--------------|
-| `<!-- logo -->` | Inside `<div class="logo VARIANT rv">` | Injects brand SVG logo |
-| `<!-- wave -->` | Inside `<div class="wave">` | Generates wave footer SVG |
-| `<!-- footer-text -->` | Where footer text should appear | Injects footer text |
+1. **SlidePresentation Class** — Main controller with:
+   - Keyboard navigation (arrows, space, page up/down)
+   - Touch/swipe support
+   - Mouse wheel navigation
+   - Progress bar updates
+   - Navigation dots
 
-**Logos: NEVER look up, extract, fetch, or paste actual logo SVG markup.** Just write `<!-- logo -->` inside a container div. The server injects the real SVG automatically. Do not call any tools or read any files to get the logo.
+2. **Intersection Observer** — For scroll-triggered animations:
+   - Add `.visible` class when slides enter viewport
+   - Trigger CSS transitions efficiently
 
-### Animation Classes
+3. **Optional Enhancements** (match to chosen style):
+   - Custom cursor with trail
+   - Particle system background (canvas)
+   - Parallax effects
+   - 3D tilt on hover
+   - Magnetic buttons
+   - Counter animations
 
-Apply these from the BrandConfig's `animations.presets`:
+4. **Inline Editing** (only if user opted in during Phase 1 — skip entirely if they said No):
+   - Edit toggle button (hidden by default, revealed via hover hotzone or `E` key)
+   - Auto-save to localStorage
+   - Export/save file functionality
+   - See "Inline Editing Implementation" section below
 
-| Class | Effect |
-|-------|--------|
-| `.rv` | Fade + slide up (translateY) |
-| `.rv-l` | Fade + slide from left (translateX) |
-| `.rv-r` | Fade + slide from right (translateX) |
+## Inline Editing Implementation (Opt-In Only)
 
-Stagger with inline `transition-delay`:
+**If the user chose "No" for inline editing in Phase 1, do NOT generate any edit-related HTML, CSS, or JS.**
+
+**Do NOT use CSS `~` sibling selector for hover-based show/hide.** The CSS-only approach (`edit-hotzone:hover ~ .edit-toggle`) fails because `pointer-events: none` on the toggle button breaks the hover chain: user hovers hotzone -> button becomes visible -> mouse moves toward button -> leaves hotzone -> button disappears before click.
+
+**Required approach: JS-based hover with 400ms delay timeout.**
+
+HTML:
+
 ```html
-<p class="rv" style="transition-delay:0.1s">First</p>
-<p class="rv" style="transition-delay:0.2s">Second</p>
+<div class="edit-hotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏️</button>
 ```
 
-### CSS Classes from BrandConfig
+CSS (visibility controlled by JS classes only):
 
-Use `css_class` from `slide_types.types` on each `<section>`. Use class names from `html_template` for inner elements. The server injects all CSS that makes these classes work.
+```css
+/* Do NOT use CSS ~ sibling selector for this!
+   pointer-events: none breaks the hover chain.
+   Must use JS with delay timeout. */
+.edit-hotzone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  z-index: 10000;
+  cursor: pointer;
+}
+.edit-toggle {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10001;
+}
+.edit-toggle.show,
+.edit-toggle.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+```
 
-### Chart Containers
+JS (three interaction methods):
 
-Every chart container **must** have:
-- A unique `id` attribute
-- A `data-chart-block="BLOCK_NAME"` attribute
-- The `chart-container` class
+```javascript
+// 1. Click handler on the toggle button
+document.getElementById("editToggle").addEventListener("click", () => {
+  editor.toggleEditMode();
+});
 
-### Table Containers
+// 2. Hotzone hover with 400ms grace period
+const hotzone = document.querySelector(".edit-hotzone");
+const editToggle = document.getElementById("editToggle");
+let hideTimeout = null;
 
-Every table container **must** have:
-- A unique `id` attribute
-- A `data-table-block="BLOCK_NAME"` attribute
-- The `table-container` class
+hotzone.addEventListener("mouseenter", () => {
+  clearTimeout(hideTimeout);
+  editToggle.classList.add("show");
+});
+hotzone.addEventListener("mouseleave", () => {
+  hideTimeout = setTimeout(() => {
+    if (!editor.isActive) editToggle.classList.remove("show");
+  }, 400);
+});
+editToggle.addEventListener("mouseenter", () => {
+  clearTimeout(hideTimeout);
+});
+editToggle.addEventListener("mouseleave", () => {
+  hideTimeout = setTimeout(() => {
+    if (!editor.isActive) editToggle.classList.remove("show");
+  }, 400);
+});
+
+// 3. Hotzone direct click
+hotzone.addEventListener("click", () => {
+  editor.toggleEditMode();
+});
+
+// 4. Keyboard shortcut (E key, skip when editing text)
+document.addEventListener("keydown", (e) => {
+  if (
+    (e.key === "e" || e.key === "E") &&
+    !e.target.getAttribute("contenteditable")
+  ) {
+    editor.toggleEditMode();
+  }
+});
+```
+
+**CRITICAL: `exportFile()` must strip edit state before capturing outerHTML.**
+
+When the user presses Ctrl+S in edit mode, `document.documentElement.outerHTML` captures the live DOM —
+including `body.edit-active`, `contenteditable="true"` on every text element, and `.active`/`.show` classes on
+the toggle button and banner. Anyone opening the saved file sees dashed outlines, a checkmark button, and an
+edit banner, as if permanently stuck in edit mode.
+
+Always implement `exportFile()` like this:
+
+```javascript
+exportFile() {
+    // Temporarily strip edit state so the saved file opens cleanly
+    const editableEls = Array.from(document.querySelectorAll('[contenteditable]'));
+    editableEls.forEach(el => el.removeAttribute('contenteditable'));
+    document.body.classList.remove('edit-active');
+
+    // Also strip UI classes from toggle button and banner
+    const editToggle = document.getElementById('editToggle');
+    const editBanner = document.querySelector('.edit-banner');
+    editToggle?.classList.remove('active', 'show');
+    editBanner?.classList.remove('active', 'show');
+
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+    // Restore edit state so the user can keep editing
+    document.body.classList.add('edit-active');
+    editableEls.forEach(el => el.setAttribute('contenteditable', 'true'));
+    editToggle?.classList.add('active');
+    editBanner?.classList.add('active');
+
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'presentation.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+```
+
+## Image Pipeline (Skip If No Images)
+
+If user chose "No images" in Phase 1, skip this entirely. If images were provided, process them before generating HTML.
+
+**Dependency:** `pip install Pillow`
+
+### Image Processing
+
+```python
+from PIL import Image, ImageDraw
+
+# Circular crop (for logos on modern/clean styles)
+def crop_circle(input_path, output_path):
+    img = Image.open(input_path).convert('RGBA')
+    w, h = img.size
+    size = min(w, h)
+    left, top = (w - size) // 2, (h - size) // 2
+    img = img.crop((left, top, left + size, top + size))
+    mask = Image.new('L', (size, size), 0)
+    ImageDraw.Draw(mask).ellipse([0, 0, size, size], fill=255)
+    img.putalpha(mask)
+    img.save(output_path, 'PNG')
+
+# Resize (for oversized images that inflate HTML)
+def resize_max(input_path, output_path, max_dim=1200):
+    img = Image.open(input_path)
+    img.thumbnail((max_dim, max_dim), Image.LANCZOS)
+    img.save(output_path, quality=85)
+```
+
+| Situation                        | Operation                     |
+| -------------------------------- | ----------------------------- |
+| Square logo on rounded aesthetic | `crop_circle()`               |
+| Image > 1MB                      | `resize_max(max_dim=1200)`    |
+| Wrong aspect ratio               | Manual crop with `img.crop()` |
+
+Save processed images with `_processed` suffix. Never overwrite originals.
+
+### Image Placement
+
+**Use direct file paths** (not base64) — presentations are viewed locally:
 
 ```html
-<div id="table-1" class="table-container rv" data-table-block="quarterly_metrics"></div>
+<img src="assets/logo_round.png" alt="Logo" class="slide-image logo" />
+<img
+  src="assets/screenshot.png"
+  alt="Screenshot"
+  class="slide-image screenshot"
+/>
 ```
 
-The server resolves the table data from the source document and injects a styled `<table>` element using the brand's `table_css_class`.
+```css
+.slide-image {
+  max-width: 100%;
+  max-height: min(50vh, 400px);
+  object-fit: contain;
+  border-radius: 8px;
+}
+.slide-image.screenshot {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.slide-image.logo {
+  max-height: min(30vh, 200px);
+}
+```
 
-## Content Density Limits Per Slide
+**Adapt border/shadow colors to match the chosen style's accent.** Never repeat the same image on multiple slides (except logos on title + closing).
 
-| Slide Type | Maximum Content |
-|------------|-----------------|
-| Title slide | 1 heading + 1 subtitle + optional tagline |
-| Content slide | 1 heading + 4-6 bullet points OR 1 heading + 2 paragraphs |
-| Feature grid | 1 heading + 6 cards maximum (2x3 or 3x2) |
-| Quote slide | 1 quote (max 3 lines) + attribution |
-| Chart slide | 1 heading + 1 chart container + optional caption |
-| Table slide | 1 heading + 1 table container + optional caption |
+**Placement patterns:** Logo centered on title slide. Screenshots in two-column layouts with text. Full-bleed images as slide backgrounds with text overlay (use sparingly).
 
-**Content exceeds limits? Split into multiple slides. Never cram, never scroll.**
+---
 
-## What You Do NOT Include
+## Code Quality
 
-- No `<!DOCTYPE>`, `<html>`, `<head>`, `<body>` tags
-- No `<style>` blocks
-- No `<script>` blocks
-- No font `<link>` tags
-- No CDN scripts
-- No logo SVG markup
-- No viewport-base.css
-- No chart initialization code
+**Comments:** Every section needs clear comments explaining what it does and how to modify it.
+
+**Accessibility:**
+
+- Semantic HTML (`<section>`, `<nav>`, `<main>`)
+- Keyboard navigation works fully
+- ARIA labels where needed
+- `prefers-reduced-motion` support (included in viewport-base.css)
+
+## File Structure
+
+Single presentations:
+
+```
+presentation.html    # Self-contained, all CSS/JS inline
+assets/              # Images only, if any
+```
+
+Multiple presentations in one project:
+
+```
+[name].html
+[name]-assets/
+```

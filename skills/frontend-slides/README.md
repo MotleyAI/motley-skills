@@ -1,135 +1,144 @@
-# Frontend Slides
+# Branded Slides
 
-A Claude Code skill for creating stunning, animation-rich HTML presentations — from scratch or by converting PowerPoint files.
+A Claude Code skill for creating stunning, animation-rich HTML presentations — locked to your brand identity.
+
+Fork of [frontend-slides](https://github.com/zarazhangrui/frontend-slides) by [@zarazhangrui](https://github.com/zarazhangrui).
 
 ## What This Does
 
-**Frontend Slides** helps non-designers create beautiful web presentations without knowing CSS or JavaScript. It uses a "show, don't tell" approach: instead of asking you to describe your aesthetic preferences in words, it generates visual previews and lets you pick what you like.
-
-Here is a deck about the skill, made through the skill:
-
-https://github.com/user-attachments/assets/ef57333e-f879-432a-afb9-180388982478
-
+**Branded Slides** helps you create beautiful web presentations that always match your brand — without knowing CSS or JavaScript. On first use, a brand wizard walks you through defining your visual identity (colors, fonts, logo, signature elements). Every presentation after that is automatically on-brand.
 
 ### Key Features
 
 - **Zero Dependencies** — Single HTML files with inline CSS/JS. No npm, no build tools, no frameworks.
-- **Visual Style Discovery** — Can't articulate design preferences? No problem. Pick from generated visual previews.
-- **PPT Conversion** — Convert existing PowerPoint files to web, preserving all images and content.
-- **Anti-AI-Slop** — Curated distinctive styles that avoid generic AI aesthetics (bye-bye, purple gradients on white).
+- **Brand-Locked** — Every presentation uses your brand's visual identity. No style picker, no generic themes.
+- **Brand Wizard** — Define your brand from a website, brand guidelines, an existing deck, or from scratch.
+- **PPT Conversion** — Convert existing PowerPoint files to your branded web format.
+- **Anti-AI-Slop** — Distinctive, custom-crafted design. No generic AI aesthetics.
 - **Production Quality** — Accessible, responsive, well-commented code you can customize.
 
-## Installation
+## How It Works
 
-### For Claude Code Users
+### First Time: Brand Wizard
 
-Copy the skill files to your Claude Code skills directory:
+The first time you use the skill, it runs a brand wizard that creates your `BRAND_CONFIG.md`:
+
+1. **Choose your input** — the recommended path is to share an existing presentation (PPT/PPTX/HTML). Decks codify visual identity more completely than websites do.
+   Other options: website URL (via dembrandt), brand guidelines PDF, or start from scratch.
+2. **Review extracted identity** — colors, fonts, logo, overall feel
+3. **Pick typography** — choose from proposed font pairings
+4. **Define signature elements** — CSS-only visual patterns that make your slides distinctive
+5. **Preview & approve** — see a sample title slide before committing
+
+Your brand config is saved once and used for every future presentation.
+
+#### Recommended: extract from an existing presentation
+
+Most companies already have a deck template that codifies the brand more completely than a website (it includes pre-resolved decisions about logo placement, slide layouts, font weights for headings vs body, etc.). The wizard reads `.pptx` theme XML directly to pull the full color scheme, font scheme, and embedded logos at their highest resolution.
+
+#### Extracting from a website (dembrandt)
+
+If you don't have a deck template, the "From a website" path uses [**dembrandt**](https://github.com/dembrandt/dembrandt) — a tool that extracts any website's design system (colors, typography, logo, borders, components) into design tokens in seconds. The wizard runs it for you automatically; no install needed (it uses `npx`).
+
+For richer integration, you can connect the dembrandt MCP server once and the skill will call its tools directly:
 
 ```bash
-# Create the skill directory
-mkdir -p ~/.claude/skills/frontend-slides/scripts
-
-# Copy all files (or clone this repo directly)
-cp SKILL.md STYLE_PRESETS.md viewport-base.css html-template.md animation-patterns.md ~/.claude/skills/frontend-slides/
-cp scripts/extract-pptx.py ~/.claude/skills/frontend-slides/scripts/
+claude mcp add --transport stdio dembrandt -- npx -y dembrandt-mcp
 ```
 
-Or clone directly:
-
-```bash
-git clone https://github.com/zarazhangrui/frontend-slides.git ~/.claude/skills/frontend-slides
-```
-
-Then use it by typing `/frontend-slides` in Claude Code.
-
-## Usage
-
-### Create a New Presentation
+### Every Time After: Create Presentations
 
 ```
-/frontend-slides
+/branded-slides
 
-> "I want to create a pitch deck for my AI startup"
+> "Create a pitch deck for our Series A"
 ```
 
 The skill will:
+
 1. Ask about your content (slides, messages, images)
-2. Ask about the feeling you want (impressed? excited? calm?)
-3. Generate 3 visual style previews for you to compare
-4. Create the full presentation in your chosen style
-5. Open it in your browser
+2. Generate the full presentation in your brand's style
+3. Open it in your browser
+4. Optionally deploy to a live URL or export to PDF
 
 ### Convert a PowerPoint
 
 ```
-/frontend-slides
+/branded-slides
 
-> "Convert my presentation.pptx to a web slideshow"
+> "Convert quarterly-review.pptx to our brand"
 ```
 
-The skill will:
-1. Extract all text, images, and notes from your PPT
-2. Show you the extracted content for confirmation
-3. Let you pick a visual style
-4. Generate an HTML presentation with all your original assets
+Extracts all content from the PPT and rebuilds it in your brand's visual identity.
 
-## Included Styles
+## Installation
 
-### Dark Themes
-- **Bold Signal** — Confident, high-impact, vibrant card on dark
-- **Electric Studio** — Clean, professional, split-panel
-- **Creative Voltage** — Energetic, retro-modern, electric blue + neon
-- **Dark Botanical** — Elegant, sophisticated, warm accents
+### Via Plugin Marketplace
 
-### Light Themes
-- **Notebook Tabs** — Editorial, organized, paper with colorful tabs
-- **Pastel Geometry** — Friendly, approachable, vertical pills
-- **Split Pastel** — Playful, modern, two-color vertical split
-- **Vintage Editorial** — Witty, personality-driven, geometric shapes
+```bash
+/plugin marketplace add yranchere/branded-slides
+/plugin install branded-slides@branded-slides
+```
 
-### Specialty
-- **Neon Cyber** — Futuristic, particle backgrounds, neon glow
-- **Terminal Green** — Developer-focused, hacker aesthetic
-- **Swiss Modern** — Minimal, Bauhaus-inspired, geometric
-- **Paper & Ink** — Literary, drop caps, pull quotes
+Then use it by typing `/branded-slides` in Claude Code.
+
+### Manual Installation
+
+```bash
+git clone https://github.com/yranchere/branded-slides.git ~/.claude/skills/branded-slides
+```
+
+Then use it by typing `/branded-slides` in Claude Code.
 
 ## Architecture
 
-This skill uses **progressive disclosure** — the main `SKILL.md` is a concise map (~180 lines), with supporting files loaded on-demand only when needed:
+| File                      | Purpose                                          | Loaded When                      |
+| ------------------------- | ------------------------------------------------ | -------------------------------- |
+| `SKILL.md`                | Core workflow and rules                          | Always (skill invocation)        |
+| `BRAND_CONFIG.md`         | Your brand identity (created by wizard)          | Always (Phase 0 check + Phase 3)|
+| `viewport-base.css`       | Mandatory responsive CSS                         | Phase 3 (generation)             |
+| `html-template.md`        | HTML structure and JS features                   | Phase 3 (generation)             |
+| `animation-patterns.md`   | CSS/JS animation reference                       | Phase 3 (generation)             |
+| `scripts/extract-pptx.py` | PPT content extraction                           | Phase 4 (conversion)             |
+| `scripts/deploy.sh`       | Deploy to Vercel                                 | Phase 6 (sharing)                |
+| `scripts/export-pdf.sh`   | Export slides to PDF                             | Phase 6 (sharing)                |
 
-| File | Purpose | Loaded When |
-|------|---------|-------------|
-| `SKILL.md` | Core workflow and rules | Always (skill invocation) |
-| `STYLE_PRESETS.md` | 12 curated visual presets | Phase 2 (style selection) |
-| `viewport-base.css` | Mandatory responsive CSS | Phase 3 (generation) |
-| `html-template.md` | HTML structure and JS features | Phase 3 (generation) |
-| `animation-patterns.md` | CSS/JS animation reference | Phase 3 (generation) |
-| `scripts/extract-pptx.py` | PPT content extraction | Phase 4 (conversion) |
+## Sharing Your Presentations
 
-This design follows [OpenAI's harness engineering](https://openai.com/index/harness-engineering/) principle: "give the agent a map, not a 1,000-page instruction manual."
+### Deploy to a Live URL
 
-## Philosophy
+```bash
+bash scripts/deploy.sh ./my-deck/
+```
 
-This skill was born from the belief that:
+Uses [Vercel](https://vercel.com) (free tier). The skill walks you through signup and login if it's your first time.
 
-1. **You don't need to be a designer to make beautiful things.** You just need to react to what you see.
+### Export to PDF
 
-2. **Dependencies are debt.** A single HTML file will work in 10 years. A React project from 2019? Good luck.
+```bash
+bash scripts/export-pdf.sh ./presentation.html
+```
 
-3. **Generic is forgettable.** Every presentation should feel custom-crafted, not template-generated.
+Uses [Playwright](https://playwright.dev) to screenshot each slide at 1920x1080 and combine into a PDF.
 
-4. **Comments are kindness.** Code should explain itself to future-you (or anyone else who opens it).
+## Updating Your Brand
+
+To change your brand identity at any time, just ask:
+
+> "Update my brand colors to use our new palette"
+
+Or delete `BRAND_CONFIG.md` and the wizard will run again on the next invocation.
 
 ## Requirements
 
 - [Claude Code](https://claude.ai/claude-code) CLI
 - For PPT conversion: Python with `python-pptx` library
+- For URL deployment: Node.js + Vercel account (free)
+- For PDF export: Node.js (Playwright installs automatically)
 
 ## Credits
 
-Created by [@zarazhangrui](https://github.com/zarazhangrui) with Claude Code.
-
-Inspired by the "Vibe Coding" philosophy — building beautiful things without being a traditional software engineer.
+Based on [frontend-slides](https://github.com/zarazhangrui/frontend-slides) by [@zarazhangrui](https://github.com/zarazhangrui).
 
 ## License
 
