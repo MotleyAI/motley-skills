@@ -212,7 +212,7 @@ Show the user the rendered document as markdown.
 Show a button to open the document in Motley.
 Ask the user for feedback.
 
-If the user wants to make changes, understand the feedback and go back and update the blocks.
+If the user wants to make changes, understand the feedback and go back and update the blocks, then render again.
 
 The Motley document is the result of this workflow.
 
