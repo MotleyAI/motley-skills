@@ -220,7 +220,7 @@ The Motley document is the result of this workflow.
 
 On user request, export the report to the user's preferred format.
 
-If available, you can use the frontend-slides skill to generate slides from the markdown.
+If available, you can use the frontend-slides skill to create a presentation using the content of the document.
 
 If you need the data for the charts instead of images (say, for creating an HTML with a charting library), use
 
