@@ -13,15 +13,16 @@ End-to-end workflow for creating a data-driven report using Motley.
 
 Motley helps to create reports based on the user's data and requirements.
 
-A **report** in Motley is first created as a document consisting of blocks (markdown text, tables, and charts).
+A **report** in Motley is a document consisting of blocks (markdown text, tables, and charts).
 Blocks can reference data queries, other blocks, and context variables.
 
-The deck creation workflow has 4 phases:
+The report creation workflow has 3 phases:
 
 1. **Research & Plan** — understand the user's needs & the relevant data
 2. **Creating a document in Motley** – based on the research, write the report content into a document
-3. **User Approval** — render the report to the user, ask for approval
-4. **Output** – on user request, export the report to the user's preferred format
+3. **Output and iteration** – show the report to the user, ask for feedback, and iterate until it's ready
+
+The end result of the workflow is a document in Motley (can be opened via link) and, secondarily, a Markdown export of it.
 
 ---
 
@@ -192,7 +193,7 @@ See the `update-table-block` skill for table patterns.
 
 ---
 
-## Phase 3: User Approval
+## Phase 3: Output and iteration
 
 ### Export as Markdown and review
 
@@ -207,19 +208,19 @@ Check the output carefully. Does it look as expected? If not, go back and update
 
 ### Render for the user
 
-Show the user the rendered document as markdown. Ask for approval.
+Show the user the rendered document as markdown.
+Show a button to open the document in Motley.
+Ask the user for feedback.
 
-If the user is happy with the document, proceed to the next phase.
+If the user wants to make changes, understand the feedback and go back and update the blocks, then render again.
 
-If not, understand the user's feedback and go back and update the blocks.
+The Motley document is the result of this workflow.
 
----
-
-## Phase 4: Output
-
-Use the frontend-slides skill to generate slides from the markdown you just created.
+### (Optional) Export to another format
 
 On user request, export the report to the user's preferred format.
+
+If available, you can use the frontend-slides skill to create a presentation using the content of the document.
 
 If you need the data for the charts instead of images (say, for creating an HTML with a charting library), use
 
@@ -228,4 +229,3 @@ export_markdown(doc_id=<id>, mode="table")
 ```
 
 This will embed the data for the charts as markdown tables, with chart metadata next to them.
-Again, use the frontend-slides skill to generate slides as needed.
