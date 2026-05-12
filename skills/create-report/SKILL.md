@@ -200,8 +200,10 @@ See the `update-table-block` skill for table patterns.
 Export the document to markdown format:
 
 ```
-export_document(document_id=<id>, format="markdown", mode="image")
+export_document(document_id=<id>, format="markdown", mode="table")
 ```
+
+This will embed the data for the charts as markdown tables, with chart metadata next to them.
 
 Check the output carefully. Does it look as expected? If not, go back and update the blocks.
 
@@ -221,11 +223,3 @@ The Motley document is the result of this workflow.
 On user request, export the report to the user's preferred format.
 
 If available, you can use the frontend-slides skill to create a presentation using the content of the document.
-
-If you need the data for the charts instead of images (say, for creating an HTML with a charting library), use
-
-```
-export_markdown(doc_id=<id>, mode="table")
-```
-
-This will embed the data for the charts as markdown tables, with chart metadata next to them.
