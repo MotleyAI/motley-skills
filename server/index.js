@@ -58,6 +58,7 @@ async function forwardRequest(method, params = {}) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json",
         "Authorization": `Bearer ${API_KEY}`,
       },
       body,
