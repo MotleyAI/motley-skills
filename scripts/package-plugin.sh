@@ -27,13 +27,11 @@ case "$TARGET" in
     fi
     OUT="motley-openai-plugin-${VERSION}.zip"
     rm -f "$OUT"
-    # frontend-slides depends on Claude Code tools, so the OpenAI package leaves it out.
     zip -r "$OUT" \
       plugin.json \
       mcp.json \
       assets \
-      skills/create-report \
-      skills/semantic-layer-bootstrap \
+      skills \
       LICENSE \
       README.md
     ;;

@@ -6,12 +6,11 @@ Skills that make your AI agent a reliable data analyst on the [Motley](https://m
 |-------|--------------|
 | `create-report` | Create a data-driven document with text, tables, and charts from your data. |
 | `semantic-layer-bootstrap` | Set up, curate, and verify the semantic layer for your data source. |
-| `frontend-slides` | Create branded, self-contained HTML presentations. Zero dependencies. |
 
 ## Before you start
 
 1. Create a [Motley](https://motley.ai) account. A free demo data source is included.
-2. Connect your agent to the Motley MCP server (see below). Only `frontend-slides` works without it.
+2. Connect your agent to the Motley MCP server (see below). The skills need it.
 
 ## Install
 
@@ -62,7 +61,6 @@ url = "https://app.motley.ai/api/v1/mcp"
 
 - Say "create a report on ..." or invoke `create-report` to build your first document.
 - On a fresh data source, invoke `semantic-layer-bootstrap` first to set up and verify the layer.
-- Say "make slides" or invoke `frontend-slides` to build a branded presentation.
 
 ## What is Motley?
 
