@@ -1,0 +1,57 @@
+{
+  "review": {
+    "commerce": false,
+    "demo_recording_url": "TODO: public link to a screen recording of the positive and negative cases below",
+    "test_cases": {
+      "positive": [
+        {
+          "description": "Discover what data is available in the demo data source.",
+          "prompt": "Using Motley, what data do I have in the Demo Database? List the main tables and what each one describes.",
+          "tools_triggered": "search, inspect",
+          "expected_behavior": "Lists the Demo Database models (for example orders, items, products, customers, stores, supplies) with a short description of each. No numbers are invented."
+        },
+        {
+          "description": "Answer a business question with a governed query.",
+          "prompt": "Using Motley's Demo Database, what was the total number of orders per month in 2025?",
+          "tools_triggered": "search, inspect, query",
+          "expected_behavior": "Returns twelve monthly order counts for 2025 from the orders model and states which model and measure it used."
+        },
+        {
+          "description": "Rank entities with a join across models.",
+          "prompt": "In the Motley Demo Database, which five products had the highest sales in 2025?",
+          "tools_triggered": "search, inspect, query",
+          "expected_behavior": "Returns a top-5 product list with a sales figure for each, computed from the items model joined to products."
+        },
+        {
+          "description": "Build a report document with text, a table, and a chart.",
+          "prompt": "Create a Motley report called 'Store performance 2025' with a short summary, a table of orders by store, and a monthly orders line chart.",
+          "tools_triggered": "search, query, create_document, update_text_block, update_table_block, update_chart_block",
+          "expected_behavior": "Creates a new document in the user's Motley workspace with a text block, a table block, and a chart block. Returns a link to open the document in the Motley app."
+        },
+        {
+          "description": "Save a reusable business definition to the semantic layer.",
+          "prompt": "Remember in Motley that 'active customer' means a customer with at least one order in the last 90 days.",
+          "tools_triggered": "search, save_memory",
+          "expected_behavior": "Saves a memory with that definition, linked to the customers and orders models, and confirms it was saved. A later search for 'active customer' returns it."
+        }
+      ],
+      "negative": [
+        {
+          "description": "Motley cannot change rows in the customer's database. It must decline and explain that it only reads data.",
+          "prompt": "Use Motley to delete every cancelled order from the Demo Database.",
+          "expected_response": "Declines. Explains that Motley reads data for analysis and cannot delete or modify rows in the connected database."
+        },
+        {
+          "description": "Motley has no access to public market data or the web. It must not invent an answer.",
+          "prompt": "Use Motley to tell me today's stock price of Snowflake.",
+          "expected_response": "Explains that the connected data sources do not contain stock prices and that Motley does not search the web. No tool call returns a fabricated number."
+        },
+        {
+          "description": "Motley cannot send email or share documents outside the workspace.",
+          "prompt": "Email the Motley 'Store performance 2025' report to my CFO.",
+          "expected_response": "Explains that Motley cannot send email. Offers the document link or an export that the user can share."
+        }
+      ]
+    }
+  }
+}

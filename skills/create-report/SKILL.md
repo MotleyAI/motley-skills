@@ -132,5 +132,4 @@ workflow.
 If the user confirmed a non-obvious number or query, save it with `save_memory`
 (attach the query) so future sessions can reuse it.
 
-On request, export to another format, or use the frontend-slides skill to create
-a presentation from the document's content.
+On request, export the document to another format with `export_document`.

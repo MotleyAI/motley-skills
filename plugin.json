@@ -1,0 +1,35 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "motley",
+  "version": "0.1.4",
+  "description": "Query your business data through a governed semantic layer, and build data-driven reports with text, tables, and charts.",
+  "author": { "name": "Motley Stories AG", "url": "https://motley.ai" },
+  "homepage": "https://motley.ai",
+  "repository": "https://github.com/MotleyAI/motley-skills",
+  "license": "MIT",
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/create-report/SKILL.md",
+      "interface": {
+        "displayName": "Motley AI",
+        "shortDescription": "Analyze data and build reports",
+        "longDescription": "Motley connects your AI assistant to your organization's semantic layer: the business definitions of your metrics, tables, and joins.\n\nAsk questions about your data in plain language. Motley finds the right models, runs governed queries, and returns the numbers together with the query behind them. You can also build living reports with text, tables, and charts that refresh from your data, and curate the semantic layer itself: add metrics, fix descriptions, and save notes for later sessions.\n\nWhat you need: a Motley account. Every account includes a demo data source. To use your own data, an admin connects a data source in the Motley web app.\n\nLimitations: Motley reads only the data sources that your organization connects. It does not search the web and does not change the data in your databases. Large raw extracts are truncated, so ask for aggregated results. Editing the semantic layer needs the editor role.",
+        "developerName": "Motley Stories AG",
+        "category": "Productivity",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://motley.ai",
+        "supportURL": "https://motley.ai/support",
+        "privacyPolicyURL": "https://motley.ai/legal/privacy-policy",
+        "termsOfServiceURL": "https://motley.ai/legal/terms-of-service",
+        "brandColor": "#091D31",
+        "logo": "./assets/logo.png",
+        "logoDark": "./assets/logo-dark.png",
+        "composerIcon": "./assets/composer-icon.png",
+        "composerIconDark": "./assets/composer-icon-dark.png"
+      },
+      "publication": {
+        "release_notes": "First release: query your semantic layer, build reports with tables and charts, and curate models and metrics."
+      }
+    }
+  }
+}

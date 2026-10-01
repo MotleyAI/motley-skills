@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "motley": {
+      "type": "streamable-http",
+      "url": "https://app.motley.ai/api/v1/mcp"
+    }
+  }
+}
