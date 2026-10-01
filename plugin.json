@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "motley",
-  "version": "0.1.4",
-  "description": "Query your business data through a governed semantic layer, and build data-driven reports with text, tables, and charts.",
+  "version": "0.1.5",
+  "description": "Answer business questions from your company's data and build data-driven reports with tables and charts.",
   "author": { "name": "Motley Stories AG", "url": "https://motley.ai" },
   "homepage": "https://motley.ai",
   "repository": "https://github.com/MotleyAI/motley-skills",
@@ -12,10 +12,10 @@
       "onboardingSkill": "./skills/create-report/SKILL.md",
       "interface": {
         "displayName": "Motley AI",
-        "shortDescription": "Analyze data and build reports",
-        "longDescription": "Motley connects your AI assistant to your organization's semantic layer: the business definitions of your metrics, tables, and joins.\n\nAsk questions about your data in plain language. Motley finds the right models, runs governed queries, and returns the numbers together with the query behind them. You can also build living reports with text, tables, and charts that refresh from your data, and curate the semantic layer itself: add metrics, fix descriptions, and save notes for later sessions.\n\nWhat you need: a Motley account. Every account includes a demo data source. To use your own data, an admin connects a data source in the Motley web app.\n\nLimitations: Motley reads only the data sources that your organization connects. It does not search the web and does not change the data in your databases. Large raw extracts are truncated, so ask for aggregated results. Editing the semantic layer needs the editor role.",
+        "shortDescription": "Analyze your business data",
+        "longDescription": "Motley is a data analytics app. It answers questions about your company's business data and builds reports from it.\n\nAsk a question in plain language, such as \"What was revenue by region last quarter?\". Motley finds the right tables and metrics in your connected data sources, runs the query, and returns the numbers with the query behind them, so you can check how each number was calculated.\n\nMain tasks:\n- Answer questions about your business metrics, trends, and breakdowns.\n- Build reports with text, tables, and charts that refresh from your data.\n- Keep your metric definitions consistent: add metrics, fix descriptions, and save notes that later questions reuse.\n\nWhat you need: a Motley account. Every account includes a demo data source. To use your own data, an admin connects a data source in the Motley web app.\n\nLimitations: Motley reads only the data sources that your organization connects. It does not search the web and does not change the data in your databases. Large raw extracts are truncated, so ask for aggregated results. Editing metric definitions needs the editor role.",
         "developerName": "Motley Stories AG",
-        "category": "Productivity",
+        "category": "Data & Analytics",
         "capabilities": ["Read", "Write"],
         "websiteURL": "https://motley.ai",
         "supportURL": "https://motley.ai/support",
@@ -28,7 +28,7 @@
         "composerIconDark": "./assets/composer-icon-dark.png"
       },
       "publication": {
-        "release_notes": "First release: query your semantic layer, build reports with tables and charts, and curate models and metrics."
+        "release_notes": "Answer questions about your business data, build reports with tables and charts, and manage metric definitions."
       }
     }
   }
