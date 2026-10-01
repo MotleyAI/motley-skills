@@ -4,6 +4,7 @@ Skills that make your AI agent a reliable data analyst on the [Motley](https://m
 
 | Skill | What it does |
 |-------|--------------|
+| `get-started` | Check which data is available, see what you can ask, and set up the semantic layer if needed. |
 | `create-report` | Create a data-driven document with text, tables, and charts from your data. |
 | `semantic-layer-bootstrap` | Set up, curate, and verify the semantic layer for your data source. |
 
@@ -59,6 +60,7 @@ url = "https://app.motley.ai/api/v1/mcp"
 
 ## Use
 
+- New to Motley? Invoke `get-started`.
 - Say "create a report on ..." or invoke `create-report` to build your first document.
 - On a fresh data source, invoke `semantic-layer-bootstrap` first to set up and verify the layer.
 
