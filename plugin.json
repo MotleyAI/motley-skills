@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "motley",
   "version": "0.1.6",
-  "description": "Give your AI assistant the right data to answer questions about your business.",
+  "description": "Motley AI lets you build, maintain, and query a semantic layer over your connected business database directly from ChatGPT.",
   "author": { "name": "Motley Stories AG", "url": "https://motley.ai" },
   "homepage": "https://motley.ai",
   "repository": "https://github.com/MotleyAI/motley-skills",
