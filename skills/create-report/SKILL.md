@@ -94,7 +94,7 @@ providing a new name creates a block. Reorganize with `move_block`,
 Queries everywhere use the SLayer shape described in `memory:help.queries`.
 
 **Charts** — call `update_chart_block` with a `query` and `chart_details`, then
-**verify visually** with `render_chart`.
+**verify visually** with `render_chart_block`.
 
 **Text** — two steps: first attach data with
 `update_query_block(parent_location=..., query_name=..., query=...)`, then set
