@@ -10,7 +10,7 @@ Skills that make your AI agent a reliable data analyst on the [Motley](https://m
 
 ## Before you start
 
-1. Create a [Motley](https://motley.ai) account. A free demo data source is included.
+1. Create a [Motley](https://motley.ai) account. You can connect your own data source or try Motley with demo data.
 2. Connect your agent to the Motley MCP server (see below). The skills need it.
 
 ## Install
