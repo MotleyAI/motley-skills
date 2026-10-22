@@ -12,7 +12,7 @@
       "onboardingSkill": "./skills/get-started/SKILL.md",
       "interface": {
         "displayName": "Motley AI",
-        "shortDescription": "Build and query a semantic layer for your database",
+        "shortDescription": "Semantic layer for your data",
         "longDescription": "Motley lets you build, maintain, and query a semantic layer over your connected business database directly from ChatGPT. Define business metrics, dimensions, and table relationships, then ask questions using those shared definitions.\n\nUse Motley to:\n\n* Set up and improve a semantic layer for a connected database.\n* Define and refine metrics such as revenue, active customers, and conversion rates.\n* Ask questions about KPIs, trends, comparisons, and breakdowns.\n* Create visualizations and reports from the data.\n* Save business context so future analyses use the same definitions.\n\nFor example, ask: “What was revenue by store last quarter?” Motley uses your semantic definitions to find the relevant data and run the query, so you can inspect how the answer was calculated.\n\nMotley is powered by SLayer, its open-source semantic engine.\n\nGetting started: A Motley account is required (https://app.motley.ai). You can also try Motley with demo data.\n\nAccess and limitations: Motley reads only the data sources your organization connects. It does not search the web or change the data in your databases. Changes to semantic definitions require the editor role.",
         "developerName": "Motley Stories AG",
         "category": "Data & Analytics",
