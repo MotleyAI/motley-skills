@@ -28,4 +28,4 @@ Use `search` to read some memories, and `inspect` a few models. Decide if the se
 - **Set up:** say in a few words what data is available. Ask what the user wants to do: ask a question, give context to improve the semantic layer, or set up an automation.
 - **Not set up, or empty:** use the `semantic-layer-bootstrap` skill to set it up.
 
-To connect a new data source, the user contacts the Motley team at support@motley.ai.
+To connect a new data source, the user opens **Semantic Layer → Data Sources** in Motley and clicks **Connect database**. If the database is behind a private network, the user contacts the Motley team at support@motley.ai.
