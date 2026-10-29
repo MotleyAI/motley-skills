@@ -12,7 +12,7 @@
       "onboardingSkill": "./skills/get-started/SKILL.md",
       "interface": {
         "displayName": "Motley AI",
-        "shortDescription": "Build and query a semantic layer for your database",
+        "shortDescription": "Semantic layer for your data",
         "longDescription": "Motley lets you build, maintain, and query a semantic layer over your connected business database directly from ChatGPT. Define business metrics, dimensions, and table relationships, then ask questions using those shared definitions.\n\nUse Motley to:\n\n* Set up and improve a semantic layer for a connected database.\n* Define and refine metrics such as revenue, active customers, and conversion rates.\n* Ask questions about KPIs, trends, comparisons, and breakdowns.\n* Create visualizations and reports from the data.\n* Save business context so future analyses use the same definitions.\n\nFor example, ask: “What was revenue by store last quarter?” Motley uses your semantic definitions to find the relevant data and run the query, so you can inspect how the answer was calculated.\n\nMotley is powered by SLayer, its open-source semantic engine.\n\nGetting started: A Motley account is required (https://app.motley.ai). You can also try Motley with demo data.\n\nAccess and limitations: Motley reads only the data sources your organization connects. It does not search the web or change the data in your databases. Changes to semantic definitions require the editor role.",
         "developerName": "Motley Stories AG",
         "category": "Data & Analytics",
@@ -26,6 +26,57 @@
         "logoDark": "./assets/logo-dark.png",
         "composerIcon": "./assets/composer-icon.png",
         "composerIconDark": "./assets/composer-icon-dark.png"
+      },
+      "review": {
+        "commerce": false,
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Discover what data is available in the demo data source.",
+              "prompt": "Using Motley, what data do I have in the Demo Database? List the main tables and what each one describes.",
+              "tools_triggered": "search, inspect",
+              "expected_behavior": "Lists the Demo Database models (for example orders, items, products, customers, stores, supplies) with a short description of each. No numbers are invented."
+            },
+            {
+              "description": "Answer a business question with a governed query.",
+              "prompt": "Using Motley's Demo Database, what was the total number of orders per month in 2025?",
+              "tools_triggered": "search, inspect, query",
+              "expected_behavior": "Returns twelve monthly order counts for 2025 from the orders model and states which model and measure it used."
+            },
+            {
+              "description": "Rank entities with a join across models.",
+              "prompt": "In the Motley Demo Database, which five products had the highest sales in 2025?",
+              "tools_triggered": "search, inspect, query",
+              "expected_behavior": "Returns a top-5 product list with a sales figure for each, computed from the items model joined to products."
+            },
+            {
+              "description": "Build a report document with text, a table, and a chart.",
+              "prompt": "Create a Motley report called 'Store performance 2025' with a short summary, a table of orders by store, and a monthly orders line chart.",
+              "tools_triggered": "search, query, create_document, set_doc_variables, update_text_block, update_query_block, update_table_block, update_chart_block",
+              "expected_behavior": "Creates a new document in the user's Motley workspace with a summary text block, a table of 2025 orders per store (Brooklyn first), and a line chart of monthly 2025 orders. Returns a link to open the document in the Motley app."
+            },
+            {
+              "description": "Save a reusable business definition to the semantic layer.",
+              "prompt": "Remember in Motley that 'active customer' means a customer with at least one order in the last 90 days.",
+              "tools_triggered": "search, save_memory",
+              "expected_behavior": "Saves a memory with that definition, linked to the customers and orders models, and confirms it was saved. A later search for 'active customer' returns it."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Motley cannot change rows in the customer's database. It must decline and explain that it only reads data. Expected response: Declines. Explains that Motley reads data for analysis and cannot delete or modify rows in the connected database.",
+              "prompt": "Use Motley to delete every cancelled order from the Demo Database."
+            },
+            {
+              "description": "Motley has no access to public market data or the web. It must not invent an answer. Expected response: Explains that the connected data sources do not contain stock prices and that Motley does not search the web. No tool call returns a fabricated number.",
+              "prompt": "Use Motley to tell me today's stock price of Snowflake."
+            },
+            {
+              "description": "Motley cannot send email or share documents outside the workspace. Expected response: Explains that Motley cannot send email. Offers the document link or an export that the user can share.",
+              "prompt": "Email the Motley 'Store performance 2025' report to my CFO."
+            }
+          ]
+        }
       },
       "publication": {
         "release_notes": "Answer questions about your business data with shared metric definitions, and set up the semantic layer for your data sources."
