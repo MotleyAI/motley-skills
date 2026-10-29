@@ -48,8 +48,8 @@ columns, measures, and sample rows. `list_resources(what="datasources")` gives t
 `source_id`s.
 
 If existing models lack something, extend them with `edit_model` (upserts
-measures, columns, and joins atomically). Syntax-check DSL formulas with
-`validate_formula` before committing.
+measures, columns, and joins atomically). Check a new measure with a `query`
+before you use it in a block.
 
 ### Scratch lookups
 
@@ -86,22 +86,24 @@ document's variables apply.
 
 ### Create blocks
 
-Blocks are created and updated with `update_text_block`, `update_table_block`,
-`update_chart_block`, and `update_query_block`. Each block needs a unique name;
-providing a new name creates a block. Reorganize with `move_block`,
-`rename_block`, `delete_block`, `delete_query`.
+Blocks are created and updated with `update_block`. Set `type` to `text`,
+`table`, `chart`, or `query`, and pass only the fields for that type. Each block
+needs a unique name; providing a new name creates a block. Reorganize with
+`move_block`, `rename_block`, and `delete_block`. To delete a query inside a
+text or table block, call `delete_block` on the parent with its `query_name`.
 
 Queries everywhere use the SLayer shape described in `memory:help.queries`.
 
-**Charts** — call `update_chart_block` with a `query` and `chart_details`, then
-**verify visually** with `render_chart_block`.
+**Charts** — call `update_block(type="chart", ...)` with a `query` and
+`chart_details`, then **verify visually** with `render_chart_block`.
 
 **Text** — two steps: first attach data with
-`update_query_block(parent_location=..., query_name=..., query=...)`, then set
-the template with `update_text_block`. Check the returned resolved content.
+`update_block(type="query", location=<parent block>, query_name=..., query=...)`,
+then set the template with `update_block(type="text", user_prompt=...)`. Check
+the returned resolved content.
 
 **Tables** — same two steps, with `mode="table"` on the query (optionally
-`pivot_dimension`), then `update_table_block` with a template like
+`pivot_dimension`), then `update_block(type="table", ...)` with a template like
 `"{<query_name>}"`.
 
 ### Template syntax
