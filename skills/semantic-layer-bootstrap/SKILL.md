@@ -10,14 +10,14 @@ Every setup is different — the steps below are a guide, not a script. Use your
 ## Ground rules
 
 - Important: when talking to the user, ALWAYS use simple technical language, keep it short and easy to understand.
-- You need the editor role. Queries cannot span sources, so work on one datasource at a time.
-- Never delete auto-ingested models or columns — set `hidden: true` if they should not be visible to consumers. Never overwrite descriptions or measures a human wrote; if your version differs, ask.
 - Never store secrets or personal data in model metadata or memories. Keep structure and definitions, not raw values.
 - For long runs, keep working notes (for example in a scratch memory) so a later session can resume. Delete them when done.
 
 ## 1 — Gather
 
-Ask the user for the items below. Batch your questions; "don't know" is a valid answer.
+Remember everything you know about the user's business. Based on what you know, determine what context would be helpful for setting up the semantic layer and ask the user for it. For example, you can render a form so the user can select which context they have, and then find or query for each.
+
+Here is what is usually helpful:
 
 - **Question set** — prioritized questions business users should be able to ask. Good prompts: "Forward the last questions your team asked about the data"; "Which dashboard do you check weekly?"
 - **Golden numbers** — a few numbers the user trusts, each with its source and time period: dashboard screenshots, a Stripe or accounting export, an investor update, a SQL snippet someone runs by hand. Prefer closed periods ("June invoiced volume" never changes). Rough values are fine ("~500 merchants, under 600 for sure"). Zero golden numbers is also fine — verification then falls back to recognition. Sometimes the user has none (from-scratch setup) – rely on common sense then.
