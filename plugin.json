@@ -34,7 +34,7 @@
             {
               "description": "Discover what data is available in the demo data source.",
               "prompt": "Using Motley, what data do I have in the Demo Database? List the main tables and what each one describes.",
-              "tools_triggered": "search, inspect",
+              "tools_triggered": "list_resources, inspect",
               "expected_behavior": "Lists the Demo Database models (for example orders, items, products, customers, stores, supplies) with a short description of each. No numbers are invented."
             },
             {
