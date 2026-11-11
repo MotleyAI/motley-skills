@@ -8,7 +8,7 @@ Motley gives Claude a shared set of metric definitions, dimensions, and table re
 
 - **Ask questions about your data.** KPIs, trends, comparisons, rankings, and breakdowns, computed from your governed definitions.
 - **Build dashboards and reports.** Documents with text, tables, and charts that run on live data and stay up to date.
-- **Set up automations** that refresh analyses from live data.
+- **Power Claude's automations.** Recurring workflows that Claude runs, such as a weekly KPI summary, use Motley as their live data backend.
 - **Set up and curate the semantic layer.** Describe tables, define metrics such as revenue or active customers, and verify them against real questions.
 - **Save business context** so future analyses use the same definitions.
 
