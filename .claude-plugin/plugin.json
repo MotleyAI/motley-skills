@@ -1,6 +1,27 @@
 {
   "name": "motley",
-  "description": "Motley data storytelling skills and MCP integration",
+  "displayName": "Motley",
+  "description": "Query your business data through a semantic layer of shared metric definitions, and build dashboards, reports, and automations from live data.",
   "version": "0.1.6",
-  "author": { "name": "MotleyAI" }
+  "author": {
+    "name": "Motley Stories AG",
+    "url": "https://motley.ai"
+  },
+  "homepage": "https://motley.ai",
+  "repository": "https://github.com/MotleyAI/motley-skills",
+  "license": "MIT",
+  "keywords": [
+    "semantic-layer",
+    "analytics",
+    "business-intelligence",
+    "metrics",
+    "dashboards",
+    "reports",
+    "data"
+  ],
+  "icon": "./assets/logo.png",
+  "documentationUrl": "https://docs.motley.ai/motley/",
+  "supportUrl": "https://motley.ai/support",
+  "privacyPolicyUrl": "https://motley.ai/legal/privacy-policy",
+  "termsOfServiceUrl": "https://motley.ai/legal/terms-of-service"
 }
