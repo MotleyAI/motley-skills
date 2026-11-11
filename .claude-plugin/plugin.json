@@ -1,9 +1,12 @@
 {
   "name": "motley",
-  "displayName": "Motley AI",
-  "description": "Build, maintain, and query a semantic layer over your business data, and create data-driven reports with text, tables, and charts.",
+  "displayName": "Motley",
+  "description": "Query your business data through a semantic layer of shared metric definitions, and build dashboards, reports, and automations from live data.",
   "version": "0.1.6",
-  "author": { "name": "Motley Stories AG", "url": "https://motley.ai" },
+  "author": {
+    "name": "Motley Stories AG",
+    "url": "https://motley.ai"
+  },
   "homepage": "https://motley.ai",
   "repository": "https://github.com/MotleyAI/motley-skills",
   "license": "MIT",
