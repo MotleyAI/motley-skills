@@ -10,5 +10,18 @@
   "homepage": "https://motley.ai",
   "repository": "https://github.com/MotleyAI/motley-skills",
   "license": "MIT",
-  "privacyPolicyUrl": "https://motley.ai/legal/privacy-policy"
+  "keywords": [
+    "semantic-layer",
+    "analytics",
+    "business-intelligence",
+    "metrics",
+    "dashboards",
+    "reports",
+    "data"
+  ],
+  "icon": "./assets/logo.png",
+  "documentationUrl": "https://docs.motley.ai/motley/",
+  "supportUrl": "https://motley.ai/support",
+  "privacyPolicyUrl": "https://motley.ai/legal/privacy-policy",
+  "termsOfServiceUrl": "https://motley.ai/legal/terms-of-service"
 }

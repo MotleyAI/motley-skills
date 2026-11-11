@@ -1,30 +1,58 @@
-# Motley Agent Skills
+# Motley
 
-Skills that make your AI agent a reliable data analyst on the [Motley](https://motley.ai) platform.
+Query your business data through a semantic layer, and build dashboards, reports, and automations from live data.
+
+Motley gives Claude a shared set of metric definitions, dimensions, and table relationships for your connected database. Claude asks questions with those definitions instead of writing one-off SQL, so answers stay consistent and you can see how each number was calculated. Business context you save once is reused in every later analysis.
+
+## What you can do
+
+- **Ask questions about your data.** KPIs, trends, comparisons, rankings, and breakdowns, computed from your governed definitions.
+- **Build dashboards and reports.** Documents with text, tables, and charts that run on live data and stay up to date.
+- **Set up automations** that refresh analyses from live data.
+- **Set up and curate the semantic layer.** Describe tables, define metrics such as revenue or active customers, and verify them against real questions.
+- **Save business context** so future analyses use the same definitions.
+
+## Try asking
+
+- "What data do I have in Motley?"
+- "What was revenue by store last quarter?"
+- "Which five products had the highest sales this year?"
+- "Create a report on store performance with a summary, a table of orders by store, and a monthly trend chart."
+- "Remember that 'active customer' means a customer with at least one order in the last 90 days."
+
+## Skills
 
 | Skill | What it does |
 |-------|--------------|
 | `get-started` | Check which data is available, see what you can ask, and set up the semantic layer if needed. |
-| `create-report` | Create a data-driven document with text, tables, and charts from your data. |
+| `create-report` | Create a document with text, tables, and charts from your data. |
 | `semantic-layer-bootstrap` | Set up, curate, and verify the semantic layer for your data source. |
 
-## Before you start
+New to Motley? Start with `get-started`. On a fresh data source, run `semantic-layer-bootstrap` first.
 
-1. Create a [Motley](https://motley.ai) account. You can connect your own data source or try Motley with demo data.
-2. Connect your agent to the Motley MCP server (see below). The skills need it.
+## Requirements
+
+A [Motley](https://motley.ai) account. You can connect your own database or try Motley with demo data. Editing semantic definitions requires the editor role.
+
+## Data and privacy
+
+The plugin contains only skills (Markdown instructions) and the configuration for one remote MCP server, `https://app.motley.ai/api/v1/mcp`. It runs no local code and has no hooks. All tool calls go to that server and are authenticated with OAuth against your Motley account. Motley reads only the data sources your organization connects. It does not change data in your databases.
+
+- [Documentation](https://docs.motley.ai/motley/)
+- [Privacy policy](https://motley.ai/legal/privacy-policy)
+- [Terms of service](https://motley.ai/legal/terms-of-service)
+- [Support](https://motley.ai/support)
 
 ## Install
 
 ### Claude Code
-
-Run:
 
 ```
 /plugin marketplace add MotleyAI/motley-skills
 /plugin install motley@motley-plugins
 ```
 
-The plugin includes the Motley MCP server. Run `/mcp`, select **motley**, and sign in.
+Then run `/mcp`, select **motley**, and sign in.
 
 ### Claude Cowork
 
@@ -41,8 +69,6 @@ Install the skills with [skills.sh](https://skills.sh):
 npx skills add MotleyAI/motley-skills
 ```
 
-The installer detects your agent and puts the skills in the correct location.
-
 Then connect the Motley MCP server. The endpoint is `https://app.motley.ai/api/v1/mcp` (HTTP with OAuth).
 
 **Codex** — add to `~/.codex/config.toml`:
@@ -58,22 +84,6 @@ url = "https://app.motley.ai/api/v1/mcp"
 { "mcpServers": { "motley": { "url": "https://app.motley.ai/api/v1/mcp" } } }
 ```
 
-## Use
+## About
 
-- New to Motley? Invoke `get-started`.
-- Say "create a report on ..." or invoke `create-report` to build your first document.
-- On a fresh data source, invoke `semantic-layer-bootstrap` first to set up and verify the layer.
-
-## Data and privacy
-
-The plugin contains only skills (Markdown instructions) and the configuration for one remote MCP server, `https://app.motley.ai/api/v1/mcp`. It runs no local code and has no hooks. All tool calls go to that server and are authenticated with OAuth against your Motley account. Motley reads only the data sources your organization connects. It does not change data in your databases.
-
-- [Privacy policy](https://motley.ai/legal/privacy-policy)
-- [Terms of service](https://motley.ai/legal/terms-of-service)
-- [Support](https://motley.ai/support)
-
-## What is Motley?
-
-Motley is a data storytelling platform. Its core is a semantic layer: an inventory of your data with metric definitions and business context. Your agent writes metrics to the layer instead of doing stateless text-to-SQL, so results are reusable and traceable. On top of the layer, the document engine lets agents build living documents from text, queries, charts, and tables.
-
-If you look for an open-source semantic layer, see [SLayer](https://github.com/MotleyAI/slayer).
+Motley is built on [SLayer](https://github.com/MotleyAI/slayer), its open-source semantic engine.
