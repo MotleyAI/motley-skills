@@ -64,6 +64,14 @@ url = "https://app.motley.ai/api/v1/mcp"
 - Say "create a report on ..." or invoke `create-report` to build your first document.
 - On a fresh data source, invoke `semantic-layer-bootstrap` first to set up and verify the layer.
 
+## Data and privacy
+
+The plugin contains only skills (Markdown instructions) and the configuration for one remote MCP server, `https://app.motley.ai/api/v1/mcp`. It runs no local code and has no hooks. All tool calls go to that server and are authenticated with OAuth against your Motley account. Motley reads only the data sources your organization connects. It does not change data in your databases.
+
+- [Privacy policy](https://motley.ai/legal/privacy-policy)
+- [Terms of service](https://motley.ai/legal/terms-of-service)
+- [Support](https://motley.ai/support)
+
 ## What is Motley?
 
 Motley is a data storytelling platform. Its core is a semantic layer: an inventory of your data with metric definitions and business context. Your agent writes metrics to the layer instead of doing stateless text-to-SQL, so results are reusable and traceable. On top of the layer, the document engine lets agents build living documents from text, queries, charts, and tables.

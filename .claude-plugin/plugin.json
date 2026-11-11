@@ -1,6 +1,11 @@
 {
   "name": "motley",
-  "description": "Motley data storytelling skills and MCP integration",
+  "displayName": "Motley AI",
+  "description": "Build, maintain, and query a semantic layer over your business data, and create data-driven reports with text, tables, and charts.",
   "version": "0.1.6",
-  "author": { "name": "MotleyAI" }
+  "author": { "name": "Motley Stories AG", "url": "https://motley.ai" },
+  "homepage": "https://motley.ai",
+  "repository": "https://github.com/MotleyAI/motley-skills",
+  "license": "MIT",
+  "privacyPolicyUrl": "https://motley.ai/legal/privacy-policy"
 }
