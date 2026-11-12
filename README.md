@@ -45,6 +45,8 @@ The plugin contains only skills (Markdown instructions) and the configuration fo
 
 ## Install
 
+Install Motley from this repository, or connect the server URL `https://app.motley.ai/api/v1/mcp` directly, to get every Motley feature. This includes agent feedback prompts, which editors turn on in **Settings → MCP** in the Motley app. Motley listings in the Claude and ChatGPT directories never send feedback prompts.
+
 ### Claude Code
 
 ```
@@ -60,6 +62,20 @@ Then run `/mcp`, select **motley**, and sign in.
 2. Add the marketplace `MotleyAI/motley-skills`. Enable auto updates.
 3. Install the **Motley** plugin.
 4. Authenticate the Motley connector in the browser.
+
+### Claude on the web and desktop
+
+1. Open **Settings → Connectors** and choose **Add custom connector**.
+2. Enter the name `Motley` and the URL `https://app.motley.ai/api/v1/mcp`.
+3. Choose **Connect** and sign in to Motley.
+
+On Team and Enterprise plans, an owner adds the connector once for the whole organization in **Organization settings → Connectors**. Members then choose **Connect**.
+
+A connector adds the Motley tools only. To also get the skills, install the plugin in Claude Code or Cowork.
+
+### ChatGPT
+
+Add a custom connector with the URL `https://app.motley.ai/api/v1/mcp` and sign in to Motley. Custom connectors need developer mode. See [OpenAI's guide](https://help.openai.com/en/articles/11487775-connectors-in-chatgpt) for the steps on your plan.
 
 ### Codex, Cursor, and other agents
 
