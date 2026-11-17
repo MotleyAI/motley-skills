@@ -1,14 +1,13 @@
 # Motley
 
-Query your business data through a semantic layer, and build dashboards, reports, and automations from live data.
+Query your business data through a semantic layer, and power Claude's reports, dashboards, and automations with live data.
 
 Motley gives Claude a shared set of metric definitions, dimensions, and table relationships for your connected database. Claude asks questions with those definitions instead of writing one-off SQL, so answers stay consistent and you can see how each number was calculated. Business context you save once is reused in every later analysis.
 
 ## What you can do
 
 - **Ask questions about your data.** KPIs, trends, comparisons, rankings, and breakdowns, computed from your governed definitions.
-- **Build dashboards and reports.** Documents with text, tables, and charts that run on live data and stay up to date.
-- **Power Claude's automations.** Recurring workflows that Claude runs, such as a weekly KPI summary, use Motley as their live data backend.
+- **Power Claude's reports, dashboards, and automations.** Claude builds them and runs recurring workflows, such as a weekly KPI summary, with Motley as the live data backend.
 - **Set up and curate the semantic layer.** Describe tables, define metrics such as revenue or active customers, and verify them against real questions.
 - **Save business context** so future analyses use the same definitions.
 
@@ -17,7 +16,6 @@ Motley gives Claude a shared set of metric definitions, dimensions, and table re
 - "What data do I have in Motley?"
 - "What was revenue by store last quarter?"
 - "Which five products had the highest sales this year?"
-- "Create a report on store performance with a summary, a table of orders by store, and a monthly trend chart."
 - "Remember that 'active customer' means a customer with at least one order in the last 90 days."
 
 ## Skills
@@ -25,7 +23,6 @@ Motley gives Claude a shared set of metric definitions, dimensions, and table re
 | Skill | What it does |
 |-------|--------------|
 | `get-started` | Check which data is available, see what you can ask, and set up the semantic layer if needed. |
-| `create-report` | Create a document with text, tables, and charts from your data. |
 | `semantic-layer-bootstrap` | Set up, curate, and verify the semantic layer for your data source. |
 
 New to Motley? Start with `get-started`. On a fresh data source, run `semantic-layer-bootstrap` first.

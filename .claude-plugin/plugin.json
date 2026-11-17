@@ -1,8 +1,8 @@
 {
   "name": "motley",
   "displayName": "Motley",
-  "description": "Query your business data through a semantic layer of shared metric definitions, and build dashboards, reports, and automations from live data.",
-  "version": "0.1.8",
+  "description": "Query your business data through a semantic layer of shared metric definitions, and power reports, dashboards, and automations with live data.",
+  "version": "0.1.9",
   "author": {
     "name": "Motley Stories AG",
     "url": "https://motley.ai"
