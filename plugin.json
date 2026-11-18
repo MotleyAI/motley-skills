@@ -50,6 +50,12 @@
               "expected_behavior": "Returns a top-5 product list with a sales figure for each, computed from the items model joined to products."
             },
             {
+              "description": "Compare a metric across periods.",
+              "prompt": "Using Motley's Demo Database, how did the number of orders at each store change from 2024 to 2025?",
+              "tools_triggered": "search, inspect, query",
+              "expected_behavior": "Returns the 2024 and 2025 order counts per store with the change between them. Stores that opened in 2025 (Los Angeles, New Orleans) have no 2024 figure and are marked as new, not as infinite growth."
+            },
+            {
               "description": "Save a reusable business definition to the semantic layer.",
               "prompt": "Remember in Motley that 'active customer' means a customer with at least one order in the last 90 days.",
               "tools_triggered": "search, save_memory",
