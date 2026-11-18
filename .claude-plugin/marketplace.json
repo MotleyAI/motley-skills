@@ -5,14 +5,14 @@
     "url": "https://motley.ai"
   },
   "metadata": {
-    "description": "Skills and MCP tools for creating data-driven reports and presentations with the Motley platform"
+    "description": "Skills and MCP tools for querying business data through the Motley semantic layer"
   },
   "plugins": [
     {
       "name": "motley",
       "source": "./",
-      "description": "Query your business data through a semantic layer of shared metric definitions, and build dashboards, reports, and automations from live data.",
-      "version": "0.1.8",
+      "description": "Query your business data through a semantic layer of shared metric definitions, and power reports, dashboards, and automations with live data.",
+      "version": "0.1.9",
       "author": {
         "name": "Motley Stories AG",
         "url": "https://motley.ai"

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "motley",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Motley AI lets you build, maintain, and query a semantic layer over your connected business database directly from ChatGPT.",
   "author": { "name": "Motley Stories AG", "url": "https://motley.ai" },
   "homepage": "https://motley.ai",
@@ -13,7 +13,7 @@
       "interface": {
         "displayName": "Motley AI",
         "shortDescription": "Semantic layer for your data",
-        "longDescription": "Motley lets you build, maintain, and query a semantic layer over your connected business database directly from ChatGPT. Define business metrics, dimensions, and table relationships, then ask questions using those shared definitions.\n\nUse Motley to:\n\n* Set up and improve a semantic layer for a connected database.\n* Define and refine metrics such as revenue, active customers, and conversion rates.\n* Ask questions about KPIs, trends, comparisons, and breakdowns.\n* Create visualizations and reports from the data.\n* Save business context so future analyses use the same definitions.\n\nFor example, ask: “What was revenue by store last quarter?” Motley uses your semantic definitions to find the relevant data and run the query, so you can inspect how the answer was calculated.\n\nMotley is powered by SLayer, its open-source semantic engine.\n\nGetting started: A Motley account is required (https://app.motley.ai). You can also try Motley with demo data.\n\nAccess and limitations: Motley reads only the data sources your organization connects. It does not search the web or change the data in your databases. Changes to semantic definitions require the editor role.",
+        "longDescription": "Motley lets you build, maintain, and query a semantic layer over your connected business database directly from ChatGPT. Define business metrics, dimensions, and table relationships, then ask questions using those shared definitions.\n\nUse Motley to:\n\n* Set up and improve a semantic layer for a connected database.\n* Define and refine metrics such as revenue, active customers, and conversion rates.\n* Ask questions about KPIs, trends, comparisons, and breakdowns.\n* Save business context so future analyses use the same definitions.\n\nFor example, ask: “What was revenue by store last quarter?” Motley uses your semantic definitions to find the relevant data and run the query, so you can inspect how the answer was calculated.\n\nMotley is powered by SLayer, its open-source semantic engine.\n\nGetting started: A Motley account is required (https://app.motley.ai). You can also try Motley with demo data.\n\nAccess and limitations: Motley reads only the data sources your organization connects. It does not search the web or change the data in your databases. Changes to semantic definitions require the editor role.",
         "developerName": "Motley Stories AG",
         "category": "Data & Analytics",
         "capabilities": ["Read", "Write"],
@@ -50,10 +50,10 @@
               "expected_behavior": "Returns a top-5 product list with a sales figure for each, computed from the items model joined to products."
             },
             {
-              "description": "Build a report document with text, a table, and a chart.",
-              "prompt": "Create a Motley report called 'Store performance 2025' with a short summary, a table of orders by store, and a monthly orders line chart.",
-              "tools_triggered": "search, query, create_document, set_doc_variables, update_block",
-              "expected_behavior": "Creates a new document in the user's Motley workspace with a summary text block, a table of 2025 orders per store (Brooklyn first), and a line chart of monthly 2025 orders. Returns a link to open the document in the Motley app."
+              "description": "Compare a metric across periods.",
+              "prompt": "Using Motley's Demo Database, how did the number of orders at each store change from 2024 to 2025?",
+              "tools_triggered": "search, inspect, query",
+              "expected_behavior": "Returns the 2024 and 2025 order counts per store with the change between them. Stores that opened in 2025 (Los Angeles, New Orleans) have no 2024 figure and are marked as new, not as infinite growth."
             },
             {
               "description": "Save a reusable business definition to the semantic layer.",
@@ -72,8 +72,8 @@
               "prompt": "Use Motley to tell me today's stock price of Snowflake."
             },
             {
-              "description": "Motley cannot send email or share documents outside the workspace. Expected response: Explains that Motley cannot send email. Offers the document link or an export that the user can share.",
-              "prompt": "Email the Motley 'Store performance 2025' report to my CFO."
+              "description": "Motley cannot send email. Expected response: Explains that Motley cannot send email. Offers to show the numbers in the chat so that the user can share them.",
+              "prompt": "Use Motley to email last quarter's revenue by store to my CFO."
             }
           ]
         }

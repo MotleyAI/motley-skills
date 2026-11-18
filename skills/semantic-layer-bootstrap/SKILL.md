@@ -61,4 +61,4 @@ Tell the user:
 - The gaps: questions that cannot be answered, why, and the next step (e.g. "entitlement usage: not in DB, API-only — needs ingestion").
 - Maintenance: after schema changes, fix the models a failing query names with `edit_model`; re-run this skill any time to add more.
 
-Leave short memories linked to models as guidance for consumer agents. Optional: create a starter document with the verified queries (`create_document`, then query/chart blocks per question) as a live demo of the layer.
+Leave short memories linked to models as guidance for consumer agents.
